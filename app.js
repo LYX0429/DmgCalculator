@@ -1,4 +1,4 @@
-const STAT_NAMES = { hp: 'HP', atk: '物攻', def: '物防', spatk: '魔攻', spdef: '魔抗', spd: '速度' };
+const STAT_NAMES = { hp: 'HP', atk: '物攻', def: '物防', spatk: '魔攻', spdef: '魔防', spd: '速度' };
 const STAT_IDS   = ['hp', 'atk', 'def', 'spatk', 'spdef', 'spd'];
 
 const STAT_ICONS = {
@@ -16,10 +16,9 @@ const TYPE_ICONS = {
   '冰': 'assets/icons/type-bing.png',
 };
 
-// CSS color fallbacks for types without downloaded icons
 const TYPE_COLORS = {
   '普通': '#a8a878', '草': '#78c850', '火': '#f08030', '水': '#6890f0',
-  '光': '#f8d030', '地': '#e0c068', '冰': '#98d8d8', '龙': '#7038f8',
+  '光': '#c8a820', '地': '#e0c068', '冰': '#98d8d8', '龙': '#7038f8',
   '电': '#f8d030', '毒': '#a040a0', '虫': '#a8b820', '武': '#c03028',
   '翼': '#a890f0', '萌': '#ee99ac', '幽': '#705898', '恶': '#705848',
   '幻': '#f85888', '机械': '#b8b8d0',
@@ -33,13 +32,26 @@ function typeTag(typeName) {
   return `<span class="type-badge" style="background:${color}">${typeName}</span>`;
 }
 
-// 我方可交互状态
+// 双方可交互状态
 let attackerNature = { boost: null, reduce: null };
 let attackerIVs    = {};
+let defenderNature = { boost: null, reduce: null };
+let defenderIVs    = {};
 
-function renderAttackerStatGrid(creature) {
-  const stats = calcAllStats({ ...creature, ivs: attackerIVs, nature: attackerNature });
-  const container = document.getElementById('attacker-stats');
+function loadCreatureDefaults(side, creature) {
+  const nature = creature.nature
+    ? { boost: creature.nature.boost, reduce: creature.nature.reduce }
+    : { boost: null, reduce: null };
+  const ivs = creature.ivs ? { ...creature.ivs } : {};
+  if (side === 'attacker') { attackerNature = nature; attackerIVs = ivs; }
+  else                     { defenderNature = nature; defenderIVs = ivs; }
+}
+
+function renderStatGrid(side, creature) {
+  const nature = side === 'attacker' ? attackerNature : defenderNature;
+  const ivs    = side === 'attacker' ? attackerIVs    : defenderIVs;
+  const stats  = calcAllStats({ ...creature, ivs, nature });
+  const container = document.getElementById(side === 'attacker' ? 'attacker-stats' : 'defender-stats');
 
   const typeTagsHtml = creature.types.map(typeTag).join('');
   const imgHtml = creature.image
@@ -50,20 +62,20 @@ function renderAttackerStatGrid(creature) {
     `<p class="stat-label">${creature.name}　${typeTagsHtml}</p>` +
     imgHtml +
     STAT_IDS.map(id => {
-      const isBoost  = attackerNature.boost  === id;
-      const isReduce = attackerNature.reduce === id;
-      const hasIV    = !!attackerIVs[id];
-      const modClass = isBoost ? 'stat--boost' : isReduce ? 'stat--reduce' : '';
+      const isBoost  = nature.boost  === id;
+      const isReduce = nature.reduce === id;
+      const hasIV    = !!ivs[id];
+      const modClass = isBoost ? 'stat--boost' : isReduce ? 'stat--reduce' : hasIV ? 'stat--iv' : '';
       const icon     = STAT_ICONS[id] ? `<img class="stat-icon" src="${STAT_ICONS[id]}" alt="">` : '';
       return `
         <div class="stat-row stat-row--interactive">
           <div class="nature-btns">
-            <button class="nature-btn nature-btn--plus  ${isBoost  ? 'active' : ''}" data-stat="${id}" data-type="boost">＋</button>
-            <button class="nature-btn nature-btn--minus ${isReduce ? 'active' : ''}" data-stat="${id}" data-type="reduce">－</button>
+            <button class="nature-btn nature-btn--plus  ${isBoost  ? 'active' : ''}" data-side="${side}" data-stat="${id}" data-type="boost">＋</button>
+            <button class="nature-btn nature-btn--minus ${isReduce ? 'active' : ''}" data-side="${side}" data-stat="${id}" data-type="reduce">－</button>
           </div>
           <span class="stat-name ${modClass}">${icon}${STAT_NAMES[id]}</span>
           <span class="stat-value ${modClass}">${stats[id]}</span>
-          <button class="iv-btn ${hasIV ? 'active' : ''}" data-stat="${id}">个</button>
+          <button class="iv-btn ${hasIV ? 'active' : ''}" data-side="${side}" data-stat="${id}">个</button>
         </div>`;
     }).join('');
 
@@ -72,62 +84,49 @@ function renderAttackerStatGrid(creature) {
 }
 
 function onNatureClick(e) {
+  const side   = e.currentTarget.dataset.side;
   const statId = e.currentTarget.dataset.stat;
   const type   = e.currentTarget.dataset.type;
+  const nature = side === 'attacker' ? attackerNature : defenderNature;
 
   if (type === 'boost') {
-    attackerNature.boost = attackerNature.boost === statId ? null : statId;
-    if (attackerNature.boost === statId && attackerNature.reduce === statId) {
-      attackerNature.reduce = null;
-    }
+    nature.boost = nature.boost === statId ? null : statId;
+    if (nature.boost === statId && nature.reduce === statId) nature.reduce = null;
   } else {
-    attackerNature.reduce = attackerNature.reduce === statId ? null : statId;
-    if (attackerNature.reduce === statId && attackerNature.boost === statId) {
-      attackerNature.boost = null;
-    }
+    nature.reduce = nature.reduce === statId ? null : statId;
+    if (nature.reduce === statId && nature.boost === statId) nature.boost = null;
   }
 
-  renderAttackerStatGrid(CREATURES[document.getElementById('attacker-select').value]);
+  const creature = CREATURES[document.getElementById(side === 'attacker' ? 'attacker-select' : 'defender-select').value];
+  renderStatGrid(side, creature);
 }
 
 function onIVToggle(e) {
-  const statId  = e.currentTarget.dataset.stat;
-  if (attackerIVs[statId]) {
-    delete attackerIVs[statId];
-  } else if (Object.keys(attackerIVs).length < 3) {
-    attackerIVs[statId] = 60;
+  const side   = e.currentTarget.dataset.side;
+  const statId = e.currentTarget.dataset.stat;
+  const ivs    = side === 'attacker' ? attackerIVs : defenderIVs;
+
+  if (ivs[statId]) {
+    delete ivs[statId];
+  } else if (Object.keys(ivs).length < 3) {
+    ivs[statId] = 60;
   }
-  renderAttackerStatGrid(CREATURES[document.getElementById('attacker-select').value]);
+
+  const creature = CREATURES[document.getElementById(side === 'attacker' ? 'attacker-select' : 'defender-select').value];
+  renderStatGrid(side, creature);
 }
 
 function onAttackerChange() {
-  attackerNature = { boost: null, reduce: null };
-  attackerIVs    = {};
   const creature = CREATURES[document.getElementById('attacker-select').value];
-  renderAttackerStatGrid(creature);
+  loadCreatureDefaults('attacker', creature);
+  renderStatGrid('attacker', creature);
   populateMoves(creature);
 }
 
 function onDefenderChange() {
   const creature = CREATURES[document.getElementById('defender-select').value];
-  const neutral  = { boost: null, reduce: null };
-  const baseRef  = {};
-  for (const id of STAT_IDS) {
-    baseRef[id] = calcStat(id, creature.baseStats[id], 0, neutral);
-  }
-  const container = document.getElementById('defender-stats');
-  const typeTagsHtml = creature.types.map(typeTag).join('');
-  const imgHtml = creature.image
-    ? `<div class="creature-img-wrap"><img class="creature-img" src="${creature.image}" alt="${creature.name}"></div>`
-    : '';
-
-  container.innerHTML =
-    `<p class="stat-label">${creature.name}　${typeTagsHtml}　<span style="font-size:0.75rem;color:#6b7280">无个体基准</span></p>` +
-    imgHtml +
-    Object.entries(baseRef).map(([k, v]) => {
-      const icon = STAT_ICONS[k] ? `<img class="stat-icon" src="${STAT_ICONS[k]}" alt="">` : '';
-      return `<div class="stat-row"><span>${icon}${STAT_NAMES[k]}</span><span>${v}</span></div>`;
-    }).join('');
+  loadCreatureDefaults('defender', creature);
+  renderStatGrid('defender', creature);
 }
 
 function populateMoves(creature) {
@@ -170,14 +169,34 @@ function onCalculate() {
   const defBuff    = parseFloat(document.getElementById('def-buff').value)    || 0;
   if (!move) return;
 
-  const results = runCalculation({ attacker, enemy, move, extraPower, atkBuff, defBuff });
-  renderResultBars(results);
+  const atkStats  = calcAllStats(attacker);
+  const atkStat   = move.category === 'physical' ? atkStats.atk : atkStats.spatk;
+  const defStatId = move.category === 'physical' ? 'def' : 'spdef';
+  const typeMult  = calcTypeMultiplier(move.type, enemy.types);
+  const stabMult  = calcStabMultiplier(move.type, attacker.types);
+
+  // 当前敌方配置结算
+  const defStats   = calcAllStats({ ...enemy, ivs: defenderIVs, nature: defenderNature });
+  const currentDmg = calcDamage(atkStat, defStats[defStatId], move.power, extraPower, atkBuff, defBuff, typeMult, stabMult);
+  const currentPct = defStats.hp > 0 ? (currentDmg / defStats.hp * 100).toFixed(1) : '∞';
+
+  // 9种假设区间
+  const scenarios = runCalculation({ attacker, enemy, move, extraPower, atkBuff, defBuff });
+
+  renderResultBars({ dmg: currentDmg, pct: currentPct }, scenarios);
   document.getElementById('result-panel').hidden = false;
 }
 
-function renderResultBars(results) {
-  const container = document.getElementById('result-bars');
-  container.innerHTML = results.map(r => {
+function renderResultBars(current, scenarios) {
+  const currentPct = Math.min(parseFloat(current.pct), 100);
+  document.getElementById('result-current').innerHTML = `
+    <div class="bar-row bar-row--current">
+      <div class="bar-label">当前配置</div>
+      <div class="bar-track"><div class="bar-fill bar-fill--current" style="width:${currentPct}%"></div></div>
+      <div class="bar-value">${current.dmg} <span class="bar-pct">(${current.pct}%)</span></div>
+    </div>`;
+
+  document.getElementById('result-bars').innerHTML = scenarios.map(r => {
     const barPct = Math.min(parseFloat(r.pct), 100);
     return `
       <div class="bar-row ${r.isAbsolute ? 'bar-row--absolute' : ''}">

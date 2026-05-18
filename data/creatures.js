@@ -82,8 +82,8 @@ const CREATURES = [
     types: ["光"],
     image: "assets/creatures/迪莫.png",
     baseStats: { hp: 120, atk: 80, spatk: 80, def: 105, spdef: 105, spd: 92 },
-    ivs: {},
-    nature: { name: "保守", boost: "def", reduce: "atk" },
+    ivs: { atk: 60, spatk: 60, spd: 60 },
+    nature: { name: "莽撞", boost: "spd", reduce: "spdef" },
     commonMoves: ["light-beam", "solar-ray", "close-combat"]
   },
 ];
