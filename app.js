@@ -155,8 +155,10 @@ function populateMoves(creature) {
 function onMoveChange() {
   const move = MOVES.find(m => m.id === document.getElementById('move-select').value);
   if (!move) return;
-  document.getElementById('move-info').textContent =
-    `威力 ${move.power} · ${move.category === 'physical' ? '物理' : '魔法'} · ${move.type}属性`;
+  const iconHtml = move.icon ? `<img class="move-icon" src="${move.icon}" alt="">` : '';
+  const noteHtml = move.note ? ` · <span class="move-note">${move.note}</span>` : '';
+  document.getElementById('move-info').innerHTML =
+    `${iconHtml}威力 ${move.power} · ${move.category === 'physical' ? '物理' : '魔法'} · ${move.type}属性${noteHtml}`;
 }
 
 function onCalculate() {

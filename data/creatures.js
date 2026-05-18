@@ -84,6 +84,6 @@ const CREATURES = [
     baseStats: { hp: 120, atk: 80, spatk: 80, def: 105, spdef: 105, spd: 92 },
     ivs: { atk: 60, spatk: 60, spd: 60 },
     nature: { name: "莽撞", boost: "spd", reduce: "spdef" },
-    commonMoves: ["light-beam", "solar-ray", "close-combat"]
+    commonMoves: ["光刃", "闪光冲击", "光球", "折射", "折线冲击", "闪光"]
   },
 ];

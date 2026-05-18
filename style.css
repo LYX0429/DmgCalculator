@@ -139,7 +139,9 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
 
 .move-row { display: flex; gap: 1rem; align-items: flex-end; margin-bottom: 0.8rem; }
 .move-row label { flex: 1; }
-.move-info { font-size: 0.85rem; color: #9ca3af; white-space: nowrap; padding-bottom: 0.4rem; }
+.move-info { font-size: 0.85rem; color: #9ca3af; padding-bottom: 0.4rem; display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap; }
+.move-icon { width: 32px; height: 32px; border-radius: 4px; flex-shrink: 0; }
+.move-note { color: #f7c948; font-size: 0.8rem; }
 
 .param-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; margin-bottom: 1rem; }
 
