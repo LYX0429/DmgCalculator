@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>洛克王国 伤害计算器</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <h1>洛克王国 伤害计算器</h1>
+
+    <div class="battle-row">
+      <section class="panel attacker-panel">
+        <h2>我方</h2>
+        <label>精灵<select id="attacker-select"></select></label>
+        <div id="attacker-stats" class="stat-grid"></div>
+      </section>
+
+      <section class="panel defender-panel">
+        <h2>敌方</h2>
+        <label>精灵<select id="defender-select"></select></label>
+        <div id="defender-stats" class="stat-grid"></div>
+      </section>
+    </div>
+
+    <section class="panel move-panel">
+      <div class="move-row">
+        <label>技能<select id="move-select"></select></label>
+        <span id="move-info" class="move-info"></span>
+      </div>
+      <div class="param-row">
+        <label>额外威力加成<input id="extra-power" type="number" value="0" min="0"></label>
+        <label>我方攻击 Buff（0.5 = +50%）<input id="atk-buff" type="number" value="0" step="0.1"></label>
+        <label>敌方防守 Buff（0.3 = +30%）<input id="def-buff" type="number" value="0" step="0.1"></label>
+      </div>
+      <button id="calc-btn">计算伤害</button>
+    </section>
+
+    <section class="panel result-panel" id="result-panel" hidden>
+      <h2>伤害结果</h2>
+      <div id="result-bars"></div>
+    </section>
+  </div>
+
+  <script src="data/moves.js"></script>
+  <script src="data/creatures.js"></script>
+  <script src="calculator.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
