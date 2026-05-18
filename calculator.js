@@ -42,7 +42,7 @@ function calcStabMultiplier(moveType, attackerTypes) {
 // 伤害 = 我方攻 / 敌方防 × 0.9 × (技能威力 + 额外威力)
 //        × (1 + 攻击buff) / (1 + 防守buff) × 属性克制 × 本系加成
 function calcDamage(atkStat, defStat, movePower, extraPower, atkBuff, defBuff, typeMult, stabMult) {
-  return Math.floor(
+  return Math.round(
     (atkStat / defStat)
     * 0.9
     * (movePower + extraPower)
