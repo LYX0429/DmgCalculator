@@ -137,28 +137,36 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
 .iv-btn.active { background: #f7c948; border-color: #f7c948; color: #1a1a2e; font-weight: 700; }
 .iv-btn:not(.active):hover { background: #1a4a7a; color: #9ca3af; }
 
-.move-row { display: flex; gap: 1rem; align-items: flex-end; margin-bottom: 0.8rem; }
-.move-row label { flex: 1; }
-.move-info { font-size: 0.85rem; color: #9ca3af; padding-bottom: 0.4rem; display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap; }
-.move-icon { width: 32px; height: 32px; border-radius: 4px; flex-shrink: 0; }
-.move-note { color: #f7c948; font-size: 0.8rem; }
+/* 常用技能快捷栏 */
+.common-moves-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.4rem; }
+.common-move-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
+  padding: 0.4rem 0.5rem; min-width: 56px;
+  background: #0f3460; border: 1px solid #1a4a7a; border-radius: 6px;
+  cursor: pointer; color: #9ca3af; font-size: 0.75rem;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.common-move-btn img { width: 38px; height: 38px; border-radius: 4px; }
+.common-move-btn:hover { background: #1a4a7a; color: #e0e0e0; }
+.common-move-btn.active { border-color: #a8d8ff; color: #a8d8ff; background: #0d2a50; }
+
+/* 技能信息栏（下拉框上方）*/
+.move-info-bar {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.5rem 0 0.6rem; margin-bottom: 0.5rem;
+  border-bottom: 1px solid #0f3460; min-height: 52px;
+}
+.move-info-icon { width: 42px; height: 42px; border-radius: 6px; flex-shrink: 0; }
+.move-info-text { display: flex; flex-direction: column; gap: 0.15rem; }
+.move-info-name  { font-weight: 600; font-size: 0.95rem; color: #e0e0e0; }
+.move-info-stats { font-size: 0.8rem; color: #9ca3af; }
+.move-note { font-size: 0.78rem; color: #f7c948; }
+
+/* 技能下拉标签 */
+.move-select-label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.85rem; color: #9ca3af; margin-bottom: 0.8rem; }
 
 .param-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; margin-bottom: 1rem; }
 
-button#calc-btn {
-  display: block;
-  width: 100%;
-  padding: 0.7rem;
-  background: #e94560;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-button#calc-btn:hover { background: #c73652; }
 
 .bar-row {
   display: grid;

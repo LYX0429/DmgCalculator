@@ -4,9 +4,9 @@ function calcStat(statId, base, iv, nature) {
                     : nature.reduce === statId ? -0.1
                     : 0;
   if (statId === 'hp') {
-    return Math.floor((1.7 * base + iv * 0.85 + 70) * (1 + natureBoost)) + 100;
+    return Math.round((1.7 * base + iv * 0.85 + 70) * (1 + natureBoost)) + 100;
   }
-  return Math.floor((1.1 * base + iv * 0.55 + 10) * (1 + natureBoost)) + 50;
+  return Math.round((1.1 * base + iv * 0.55 + 10) * (1 + natureBoost)) + 50;
 }
 
 function calcAllStats(creature) {

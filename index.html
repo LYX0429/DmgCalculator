@@ -24,17 +24,19 @@
       </section>
     </div>
 
+    <section class="panel common-moves-panel">
+      <h2>常用技能</h2>
+      <div id="common-moves" class="common-moves-grid"></div>
+    </section>
+
     <section class="panel move-panel">
-      <div class="move-row">
-        <label>技能<select id="move-select"></select></label>
-        <span id="move-info" class="move-info"></span>
-      </div>
+      <div id="move-info-bar" class="move-info-bar"></div>
+      <label class="move-select-label">技能<select id="move-select"></select></label>
       <div class="param-row">
         <label>额外威力加成<input id="extra-power" type="number" value="0" min="0"></label>
         <label>我方攻击 Buff（0.5 = +50%）<input id="atk-buff" type="number" value="0" step="0.1"></label>
         <label>敌方防守 Buff（0.3 = +30%）<input id="def-buff" type="number" value="0" step="0.1"></label>
       </div>
-      <button id="calc-btn">计算伤害</button>
     </section>
 
     <section class="panel result-panel" id="result-panel" hidden>

@@ -99,6 +99,7 @@ function onNatureClick(e) {
 
   const creature = CREATURES[document.getElementById(side === 'attacker' ? 'attacker-select' : 'defender-select').value];
   renderStatGrid(side, creature);
+  onCalculate();
 }
 
 function onIVToggle(e) {
@@ -114,6 +115,7 @@ function onIVToggle(e) {
 
   const creature = CREATURES[document.getElementById(side === 'attacker' ? 'attacker-select' : 'defender-select').value];
   renderStatGrid(side, creature);
+  onCalculate();
 }
 
 function onAttackerChange() {
@@ -121,44 +123,75 @@ function onAttackerChange() {
   loadCreatureDefaults('attacker', creature);
   renderStatGrid('attacker', creature);
   populateMoves(creature);
+  onCalculate();
 }
 
 function onDefenderChange() {
   const creature = CREATURES[document.getElementById('defender-select').value];
   loadCreatureDefaults('defender', creature);
   renderStatGrid('defender', creature);
+  onCalculate();
 }
+
+const TYPE_ORDER = ['普通','光','火','水','草','电','冰','地','幻','龙','恶','武','翼','萌','幽','虫','机械','毒'];
 
 function populateMoves(creature) {
   const sel = document.getElementById('move-select');
-  const commonIds = new Set(creature.commonMoves);
-  sel.innerHTML = '';
+  const commonIds = creature.commonMoves || [];
 
-  const addGroup = (label, moves) => {
-    if (!moves.length) return;
+  // 常用技能快捷栏
+  const grid = document.getElementById('common-moves');
+  grid.innerHTML = commonIds.map(id => {
+    const m = MOVES.find(m => m.id === id);
+    if (!m) return '';
+    const iconHtml = m.icon ? `<img src="${m.icon}" alt="">` : '';
+    return `<button class="common-move-btn" data-id="${m.id}">${iconHtml}<span>${m.name}</span></button>`;
+  }).join('');
+  grid.querySelectorAll('.common-move-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      sel.value = btn.dataset.id;
+      onMoveChange();
+    });
+  });
+
+  // 下拉框按属性分组
+  sel.innerHTML = '';
+  for (const type of TYPE_ORDER) {
+    const group = MOVES.filter(m => m.type === type);
+    if (!group.length) continue;
     const grp = document.createElement('optgroup');
-    grp.label = label;
-    moves.forEach(m => {
+    grp.label = type;
+    group.forEach(m => {
       const opt = document.createElement('option');
       opt.value = m.id;
-      opt.textContent = `${m.name}（${m.power} · ${m.category === 'physical' ? '物理' : '魔法'} · ${m.type}）`;
+      opt.textContent = `${m.name}（${m.power} · ${m.category === 'physical' ? '物理' : '魔法'}）`;
       grp.appendChild(opt);
     });
     sel.appendChild(grp);
-  };
+  }
 
-  addGroup('常用技能', MOVES.filter(m => commonIds.has(m.id)));
-  addGroup('全部技能', MOVES.filter(m => !commonIds.has(m.id)));
   onMoveChange();
 }
 
 function onMoveChange() {
   const move = MOVES.find(m => m.id === document.getElementById('move-select').value);
   if (!move) return;
-  const iconHtml = move.icon ? `<img class="move-icon" src="${move.icon}" alt="">` : '';
-  const noteHtml = move.note ? ` · <span class="move-note">${move.note}</span>` : '';
-  document.getElementById('move-info').innerHTML =
-    `${iconHtml}威力 ${move.power} · ${move.category === 'physical' ? '物理' : '魔法'} · ${move.type}属性${noteHtml}`;
+
+  const iconHtml = move.icon ? `<img class="move-info-icon" src="${move.icon}" alt="">` : '';
+  const noteHtml = move.note ? `<span class="move-note">${move.note}</span>` : '';
+  const catLabel  = move.category === 'physical' ? '物理' : '魔法';
+  document.getElementById('move-info-bar').innerHTML = `
+    ${iconHtml}
+    <div class="move-info-text">
+      <span class="move-info-name">${move.name}</span>
+      <span class="move-info-stats">威力 ${move.power} · ${catLabel} · ${move.type}属性</span>
+      ${noteHtml}
+    </div>`;
+
+  // 同步高亮常用技能栏
+  document.querySelectorAll('.common-move-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.id === move.id));
+  onCalculate();
 }
 
 function onCalculate() {
@@ -227,7 +260,8 @@ document.addEventListener('DOMContentLoaded', () => {
   attackerSel.addEventListener('change', onAttackerChange);
   defenderSel.addEventListener('change', onDefenderChange);
   document.getElementById('move-select').addEventListener('change', onMoveChange);
-  document.getElementById('calc-btn').addEventListener('click', onCalculate);
+  ['extra-power', 'atk-buff', 'def-buff'].forEach(id =>
+    document.getElementById(id).addEventListener('input', onCalculate));
 
   onAttackerChange();
   onDefenderChange();
