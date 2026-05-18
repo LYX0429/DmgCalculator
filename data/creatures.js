@@ -1,24 +1,30 @@
 // 性格列表：boost/reduce 对应 "hp"|"atk"|"def"|"spatk"|"spdef"|"spd"
 const NATURES = [
-  { name: "孤僻", boost: "atk",   reduce: "spatk" },
-  { name: "固执", boost: "atk",   reduce: "spdef" },
-  { name: "顽皮", boost: "atk",   reduce: "def"   },
+  { name: "逞强", boost: "atk",   reduce: "hp"    },
+  { name: "固执", boost: "atk",   reduce: "spatk" },
+  { name: "大胆", boost: "atk",   reduce: "def"   },
+  { name: "调皮", boost: "atk",   reduce: "spdef" },
   { name: "勇敢", boost: "atk",   reduce: "spd"   },
-  { name: "保守", boost: "def",   reduce: "atk"   },
-  { name: "坦率", boost: "def",   reduce: "spatk" },
+  { name: "坦率", boost: "def",   reduce: "hp"    },
+  { name: "稳重", boost: "def",   reduce: "atk"   },
+  { name: "天真", boost: "def",   reduce: "spatk" },
+  { name: "懒散", boost: "def",   reduce: "spdef" },
   { name: "悠闲", boost: "def",   reduce: "spd"   },
-  { name: "内敛", boost: "spatk", reduce: "atk"   },
-  { name: "温和", boost: "spatk", reduce: "def"   },
+  { name: "理性", boost: "spatk", reduce: "hp"    },
+  { name: "聪明", boost: "spatk", reduce: "atk"   },
+  { name: "专注", boost: "spatk", reduce: "def"   },
+  { name: "偏执", boost: "spatk", reduce: "spdef" },
   { name: "冷静", boost: "spatk", reduce: "spd"   },
-  { name: "慎重", boost: "spdef", reduce: "atk"   },
-  { name: "温顺", boost: "spdef", reduce: "spatk" },
-  { name: "自大", boost: "spdef", reduce: "spd"   },
+  { name: "焦虑", boost: "spdef", reduce: "hp"    },
+  { name: "警惕", boost: "spdef", reduce: "atk"   },
+  { name: "害羞", boost: "spdef", reduce: "spatk" },
+  { name: "温顺", boost: "spdef", reduce: "def"   },
+  { name: "慎重", boost: "spdef", reduce: "spd"   },
+  { name: "热情", boost: "spd",   reduce: "hp"    },
   { name: "胆小", boost: "spd",   reduce: "atk"   },
+  { name: "开朗", boost: "spd",   reduce: "spatk" },
   { name: "急躁", boost: "spd",   reduce: "def"   },
-  { name: "爽朗", boost: "spd",   reduce: "spatk" },
-  { name: "天真", boost: "spd",   reduce: "spdef" },
-  { name: "开朗", boost: "hp",    reduce: "spd"   },
-  { name: "淘气", boost: "def",   reduce: "spdef" },
+  { name: "莽撞", boost: "spd",   reduce: "spdef" },
 ];
 
 // 属性克制表：攻击属性 → 被克制的防御属性列表（×2）
@@ -67,96 +73,17 @@ const RESIST_CHART = {
   "机械": ["火", "水", "电", "机械"],
 };
 
-// 精灵数据（种族值为占位数据，请根据游戏实际数值修改）
+// 精灵数据
 const CREATURES = [
   {
-    id: "fire-wolf",
-    name: "火焰狼",
-    types: ["火"],
-    baseStats: { hp: 75, atk: 100, spatk: 80, def: 65, spdef: 70, spd: 120 },
-    ivs: { atk: 60, spd: 54 },
-    nature: { name: "固执", boost: "atk", reduce: "spdef" },
-    commonMoves: ["fire-claw", "fire-breath", "close-combat"]
-  },
-  {
-    id: "water-turtle",
-    name: "水甲龟",
-    types: ["水"],
-    baseStats: { hp: 85, atk: 75, spatk: 85, def: 110, spdef: 100, spd: 60 },
-    ivs: { def: 60, spdef: 54, hp: 48 },
+    id: "di-mo",
+    no: "001",
+    name: "迪莫",
+    types: ["光"],
+    image: "assets/creatures/迪莫.png",
+    baseStats: { hp: 120, atk: 80, spatk: 80, def: 105, spdef: 105, spd: 92 },
+    ivs: {},
     nature: { name: "保守", boost: "def", reduce: "atk" },
-    commonMoves: ["water-wave", "water-gun", "water-strike"]
-  },
-  {
-    id: "grass-fairy",
-    name: "草叶精",
-    types: ["草", "萌"],
-    baseStats: { hp: 80, atk: 70, spatk: 105, def: 75, spdef: 95, spd: 80 },
-    ivs: { spatk: 60, spdef: 48 },
-    nature: { name: "温和", boost: "spatk", reduce: "def" },
-    commonMoves: ["solar-beam", "grass-knot", "leaf-blade"]
-  },
-  {
-    id: "thunder-bird",
-    name: "雷鸟",
-    types: ["电", "翼"],
-    baseStats: { hp: 65, atk: 80, spatk: 115, def: 60, spdef: 75, spd: 110 },
-    ivs: { spatk: 60, spd: 60 },
-    nature: { name: "冷静", boost: "spatk", reduce: "spd" },
-    commonMoves: ["thunderbolt", "air-slash", "thunder-fang"]
-  },
-  {
-    id: "ice-dragon",
-    name: "冰霜龙",
-    types: ["冰", "龙"],
-    baseStats: { hp: 90, atk: 110, spatk: 95, def: 90, spdef: 85, spd: 75 },
-    ivs: { atk: 60, hp: 54 },
-    nature: { name: "固执", boost: "atk", reduce: "spdef" },
-    commonMoves: ["dragon-claw", "ice-punch", "blizzard"]
-  },
-  {
-    id: "ghost-shadow",
-    name: "暗影幽灵",
-    types: ["幽", "恶"],
-    baseStats: { hp: 60, atk: 85, spatk: 125, def: 55, spdef: 80, spd: 115 },
-    ivs: { spatk: 60, spd: 60, hp: 42 },
-    nature: { name: "内敛", boost: "spatk", reduce: "atk" },
-    commonMoves: ["shadow-ball", "dark-pulse", "shadow-claw"]
-  },
-  {
-    id: "mech-golem",
-    name: "机械魔像",
-    types: ["机械"],
-    baseStats: { hp: 100, atk: 120, spatk: 60, def: 130, spdef: 60, spd: 40 },
-    ivs: { atk: 60, def: 54 },
-    nature: { name: "顽皮", boost: "atk", reduce: "def" },
-    commonMoves: ["gear-strike", "tech-blast", "earthquake"]
-  },
-  {
-    id: "light-phoenix",
-    name: "光辉凤凰",
-    types: ["光", "翼"],
-    baseStats: { hp: 80, atk: 75, spatk: 120, def: 70, spdef: 100, spd: 100 },
-    ivs: { spatk: 60, spd: 48, spdef: 42 },
-    nature: { name: "温和", boost: "spatk", reduce: "def" },
-    commonMoves: ["solar-ray", "light-beam", "air-slash"]
-  },
-  {
-    id: "poison-serpent",
-    name: "毒蛇",
-    types: ["毒"],
-    baseStats: { hp: 70, atk: 90, spatk: 90, def: 70, spdef: 75, spd: 95 },
-    ivs: { atk: 60, spatk: 48 },
-    nature: { name: "孤僻", boost: "atk", reduce: "spatk" },
-    commonMoves: ["poison-jab", "poison-blast", "crunch"]
-  },
-  {
-    id: "psychic-fox",
-    name: "幻术狐",
-    types: ["幻"],
-    baseStats: { hp: 65, atk: 60, spatk: 130, def: 60, spdef: 95, spd: 105 },
-    ivs: { spatk: 60, spd: 54, spdef: 48 },
-    nature: { name: "内敛", boost: "spatk", reduce: "atk" },
-    commonMoves: ["psychic-blast", "psybeam", "shadow-ball"]
+    commonMoves: ["light-beam", "solar-ray", "close-combat"]
   },
 ];

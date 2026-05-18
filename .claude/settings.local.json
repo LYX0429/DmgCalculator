@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:wiki.biligame.com)",
+      "PowerShell(Rename-Item -Path \"D:\\\\DmgCalculator\\\\assets\\\\creatures\\\\di-mo.png\" -NewName \"��Ī.png\")"
+    ]
+  }
+}

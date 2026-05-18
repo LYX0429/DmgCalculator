@@ -1,6 +1,38 @@
 const STAT_NAMES = { hp: 'HP', atk: '物攻', def: '物防', spatk: '魔攻', spdef: '魔抗', spd: '速度' };
 const STAT_IDS   = ['hp', 'atk', 'def', 'spatk', 'spdef', 'spd'];
 
+const STAT_ICONS = {
+  hp:    'assets/icons/stat-hp.png',
+  atk:   'assets/icons/stat-atk.png',
+  def:   'assets/icons/stat-def.png',
+  spatk: 'assets/icons/stat-spatk.png',
+  spdef: 'assets/icons/stat-spdef.png',
+  spd:   'assets/icons/stat-spd.png',
+};
+
+const TYPE_ICONS = {
+  '光': 'assets/icons/type-guang.png',
+  '火': 'assets/icons/type-huo.png',
+  '冰': 'assets/icons/type-bing.png',
+};
+
+// CSS color fallbacks for types without downloaded icons
+const TYPE_COLORS = {
+  '普通': '#a8a878', '草': '#78c850', '火': '#f08030', '水': '#6890f0',
+  '光': '#f8d030', '地': '#e0c068', '冰': '#98d8d8', '龙': '#7038f8',
+  '电': '#f8d030', '毒': '#a040a0', '虫': '#a8b820', '武': '#c03028',
+  '翼': '#a890f0', '萌': '#ee99ac', '幽': '#705898', '恶': '#705848',
+  '幻': '#f85888', '机械': '#b8b8d0',
+};
+
+function typeTag(typeName) {
+  if (TYPE_ICONS[typeName]) {
+    return `<img class="type-icon" src="${TYPE_ICONS[typeName]}" alt="${typeName}" title="${typeName}">`;
+  }
+  const color = TYPE_COLORS[typeName] || '#888';
+  return `<span class="type-badge" style="background:${color}">${typeName}</span>`;
+}
+
 // 我方可交互状态
 let attackerNature = { boost: null, reduce: null };
 let attackerIVs    = {};
@@ -9,20 +41,27 @@ function renderAttackerStatGrid(creature) {
   const stats = calcAllStats({ ...creature, ivs: attackerIVs, nature: attackerNature });
   const container = document.getElementById('attacker-stats');
 
+  const typeTagsHtml = creature.types.map(typeTag).join('');
+  const imgHtml = creature.image
+    ? `<div class="creature-img-wrap"><img class="creature-img" src="${creature.image}" alt="${creature.name}"></div>`
+    : '';
+
   container.innerHTML =
-    `<p class="stat-label">${creature.name}　${creature.types.join(' / ')}</p>` +
+    `<p class="stat-label">${creature.name}　${typeTagsHtml}</p>` +
+    imgHtml +
     STAT_IDS.map(id => {
       const isBoost  = attackerNature.boost  === id;
       const isReduce = attackerNature.reduce === id;
       const hasIV    = !!attackerIVs[id];
       const modClass = isBoost ? 'stat--boost' : isReduce ? 'stat--reduce' : '';
+      const icon     = STAT_ICONS[id] ? `<img class="stat-icon" src="${STAT_ICONS[id]}" alt="">` : '';
       return `
         <div class="stat-row stat-row--interactive">
           <div class="nature-btns">
             <button class="nature-btn nature-btn--plus  ${isBoost  ? 'active' : ''}" data-stat="${id}" data-type="boost">＋</button>
             <button class="nature-btn nature-btn--minus ${isReduce ? 'active' : ''}" data-stat="${id}" data-type="reduce">－</button>
           </div>
-          <span class="stat-name ${modClass}">${STAT_NAMES[id]}</span>
+          <span class="stat-name ${modClass}">${icon}${STAT_NAMES[id]}</span>
           <span class="stat-value ${modClass}">${stats[id]}</span>
           <button class="iv-btn ${hasIV ? 'active' : ''}" data-stat="${id}">个</button>
         </div>`;
@@ -77,11 +116,18 @@ function onDefenderChange() {
     baseRef[id] = calcStat(id, creature.baseStats[id], 0, neutral);
   }
   const container = document.getElementById('defender-stats');
+  const typeTagsHtml = creature.types.map(typeTag).join('');
+  const imgHtml = creature.image
+    ? `<div class="creature-img-wrap"><img class="creature-img" src="${creature.image}" alt="${creature.name}"></div>`
+    : '';
+
   container.innerHTML =
-    `<p class="stat-label">${creature.name}　${creature.types.join(' / ')}　（无个体基准）</p>` +
-    Object.entries(baseRef).map(([k, v]) =>
-      `<div class="stat-row"><span>${STAT_NAMES[k]}</span><span>${v}</span></div>`
-    ).join('');
+    `<p class="stat-label">${creature.name}　${typeTagsHtml}　<span style="font-size:0.75rem;color:#6b7280">无个体基准</span></p>` +
+    imgHtml +
+    Object.entries(baseRef).map(([k, v]) => {
+      const icon = STAT_ICONS[k] ? `<img class="stat-icon" src="${STAT_ICONS[k]}" alt="">` : '';
+      return `<div class="stat-row"><span>${icon}${STAT_NAMES[k]}</span><span>${v}</span></div>`;
+    }).join('');
 }
 
 function populateMoves(creature) {
@@ -150,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const mkOpt = () => {
       const o = document.createElement('option');
       o.value = i;
-      o.textContent = c.name;
+      o.textContent = c.no ? `${c.no} ${c.name}` : c.name;
       return o;
     };
     attackerSel.appendChild(mkOpt());
