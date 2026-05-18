@@ -54,25 +54,21 @@ function calcDamage(atkStat, defStat, movePower, extraPower, atkBuff, defBuff, t
 }
 
 function calcEnemyScenarios(enemy, defStatId) {
-  const neutral   = { boost: null,      reduce: null      };
-  const boostHp   = { boost: 'hp',      reduce: null      };
-  const boostDef  = { boost: defStatId, reduce: null      };
-  const reduceDef = { boost: null,      reduce: defStatId };
+  const neutral  = { boost: null,      reduce: null      };
+  const boostHp  = { boost: 'hp',      reduce: null      };
+  const boostDef = { boost: defStatId, reduce: null      };
   const MAX_IV = 60;
 
   const hp  = (iv, nat) => calcStat('hp',      enemy.baseStats.hp,          iv, nat);
   const def = (iv, nat) => calcStat(defStatId, enemy.baseStats[defStatId],  iv, nat);
 
   return [
-    { label: "① 血满个体+性格 / 防满个体+性格", hp: hp(MAX_IV, boostHp),  def: def(MAX_IV, boostDef)  },
-    { label: "② 血满个体+性格 / 防满个体",      hp: hp(MAX_IV, boostHp),  def: def(MAX_IV, neutral)   },
-    { label: "③ 血满个体 / 防满个体+性格",      hp: hp(MAX_IV, neutral),  def: def(MAX_IV, boostDef)  },
-    { label: "④ 血满个体 / 防满个体",           hp: hp(MAX_IV, neutral),  def: def(MAX_IV, neutral)   },
-    { label: "⑤ 血满个体 / 防无个体",           hp: hp(MAX_IV, neutral),  def: def(0,      neutral)   },
-    { label: "⑥ 血无个体 / 防满个体",           hp: hp(0,      neutral),  def: def(MAX_IV, neutral)   },
-    { label: "⑦ 无个体无性格",                  hp: hp(0,      neutral),  def: def(0,      neutral)   },
-    { label: "▲ 绝对最小（血防双满+性格）",      hp: hp(MAX_IV, boostHp),  def: def(MAX_IV, boostDef), isAbsolute: true },
-    { label: "▼ 绝对最大（无个体，防-性格）",    hp: hp(0,      neutral),  def: def(0,      reduceDef), isAbsolute: true },
+    { label: "① 血满个体+性格 / 防满个体",      hp: hp(MAX_IV, boostHp),  def: def(MAX_IV, neutral)   },
+    { label: "② 血满个体 / 防满个体+性格",      hp: hp(MAX_IV, neutral),  def: def(MAX_IV, boostDef)  },
+    { label: "③ 血满个体 / 防满个体",           hp: hp(MAX_IV, neutral),  def: def(MAX_IV, neutral)   },
+    { label: "④ 血满个体 / 防无个体",           hp: hp(MAX_IV, neutral),  def: def(0,      neutral)   },
+    { label: "⑤ 血无个体 / 防满个体",           hp: hp(0,      neutral),  def: def(MAX_IV, neutral)   },
+    { label: "⑥ 无个体无性格",                  hp: hp(0,      neutral),  def: def(0,      neutral)   },
   ];
 }
 
