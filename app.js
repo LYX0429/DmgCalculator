@@ -68,9 +68,21 @@ function renderStatGrid(side, creature) {
   const reduceLabel = nature.reduce ? STAT_NAMES[nature.reduce] : '—';
   const natureHtml = `<p class="nature-label"><span class="nature-name">${natureName}</span><span class="nature-detail">+${boostLabel} / -${reduceLabel}</span></p>`;
 
+  const ab = creature.ability;
+  const abilityHtml = ab
+    ? `<div class="ability-block">
+        <img class="ability-icon" src="${ab.icon}" alt="${ab.name}">
+        <div class="ability-info">
+          <span class="ability-name">${ab.name}</span>
+          <span class="ability-desc">${ab.desc}</span>
+        </div>
+       </div>`
+    : '';
+
   container.innerHTML =
     `<p class="stat-label">${creature.name}　${typeTagsHtml}</p>` +
     imgHtml +
+    abilityHtml +
     natureHtml +
     STAT_IDS.map(id => {
       const isBoost  = nature.boost  === id;

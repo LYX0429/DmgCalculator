@@ -123,6 +123,42 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
   filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
 }
 
+.ability-block {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.55rem;
+  margin-bottom: 0.35rem;
+  background: #0d2a4a;
+  border: 1px solid #1a4a7a;
+  border-radius: 6px;
+  height: 5.5rem;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.ability-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.ability-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+.ability-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #a8d8ff;
+}
+.ability-desc {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  line-height: 1.4;
+}
+
 .nature-label {
   font-size: 0.82rem;
   color: #9ca3af;
@@ -175,8 +211,9 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
 /* 技能信息栏（下拉框上方）*/
 .move-info-bar {
   display: flex; align-items: center; gap: 0.7rem;
-  padding: 0.5rem 0 0.6rem; margin-bottom: 0.5rem;
-  border-bottom: 1px solid #0f3460; min-height: 52px;
+  padding: 0 0 0.6rem; margin-bottom: 0.5rem;
+  border-bottom: 1px solid #0f3460;
+  height: 4.5rem; overflow: hidden; box-sizing: border-box;
 }
 .move-info-icon { width: 42px; height: 42px; border-radius: 6px; flex-shrink: 0; }
 .move-info-text { display: flex; flex-direction: column; gap: 0.15rem; }
