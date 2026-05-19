@@ -463,10 +463,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const defenderSel = document.getElementById('defender-select');
 
   CREATURES.forEach((c, i) => {
+    if (c.form === 'regional') return;
+    const displayName = c.name.replace(/（[^）]*）$/, '');
     const mkOpt = () => {
       const o = document.createElement('option');
       o.value = i;
-      o.textContent = c.no ? `${c.no} ${c.name}` : c.name;
+      o.textContent = c.no ? `${c.no} ${displayName}` : displayName;
       return o;
     };
     attackerSel.appendChild(mkOpt());
