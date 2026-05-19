@@ -123,6 +123,17 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
   filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
 }
 
+.nature-label {
+  font-size: 0.82rem;
+  color: #9ca3af;
+  margin: 0.3rem 0 0.2rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+}
+.nature-name  { color: #a8d8ff; font-weight: 600; }
+.nature-detail { font-size: 0.76rem; }
+
 .iv-btn {
   flex-shrink: 0;
   padding: 0 6px; height: 20px;

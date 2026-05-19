@@ -59,10 +59,15 @@ function renderStatGrid(side, creature) {
   const imgHtml = creature.image
     ? `<div class="creature-img-wrap"><img class="creature-img" src="${creature.image}" alt="${creature.name}"></div>`
     : '';
+  const natureName = (NATURES.find(n => n.boost === nature.boost && n.reduce === nature.reduce) || {}).name || '—';
+  const boostLabel  = nature.boost  ? STAT_NAMES[nature.boost]  : '—';
+  const reduceLabel = nature.reduce ? STAT_NAMES[nature.reduce] : '—';
+  const natureHtml = `<p class="nature-label"><span class="nature-name">${natureName}</span><span class="nature-detail">+${boostLabel} / -${reduceLabel}</span></p>`;
 
   container.innerHTML =
     `<p class="stat-label">${creature.name}　${typeTagsHtml}</p>` +
     imgHtml +
+    natureHtml +
     STAT_IDS.map(id => {
       const isBoost  = nature.boost  === id;
       const isReduce = nature.reduce === id;
