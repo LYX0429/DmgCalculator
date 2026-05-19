@@ -224,6 +224,40 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
   align-self: center;
   flex-shrink: 0;
 }
+
+/* 威力计算过程 */
+.power-breakdown {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+}
+.pw-chip {
+  padding: 0.2rem 0.55rem;
+  background: #0f3460;
+  border: 1px solid #1a4a7a;
+  border-radius: 6px;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+.pw-chip b { color: #e0e0e0; }
+.pw-chip--base   { border-color: #e0e0e0; color: #9ca3af; }
+.pw-chip--base b { color: #e0e0e0; }
+.pw-chip--bonus  { border-color: #a8d8ff; color: #9ca3af; }
+.pw-chip--bonus b { color: #a8d8ff; }
+.pw-chip--buff   { border-color: #4ade80; color: #9ca3af; }
+.pw-chip--buff b { color: #4ade80; }
+.pw-chip--stab   { border-color: #f7c948; color: #9ca3af; }
+.pw-chip--stab b { color: #f7c948; }
+.pw-chip--super  { border-color: #f87171; color: #9ca3af; }
+.pw-chip--super b { color: #f87171; }
+.pw-chip--resist { border-color: #60a5fa; color: #9ca3af; }
+.pw-chip--resist b { color: #60a5fa; }
+.pw-sep   { color: #4a6a9a; font-size: 0.8rem; }
+.pw-paren { color: #2a3a5a; font-size: 1.4rem; line-height: 1; }
+.pw-result { font-size: 0.9rem; color: #a8d8ff; }
+.pw-result b { font-size: 1rem; color: #fff; }
 .effect-toggle {
   padding: 2px 8px;
   border: 1px solid #1a4a7a;

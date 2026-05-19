@@ -322,6 +322,48 @@ function onEffectToggle(btn) {
   onCalculate();
 }
 
+function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, stabMult, typeMult) {
+  const effectBonus  = activeEffectDetails.reduce((s, e) => s + e.bonus, 0);
+  const rawPower     = move.power + extraPower + effectBonus;
+  const displayPower = Math.round(rawPower * (1 + atkBuff) * stabMult * typeMult);
+
+  const powerItems = [];
+  const multItems  = [];
+
+  powerItems.push(`<span class="pw-chip pw-chip--base">基础威力 <b>${move.power}</b></span>`);
+
+  activeEffectDetails.forEach(e => {
+    const sign = e.bonus >= 0 ? '+' : '';
+    powerItems.push(`<span class="pw-chip pw-chip--bonus">${e.name} <b>${sign}${e.bonus}</b></span>`);
+  });
+
+  if (extraPower !== 0)
+    powerItems.push(`<span class="pw-chip pw-chip--bonus">额外加成 <b>+${extraPower}</b></span>`);
+
+  if (atkBuff !== 0) {
+    const sign = atkBuff > 0 ? '+' : '';
+    multItems.push(`<span class="pw-chip pw-chip--buff">攻击${sign}${Math.round(atkBuff * 100)}% <b>×${(1 + atkBuff).toFixed(2)}</b></span>`);
+  }
+  if (stabMult > 1)
+    multItems.push(`<span class="pw-chip pw-chip--stab">本系加成 <b>×${stabMult}</b></span>`);
+  if (typeMult > 1)
+    multItems.push(`<span class="pw-chip pw-chip--super">属性克制 <b>×${typeMult}</b></span>`);
+  if (typeMult < 1)
+    multItems.push(`<span class="pw-chip pw-chip--resist">属性抵抗 <b>×${typeMult}</b></span>`);
+
+  const powerGroup = '<span class="pw-paren">(</span>'
+    + powerItems.join('<span class="pw-sep">+</span>')
+    + '<span class="pw-paren">)</span>';
+  const multGroup = multItems.length
+    ? '<span class="pw-sep">×</span>' + multItems.join('<span class="pw-sep">×</span>')
+    : '';
+  const chain  = powerGroup + multGroup;
+  const result = `<span class="pw-result">= 显示威力 <b>${displayPower}</b></span>`;
+
+  document.getElementById('power-panel').hidden = false;
+  document.getElementById('power-breakdown').innerHTML = chain + result;
+}
+
 function onCalculate() {
   const creature   = CREATURES[document.getElementById('attacker-select').value];
   const attacker   = { ...creature, ivs: attackerIVs, nature: attackerNature };
@@ -343,10 +385,13 @@ function onCalculate() {
 
   // 累加激活的特效威力加成（需要 atkStats/defStats 就绪后计算）
   const effectCtx = { basePower: move.power, atkStats, defStats };
-  const effectBonus = getMoveEffects(move.name)
+  const activeEffectDetails = getMoveEffects(move.name)
     .filter(e => activeMoveEffects[e.name])
-    .reduce((sum, e) => sum + e.apply(effectCtx), 0);
-  const totalExtra = extraPower + effectBonus;
+    .map(e => ({ name: e.name, bonus: Math.round(e.apply(effectCtx)) }));
+  const effectBonus = activeEffectDetails.reduce((s, e) => s + e.bonus, 0);
+  const totalExtra  = extraPower + effectBonus;
+  renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, stabMult, typeMult);
+
   const currentDmg = calcDamage(atkStat, defStats[defStatId], move.power, totalExtra, atkBuff, defBuff, typeMult, stabMult);
   const currentPct = defStats.hp > 0 ? (currentDmg / defStats.hp * 100).toFixed(1) : '∞';
 
