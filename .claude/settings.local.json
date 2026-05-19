@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "WebFetch(domain:wiki.biligame.com)",
-      "PowerShell(Rename-Item -Path \"D:\\\\DmgCalculator\\\\assets\\\\creatures\\\\di-mo.png\" -NewName \"��Ī.png\")"
+      "PowerShell(Rename-Item -Path \"D:\\\\DmgCalculator\\\\assets\\\\creatures\\\\di-mo.png\" -NewName \"��Ī.png\")",
+      "Bash(grep -oP 'NO\\\\.\\\\d{3}.*?\\(?=NO\\\\.\\\\d{3}|$\\)' \"D:\\\\DmgCalculator\\\\https___wiki.biligame.com_rocom__E7_B2_BE_E7_81_B5_E5_9B_BE_E9_89_B4.htm\")",
+      "Bash(python3 -)",
+      "Bash(python3 -c ' *)"
     ]
   }
 }
