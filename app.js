@@ -47,11 +47,22 @@ let defenderIVs    = {};
 // 技能特效 toggle 状态：{ effectName: boolean }
 let activeMoveEffects = {};
 
+// 特性 toggle 状态（切换我方精灵时重置）
+let abilityActive = false;
+
+// 各精灵特性效果定义
+// apply(ctx) → 返回覆盖计算参数的对象，ctx 包含 { atkBuff, defBuff, typeMult, stabMult, atkStats, defStats, move }
+// 可覆盖任意字段：atkBuff / defBuff / typeMult / stabMult / atkStat / defStat
+const CREATURE_ABILITY_EFFECTS = {
+  "音速犬": [{ name: "专注力", apply: ({ atkBuff }) => ({ atkBuff: atkBuff + 1.0 }) }],
+};
+
 // 各技能的特效 toggle 定义
 // apply({ basePower, atkStats, defStats }) → 额外威力加值
 const MOVE_EFFECTS = {
   "电弧": [{ name: "迸发",   apply: () => 40 }],
   "偷袭": [{ name: "应对状态", apply: ({ basePower }) => basePower * 2 }],
+  "当头棒喝": [{ name: "当头棒喝", apply: () => 100 }],
   "闪击": [{ name: "速度差", auto: true, apply: ({ basePower, atkStats, defStats }) => {
     const diff = atkStats.spd - defStats.spd;
     const total = diff < 0    ? 60
@@ -221,6 +232,7 @@ function onPresetClick(e) {
 
 function onAttackerChange() {
   const creature = CREATURES[document.getElementById('attacker-select').value];
+  abilityActive = false;
   loadCreatureDefaults('attacker', creature);
   renderStatGrid('attacker', creature);
   renderPresetButtons('attacker', creature);
@@ -294,10 +306,16 @@ function onMoveChange() {
   const noteHtml = move.note ? `<span class="move-note">${move.note}</span>` : '';
   const catLabel  = move.category === 'physical' ? '物理' : '魔法';
   const manualEffects = effects.filter(e => !e.auto);
-  const togglesHtml = manualEffects.length
-    ? `<div class="move-effect-toggles">${manualEffects.map(e =>
-        `<button class="effect-toggle" data-effect="${e.name}">${e.name}</button>`
-      ).join('')}</div>`
+  const creature = CREATURES[document.getElementById('attacker-select').value];
+  const abilityEffects = CREATURE_ABILITY_EFFECTS[creature.name];
+  const abilityBtnHtml = abilityEffects?.length
+    ? `<button class="effect-toggle effect-toggle--ability${abilityActive ? ' active' : ''}" id="ability-toggle">${creature.ability?.name ?? '特性'}</button>`
+    : '';
+  const allToggleBtns = manualEffects.map(e =>
+    `<button class="effect-toggle" data-effect="${e.name}">${e.name}</button>`
+  ).join('') + abilityBtnHtml;
+  const togglesHtml = allToggleBtns
+    ? `<div class="move-effect-toggles">${allToggleBtns}</div>`
     : '';
 
   document.getElementById('move-info-bar').innerHTML = `
@@ -316,6 +334,12 @@ function onMoveChange() {
 }
 
 function onEffectToggle(btn) {
+  if (btn.id === 'ability-toggle') {
+    abilityActive = !abilityActive;
+    btn.classList.toggle('active', abilityActive);
+    onCalculate();
+    return;
+  }
   const name = btn.dataset.effect;
   activeMoveEffects[name] = !activeMoveEffects[name];
   btn.classList.toggle('active', activeMoveEffects[name]);
@@ -375,28 +399,40 @@ function onCalculate() {
   if (!move) return;
 
   const atkStats  = calcAllStats(attacker);
-  const atkStat   = move.category === 'physical' ? atkStats.atk : atkStats.spatk;
   const defStatId = move.category === 'physical' ? 'def' : 'spdef';
-  const typeMult  = calcTypeMultiplier(move.type, enemy.types);
-  const stabMult  = calcStabMultiplier(move.type, attacker.types);
 
   // 当前敌方配置结算
-  const defStats   = calcAllStats({ ...enemy, ivs: defenderIVs, nature: defenderNature });
+  const defStats = calcAllStats({ ...enemy, ivs: defenderIVs, nature: defenderNature });
 
-  // 累加激活的特效威力加成（需要 atkStats/defStats 就绪后计算）
+  // 应用特性效果（若激活）
+  let abilityCtx = {
+    atkBuff, defBuff,
+    typeMult: calcTypeMultiplier(move.type, enemy.types),
+    stabMult: calcStabMultiplier(move.type, attacker.types),
+    atkStat:  move.category === 'physical' ? atkStats.atk : atkStats.spatk,
+    defStat:  defStats[defStatId],
+    atkStats, defStats, move,
+  };
+  if (abilityActive) {
+    const abilityEffects = CREATURE_ABILITY_EFFECTS[creature.name] || [];
+    abilityEffects.forEach(e => { abilityCtx = { ...abilityCtx, ...e.apply(abilityCtx) }; });
+  }
+  const { atkBuff: calcAtkBuff, defBuff: calcDefBuff, typeMult, stabMult, atkStat } = abilityCtx;
+
+  // 累加激活的特效威力加成
   const effectCtx = { basePower: move.power, atkStats, defStats };
   const activeEffectDetails = getMoveEffects(move.name)
     .filter(e => activeMoveEffects[e.name])
     .map(e => ({ name: e.name, bonus: Math.round(e.apply(effectCtx)) }));
   const effectBonus = activeEffectDetails.reduce((s, e) => s + e.bonus, 0);
   const totalExtra  = extraPower + effectBonus;
-  renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, stabMult, typeMult);
+  renderPowerBreakdown(move, extraPower, activeEffectDetails, calcAtkBuff, stabMult, typeMult);
 
-  const currentDmg = calcDamage(atkStat, defStats[defStatId], move.power, totalExtra, atkBuff, defBuff, typeMult, stabMult);
+  const currentDmg = calcDamage(atkStat, defStats[defStatId], move.power, totalExtra, calcAtkBuff, calcDefBuff, typeMult, stabMult);
   const currentPct = defStats.hp > 0 ? (currentDmg / defStats.hp * 100).toFixed(1) : '∞';
 
   // 9种假设区间
-  const scenarios = runCalculation({ attacker, enemy, move, extraPower: totalExtra, atkBuff, defBuff });
+  const scenarios = runCalculation({ attacker, enemy, move, extraPower: totalExtra, atkBuff: calcAtkBuff, defBuff: calcDefBuff });
 
   renderResultBars({ dmg: currentDmg, pct: currentPct }, scenarios);
   document.getElementById('result-panel').hidden = false;
