@@ -11,6 +11,7 @@ const STAT_ICONS = {
 };
 
 const TYPE_ICONS = {
+  '普通': 'assets/icons/type-putong.png',
   '光': 'assets/icons/type-guang.png',
   '火': 'assets/icons/type-huo.png',
   '冰': 'assets/icons/type-bing.png',
@@ -47,6 +48,9 @@ let defenderIVs    = {};
 // 技能特效 toggle 状态：{ effectName: boolean }
 let activeMoveEffects = {};
 
+// 技能步进器状态：{ effectName: number }
+let moveStepperValues = {};
+
 // 特性 toggle 状态（切换我方精灵时重置）
 let abilityActive = false;
 
@@ -81,6 +85,8 @@ const MOVE_EFFECTS = {
   "偷袭": [{ name: "应对状态", apply: ({ basePower }) => basePower * 2 }],
   "当头棒喝": [{ name: "当头棒喝", apply: () => 100 }],
   "筛管奔流": [{ name: "生命>80%", apply: () => 75 }],
+  "魔能爆": [{ type: "stepper", name: "当前能量", min: 0, max: 10, defaultValue: 10,
+    apply: (val) => [40, 70, 90, 110, 135, 155, 165, 180, 190, 200, 210][val] }],
   "闪击": [{ name: "速度差", auto: true, apply: ({ basePower, atkStats, defStats }) => {
     const diff = atkStats.spd - defStats.spd;
     const total = diff < 0    ? 60
@@ -340,23 +346,38 @@ function onMoveChange() {
   // 切换技能时重置特效状态（auto 效果始终激活）
   const effects = getMoveEffects(move.name);
   activeMoveEffects = {};
-  effects.forEach(e => { activeMoveEffects[e.name] = !!e.auto; });
+  moveStepperValues = {};
+  effects.forEach(e => {
+    if (e.type === 'stepper') moveStepperValues[e.name] = e.defaultValue;
+    else activeMoveEffects[e.name] = !!e.auto;
+  });
 
   const iconHtml = move.icon ? `<img class="move-info-icon" src="${move.icon}" alt="">` : '';
   const noteHtml = move.note ? `<span class="move-note">${move.note}</span>` : '';
   const catLabel  = move.category === 'physical' ? '物理' : '魔法';
-  const manualEffects = effects.filter(e => !e.auto);
+  const manualEffects  = effects.filter(e => !e.auto && e.type !== 'stepper');
+  const stepperEffects = effects.filter(e => e.type === 'stepper');
   const creature = CREATURES[document.getElementById('attacker-select').value];
   const abilityEffects = CREATURE_ABILITY_EFFECTS[getActiveCreature('attacker').name];
   const hasManualAbility = abilityEffects?.some(e => !e.auto);
   const abilityBtnHtml = hasManualAbility
     ? `<button class="effect-toggle effect-toggle--ability${abilityActive ? ' active' : ''}" id="ability-toggle">${getActiveCreature('attacker').ability?.name ?? '特性'}</button>`
     : '';
+  const stepperHtml = stepperEffects.map(e => {
+    const val = moveStepperValues[e.name] ?? e.defaultValue;
+    return `<div class="energy-stepper">
+      <span class="stepper-label">${e.name}</span>
+      <button class="stepper-btn" data-stepper="${e.name}" data-dir="-1">−</button>
+      <span class="stepper-val" id="stepper-val-${e.name}">${val}</span>
+      <button class="stepper-btn" data-stepper="${e.name}" data-dir="1">+</button>
+    </div>`;
+  }).join('');
   const allToggleBtns = manualEffects.map(e =>
     `<button class="effect-toggle" data-effect="${e.name}">${e.name}</button>`
   ).join('') + abilityBtnHtml;
-  const togglesHtml = allToggleBtns
-    ? `<div class="move-effect-toggles">${allToggleBtns}</div>`
+  const togglesContent = stepperHtml + allToggleBtns;
+  const togglesHtml = togglesContent
+    ? `<div class="move-effect-toggles">${togglesContent}</div>`
     : '';
 
   document.getElementById('move-info-bar').innerHTML = `
@@ -387,6 +408,18 @@ function onEffectToggle(btn) {
   onCalculate();
 }
 
+function onStepperClick(btn) {
+  const name = btn.dataset.stepper;
+  const move = MOVES.find(m => m.id === document.getElementById('move-select').value);
+  const effect = getMoveEffects(move?.name || '').find(e => e.name === name);
+  if (!effect) return;
+  const current = moveStepperValues[name] ?? effect.defaultValue;
+  moveStepperValues[name] = Math.max(effect.min, Math.min(effect.max, current + +btn.dataset.dir));
+  const valEl = document.getElementById(`stepper-val-${name}`);
+  if (valEl) valEl.textContent = moveStepperValues[name];
+  onCalculate();
+}
+
 function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, stabMult, typeMult, abilityMult = 1) {
   const effectBonus  = activeEffectDetails.reduce((s, e) => s + e.bonus, 0);
   const rawPower     = move.power + extraPower + effectBonus;
@@ -395,9 +428,17 @@ function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, st
   const powerItems = [];
   const multItems  = [];
 
-  powerItems.push(`<span class="pw-chip pw-chip--base">基础威力 <b>${move.power}</b></span>`);
+  const stepperDetail = activeEffectDetails.find(e => e.stepperVal !== undefined);
+  if (stepperDetail && move.power === 0) {
+    powerItems.push(`<span class="pw-chip pw-chip--bonus">${stepperDetail.name} ${stepperDetail.stepperVal} <b>${stepperDetail.bonus}</b></span>`);
+  } else {
+    powerItems.push(`<span class="pw-chip pw-chip--base">基础威力 <b>${move.power}</b></span>`);
+    if (stepperDetail) {
+      powerItems.push(`<span class="pw-chip pw-chip--bonus">${stepperDetail.name}${stepperDetail.stepperVal} <b>+${stepperDetail.bonus}</b></span>`);
+    }
+  }
 
-  activeEffectDetails.forEach(e => {
+  activeEffectDetails.filter(e => e.stepperVal === undefined).forEach(e => {
     const sign = e.bonus >= 0 ? '+' : '';
     powerItems.push(`<span class="pw-chip pw-chip--bonus">${e.name} <b>${sign}${e.bonus}</b></span>`);
   });
@@ -468,8 +509,14 @@ function onCalculate() {
   // 累加激活的特效威力加成
   const effectCtx = { basePower: move.power, atkStats, defStats };
   const activeEffectDetails = getMoveEffects(move.name)
-    .filter(e => activeMoveEffects[e.name])
-    .map(e => ({ name: e.name, bonus: Math.round(e.apply(effectCtx)) }));
+    .filter(e => e.type === 'stepper' || activeMoveEffects[e.name])
+    .map(e => {
+      if (e.type === 'stepper') {
+        const val = moveStepperValues[e.name] ?? e.defaultValue;
+        return { name: e.name, bonus: e.apply(val), stepperVal: val };
+      }
+      return { name: e.name, bonus: Math.round(e.apply(effectCtx)) };
+    });
   const effectBonus = activeEffectDetails.reduce((s, e) => s + e.bonus, 0);
   const totalExtra  = extraPower + effectBonus;
   renderPowerBreakdown(move, extraPower, activeEffectDetails, calcAtkBuff, stabMult, typeMult, abilityMult);
@@ -535,10 +582,12 @@ document.addEventListener('DOMContentLoaded', () => {
   ['extra-power', 'atk-buff', 'def-buff'].forEach(id =>
     document.getElementById(id).addEventListener('input', onCalculate));
 
-  // 特效 toggle 事件委托（按钮由 onMoveChange 动态注入）
+  // 特效 toggle / stepper 事件委托（按钮由 onMoveChange 动态注入）
   document.getElementById('move-info-bar').addEventListener('click', e => {
-    const btn = e.target.closest('.effect-toggle');
-    if (btn) onEffectToggle(btn);
+    const toggleBtn = e.target.closest('.effect-toggle');
+    if (toggleBtn) { onEffectToggle(toggleBtn); return; }
+    const stepperBtn = e.target.closest('.stepper-btn');
+    if (stepperBtn) onStepperClick(stepperBtn);
   });
 
   onAttackerChange();

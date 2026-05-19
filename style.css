@@ -282,6 +282,37 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
 .pw-paren { color: #2a3a5a; font-size: 1.4rem; line-height: 1; }
 .pw-result { font-size: 0.9rem; color: #a8d8ff; }
 .pw-result b { font-size: 1rem; color: #fff; }
+.energy-stepper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.stepper-label {
+  font-size: 0.73rem;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+.stepper-btn {
+  width: 22px; height: 22px;
+  border: 1px solid #1a4a7a;
+  border-radius: 3px;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  background: #0f3460;
+  color: #a8d8ff;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+.stepper-btn:hover { background: #1a4a7a; }
+.stepper-val {
+  min-width: 1.4rem;
+  text-align: center;
+  font-weight: 700;
+  color: #e0e0e0;
+  font-size: 0.9rem;
+}
+
 .effect-toggle {
   padding: 2px 8px;
   border: 1px solid #1a4a7a;
