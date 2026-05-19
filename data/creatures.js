@@ -123,7 +123,7 @@ const CREATURES = [
     image: "assets/creatures/岚鸟（本来的样子）.png",
     baseStats: { hp: 90, atk: 128, spatk: 55, def: 108, spdef: 74, spd: 115 },
     ability: { name: "顺风", desc: "若先于敌方攻击，本次技能威力+50%。", icon: "assets/icons/abilities/顺风.png" },
-    ivs: { hp: 60, def: 60, spd: 60 },
+    ivs: { hp: 60, atk: 60, spd: 60 },
     nature: { name: "开朗", boost: "spd", reduce: "spatk" },
     commonMoves: ["闪击", "冰爪", "撕咬", "水刃", "先发制人"],
     learnableMoves: [
@@ -145,7 +145,7 @@ const CREATURES = [
     image: "assets/creatures/岚鸟（春天的样子）.png",
     baseStats: { hp: 93, atk: 128, spatk: 44, def: 97, spdef: 81, spd: 115 },
     ability: { name: "顺风", desc: "若先于敌方攻击，本次技能威力+50%。", icon: "assets/icons/abilities/顺风.png" },
-    ivs: { hp: 60, def: 60, spd: 60 },
+    ivs: { hp: 60, atk: 60, spd: 60 },
     nature: { name: "开朗", boost: "spd", reduce: "spatk" },
     commonMoves: ["闪击", "筛管奔流", "撕咬", "水刃", "先发制人"],
     learnableMoves: [
