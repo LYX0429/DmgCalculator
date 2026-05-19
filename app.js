@@ -101,6 +101,7 @@ function onNatureClick(e) {
 
   const creature = CREATURES[document.getElementById(side === 'attacker' ? 'attacker-select' : 'defender-select').value];
   renderStatGrid(side, creature);
+  if (side === 'attacker') renderPresetButtons(creature);
   onCalculate();
 }
 
@@ -117,6 +118,52 @@ function onIVToggle(e) {
 
   const creature = CREATURES[document.getElementById(side === 'attacker' ? 'attacker-select' : 'defender-select').value];
   renderStatGrid(side, creature);
+  if (side === 'attacker') renderPresetButtons(creature);
+  onCalculate();
+}
+
+const PRESETS = [
+  { label: '纯肉',     boost: 'hp',    ivs: ['hp', 'def', 'spdef'] },
+  { label: '物攻',     boost: 'atk',   ivs: ['hp', 'def', 'atk']   },
+  { label: '魔攻',     boost: 'spatk', ivs: ['hp', 'def', 'spatk'] },
+  { label: '高速物攻', boost: 'spd',   ivs: ['hp', 'atk', 'spd']   },
+  { label: '高速魔攻', boost: 'spd',   ivs: ['hp', 'spatk', 'spd'] },
+  { label: '高速状态', boost: 'spd',   ivs: ['hp', 'def', 'spd']   },
+];
+
+function getPresetReduce(creature, boost, ivStatIds) {
+  if (boost === 'atk')   return 'spatk';
+  if (boost === 'spatk') return 'atk';
+  const a = creature.baseStats.atk, s = creature.baseStats.spatk;
+  if (a < s) return 'atk';
+  if (s < a) return 'spatk';
+  // equal base: reduce whichever is NOT getting IVs; if tied, reduce atk
+  const atkHasIv = ivStatIds.includes('atk'), spatkHasIv = ivStatIds.includes('spatk');
+  if (!atkHasIv && spatkHasIv)  return 'atk';
+  if (!spatkHasIv && atkHasIv)  return 'spatk';
+  return 'atk';
+}
+
+function renderPresetButtons(creature) {
+  const container = document.getElementById('attacker-presets');
+  container.innerHTML = PRESETS.map((p, i) => {
+    const reduce = getPresetReduce(creature, p.boost, p.ivs);
+    const isActive = attackerNature.boost === p.boost &&
+                     attackerNature.reduce === reduce &&
+                     p.ivs.every(id => !!attackerIVs[id]) &&
+                     Object.keys(attackerIVs).length === p.ivs.length;
+    return `<button class="preset-btn ${isActive ? 'active' : ''}" data-preset="${i}">${p.label}</button>`;
+  }).join('');
+  container.querySelectorAll('.preset-btn').forEach(btn => btn.addEventListener('click', onPresetClick));
+}
+
+function onPresetClick(e) {
+  const creature = CREATURES[document.getElementById('attacker-select').value];
+  const p = PRESETS[+e.currentTarget.dataset.preset];
+  attackerNature = { boost: p.boost, reduce: getPresetReduce(creature, p.boost, p.ivs) };
+  attackerIVs = Object.fromEntries(p.ivs.map(id => [id, 60]));
+  renderStatGrid('attacker', creature);
+  renderPresetButtons(creature);
   onCalculate();
 }
 
@@ -124,6 +171,7 @@ function onAttackerChange() {
   const creature = CREATURES[document.getElementById('attacker-select').value];
   loadCreatureDefaults('attacker', creature);
   renderStatGrid('attacker', creature);
+  renderPresetButtons(creature);
   populateMoves(creature);
   onCalculate();
 }

@@ -137,6 +137,17 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
 .iv-btn.active { background: #f7c948; border-color: #f7c948; color: #1a1a2e; font-weight: 700; }
 .iv-btn:not(.active):hover { background: #1a4a7a; color: #9ca3af; }
 
+/* 预设配方按钮栏 */
+.attacker-presets { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.6rem; }
+.preset-btn {
+  padding: 0.25rem 0.6rem;
+  background: #0f3460; border: 1px solid #1a4a7a; border-radius: 4px;
+  cursor: pointer; color: #9ca3af; font-size: 0.78rem;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.preset-btn:hover { background: #1a4a7a; color: #e0e0e0; }
+.preset-btn.active { border-color: #a8d8ff; color: #a8d8ff; background: #0d2a50; }
+
 /* 常用技能快捷栏 */
 .common-moves-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.4rem; }
 .common-move-btn {
