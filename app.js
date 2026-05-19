@@ -18,6 +18,7 @@ const TYPE_ICONS = {
   '毒': 'assets/icons/type-du.png',
   '龙': 'assets/icons/type-long.png',
   '幽': 'assets/icons/type-you.png',
+  '草': 'assets/icons/type-cao.png',
 };
 
 const TYPE_COLORS = {
