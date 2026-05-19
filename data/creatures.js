@@ -144,8 +144,8 @@ const CREATURES = [
     image: "assets/creatures/尖嘴狐仙.png",
     baseStats: { hp: 115, atk: 87, spatk: 87, def: 84, spdef: 107, spd: 100 },
     ability: { name: "灵魂灼伤", desc: "冰系技能使敌方获得4层灼烧，火系技能使敌方获得2层冻结。", icon: "assets/icons/abilities/灵魂灼伤.png" },
-    ivs: {},
-    nature: { name: "固执", boost: "atk", reduce: "spatk" },
+    ivs: { hp: 60, def: 60, spdef: 60 },
+    nature: { name: "沉默", boost: "hp", reduce: "atk" },
     commonMoves: [],
     learnableMoves: [
       "冷风", "霜降", "防御", "炎枪", "焚烧烙印", "火焰切割", "充分燃烧", "火焰护盾",
@@ -198,8 +198,8 @@ const CREATURES = [
     image: "assets/creatures/龙鱼.png",
     baseStats: { hp: 89, atk: 103, spatk: 109, def: 100, spdef: 104, spd: 135 },
     ability: { name: "洄游", desc: "每次进入蓄力状态，获得全技能能耗永久-2。", icon: "assets/icons/abilities/洄游.png" },
-    ivs: {},
-    nature: { name: "固执", boost: "atk", reduce: "spatk" },
+    ivs: { hp: 60, atk: 60, spd: 60 },
+    nature: { name: "开朗", boost: "spd", reduce: "spatk" },
     commonMoves: [],
     learnableMoves: [
       "魔法增效", "潮涌", "角击", "架势", "先发制人", "打湿", "水幕冲击", "龙吟",
