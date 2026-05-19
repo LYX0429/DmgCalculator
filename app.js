@@ -156,10 +156,15 @@ function populateMoves(creature) {
     });
   });
 
-  // 下拉框按属性分组
+  // 下拉框按属性分组，只显示该精灵会的攻击技能（physical / special）
+  const learnableSet = new Set(creature.learnableMoves || []);
   sel.innerHTML = '';
   for (const type of TYPE_ORDER) {
-    const group = MOVES.filter(m => m.type === type);
+    const group = MOVES.filter(m =>
+      m.type === type &&
+      (m.category === 'physical' || m.category === 'special') &&
+      learnableSet.has(m.id)
+    );
     if (!group.length) continue;
     const grp = document.createElement('optgroup');
     grp.label = type;
