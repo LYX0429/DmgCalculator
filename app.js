@@ -78,6 +78,7 @@ const MOVE_EFFECTS = {
   "电弧": [{ name: "迸发",   apply: () => 40 }],
   "偷袭": [{ name: "应对状态", apply: ({ basePower }) => basePower * 2 }],
   "当头棒喝": [{ name: "当头棒喝", apply: () => 100 }],
+  "筛管奔流": [{ name: "生命>80%", apply: () => 75 }],
   "闪击": [{ name: "速度差", auto: true, apply: ({ basePower, atkStats, defStats }) => {
     const diff = atkStats.spd - defStats.spd;
     const total = diff < 0    ? 60

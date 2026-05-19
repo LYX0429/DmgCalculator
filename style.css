@@ -222,10 +222,11 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
 .common-moves-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.4rem; }
 .common-move-btn {
   display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
-  padding: 0.4rem 0.5rem; min-width: 56px;
+  padding: 0.4rem 0.5rem; width: 66px;
   background: #0f3460; border: 1px solid #1a4a7a; border-radius: 6px;
   cursor: pointer; color: #9ca3af; font-size: 0.75rem;
   transition: background 0.15s, border-color 0.15s, color 0.15s;
+  overflow: hidden;
 }
 .common-move-btn img { width: 38px; height: 38px; border-radius: 4px; }
 .common-move-btn:hover { background: #1a4a7a; color: #e0e0e0; }
