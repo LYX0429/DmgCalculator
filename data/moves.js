@@ -105,6 +105,9 @@
   { id: "氧输送",     name: "氧输送",     power: 0, cost: 2,   category: "status",   type: "草",   icon: "assets/icons/moves/氧输送.png", note: "自己回复4能量，并获得魔攻+70%" },
   { id: "蜡质膜",     name: "蜡质膜",     power: 0, cost: 2,   category: "defense",  type: "草",   icon: "assets/icons/moves/蜡质膜.png", note: "减伤80%，应对攻击：回复3能量" },
   { id: "徒长",       name: "徒长",       power: 0, cost: 2,   category: "status",   type: "草",   icon: "assets/icons/moves/徒长.png",   note: "自己回复10能量" },
+  { id: "荆棘爪",     name: "荆棘爪",     power: 80, cost: 2,  category: "physical", type: "草",   icon: "assets/icons/moves/荆棘爪.png" },
+  { id: "移花接木",   name: "移花接木",   power: 0, cost: 2,   category: "status",   type: "草",   icon: "assets/icons/moves/移花接木.png", note: "自己回复15%生命，随后脱离" },
+  { id: "筛管奔流",   name: "筛管奔流",   power: 80, cost: 3,  category: "physical", type: "草",   icon: "assets/icons/moves/筛管奔流.png", note: "自己生命大于80%时，本次技能威力+75" },
   // 电
   { id: "超导",       name: "超导",       power: 95, cost: 3,  category: "special",  type: "电",   icon: "assets/icons/moves/超导.png",   note: "迸发：本技能能耗-1" },
   { id: "球状闪电",   name: "球状闪电",   power: 60, cost: 1,  category: "physical", type: "电",   icon: "assets/icons/moves/球状闪电.png" },
