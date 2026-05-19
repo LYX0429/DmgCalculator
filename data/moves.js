@@ -38,6 +38,8 @@ const MOVES = [
   { id: "操控",       name: "操控",       power: 0,   category: "status",   type: "普通", icon: "assets/icons/moves/操控.png",   note: "敌方本回合使用的技能能耗+7，持续3回合" },
   { id: "见招拆招",   name: "见招拆招",   power: 65,  category: "physical", type: "普通", icon: "assets/icons/moves/见招拆招.png", note: "若上回合使用状态技能，本次技能威力+55" },
   { id: "鼓劲",       name: "鼓劲",       power: 0,   category: "status",   type: "普通", icon: "assets/icons/moves/鼓劲.png",   note: "自己获得魔防+170%" },
+  { id: "咆哮",       name: "咆哮",       power: 0,   category: "status",   type: "普通", icon: "assets/icons/moves/咆哮.png",   note: "敌方获得物攻-130%" },
+  { id: "追打",       name: "追打",       power: 75,  category: "special",  type: "普通", icon: "assets/icons/moves/追打.png",   note: "1连击，应对状态：本技能变为3连击" },
   // 光
   { id: "闪光",       name: "闪光",       power: 60,  category: "special",  type: "光",   icon: "assets/icons/moves/闪光.png" },
   { id: "光球",       name: "光球",       power: 80,  category: "special",  type: "光",   icon: "assets/icons/moves/光球.png" },
@@ -93,6 +95,7 @@ const MOVES = [
   { id: "水刃",       name: "水刃",       power: 115, category: "physical", type: "水",   icon: "assets/icons/moves/水刃.png",  note: "应对状态：能耗永久-4" },
   { id: "水幕冲击",   name: "水幕冲击",   power: 100, category: "physical", type: "水",   icon: "assets/icons/moves/水幕冲击.png" },
   { id: "水花四溅",   name: "水花四溅",   power: 20,  category: "special",  type: "水",   icon: "assets/icons/moves/水花四溅.png", note: "4连击" },
+  { id: "打湿",       name: "打湿",       power: 0,   category: "status",   type: "水",   icon: "assets/icons/moves/打湿.png",   note: "自己获得1层湿润印记" },
   // 草
   { id: "棘突",       name: "棘突",       power: 100, category: "special",  type: "草",   icon: "assets/icons/moves/棘突.png" },
   { id: "花香",       name: "花香",       power: 60,  category: "special",  type: "草",   icon: "assets/icons/moves/花香.png" },
@@ -150,6 +153,9 @@ const MOVES = [
   { id: "架势",       name: "架势",       power: 0,   category: "status",   type: "龙",   icon: "assets/icons/moves/架势.png",   note: "自己回复20%生命，下次技能无需蓄力" },
   { id: "龙威",       name: "龙威",       power: 0,   category: "status",   type: "龙",   icon: "assets/icons/moves/龙威.png",   note: "自己获得1层龙噬印记" },
   { id: "龙炮",       name: "龙炮",       power: 100, category: "physical", type: "龙",   icon: "assets/icons/moves/龙炮.png" },
+  { id: "龙吟",       name: "龙吟",       power: 0,   category: "status",   type: "龙",   icon: "assets/icons/moves/龙吟.png",   note: "蓄力，自己获得双攻+100%和速度+60" },
+  { id: "怨力打击",   name: "怨力打击",   power: 1,   category: "special",  type: "龙",   icon: "assets/icons/moves/怨力打击.png", note: "蓄力，若蓄力期间受到攻击，本技能威力变为敌方技能威力的3倍" },
+  { id: "龙息环爆",   name: "龙息环爆",   power: 55,  category: "special",  type: "龙",   icon: "assets/icons/moves/龙息环爆.png", note: "应对状态：下次技能无需蓄力" },
   // 恶
   { id: "恶能量",     name: "恶能量",     power: 60,  category: "physical", type: "恶",   icon: "assets/icons/moves/恶能量.png" },
   { id: "撕咬",       name: "撕咬",       power: 30,  category: "physical", type: "恶",   icon: "assets/icons/moves/撕咬.png",   note: "3连击，若自己生命低于50%，本次技能连击数+2" },
@@ -178,6 +184,7 @@ const MOVES = [
   { id: "龙卷风",     name: "龙卷风",     power: 70,  category: "physical", type: "翼",   icon: "assets/icons/moves/龙卷风.png", note: "迅捷，应对状态：威力×1.5" },
   { id: "疾风连袭",   name: "疾风连袭",   power: 0,   category: "status",   type: "翼",   icon: "assets/icons/moves/疾风连袭.png", note: "释放自己使用过的迅捷技能，能耗逐渐增加" },
   { id: "闪击",       name: "闪击",       power: 60,  category: "physical", type: "翼",   icon: "assets/icons/moves/闪击.png",  note: "速度比敌方越高威力越高" },
+  { id: "乘风",       name: "乘风",       power: 0,   category: "status",   type: "翼",   icon: "assets/icons/moves/乘风.png",   note: "自己获得速度+120" },
   // 萌
   { id: "魅惑",       name: "魅惑",       power: 60,  category: "special",  type: "萌",   icon: "assets/icons/moves/魅惑.png" },
   { id: "飞吻",       name: "飞吻",       power: 80,  category: "special",  type: "萌",   icon: "assets/icons/moves/飞吻.png" },
