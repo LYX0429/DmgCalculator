@@ -50,6 +50,21 @@ let activeMoveEffects = {};
 // 特性 toggle 状态（切换我方精灵时重置）
 let abilityActive = false;
 
+// 当前显示的形态索引（CREATURES 数组下标，可被箭头切换）
+let attackerFormIdx = 0;
+let defenderFormIdx = 0;
+
+function getActiveCreature(side) {
+  return CREATURES[side === 'attacker' ? attackerFormIdx : defenderFormIdx];
+}
+
+// 返回同编号的 base+regional 形态列表 [{c, i}, ...]
+function getFormGroup(creature) {
+  return CREATURES
+    .map((c, i) => ({ c, i }))
+    .filter(({ c }) => c.no === creature.no && (c.form === 'base' || c.form === 'regional'));
+}
+
 // 各精灵特性效果定义
 // apply(ctx) → 返回覆盖计算参数的对象，ctx 包含 { atkBuff, defBuff, typeMult, stabMult, atkStats, defStats, move }
 // 可覆盖任意字段：atkBuff / defBuff / typeMult / stabMult / atkStat / defStat
@@ -100,8 +115,11 @@ function renderStatGrid(side, creature) {
   const container = document.getElementById(side === 'attacker' ? 'attacker-stats' : 'defender-stats');
 
   const typeTagsHtml = creature.types.map(typeTag).join('');
+  const group = getFormGroup(creature);
+  const arrowLeft  = group.length > 1 ? `<button class="form-arrow" data-side="${side}" data-dir="-1"><span class="arrow-icon">&#8249;</span><span class="arrow-text">上一个形态</span></button>` : '';
+  const arrowRight = group.length > 1 ? `<button class="form-arrow" data-side="${side}" data-dir="1"><span class="arrow-icon">&#8250;</span><span class="arrow-text">下一个形态</span></button>` : '';
   const imgHtml = creature.image
-    ? `<div class="creature-img-wrap"><img class="creature-img" src="${creature.image}" alt="${creature.name}"></div>`
+    ? `<div class="creature-img-wrap${group.length > 1 ? ' has-forms' : ''}">${arrowLeft}<img class="creature-img" src="${creature.image}" alt="${creature.name}">${arrowRight}</div>`
     : '';
   const natureName = (NATURES.find(n => n.boost === nature.boost && n.reduce === nature.reduce) || {}).name || '—';
   const boostLabel  = nature.boost  ? STAT_NAMES[nature.boost]  : '—';
@@ -160,7 +178,7 @@ function onNatureClick(e) {
     if (nature.reduce === statId && nature.boost === statId) nature.boost = null;
   }
 
-  const creature = CREATURES[document.getElementById(side === 'attacker' ? 'attacker-select' : 'defender-select').value];
+  const creature = getActiveCreature(side);
   renderStatGrid(side, creature);
   if (side === 'attacker') renderPresetButtons(side, creature);
   onCalculate();
@@ -177,7 +195,7 @@ function onIVToggle(e) {
     ivs[statId] = 60;
   }
 
-  const creature = CREATURES[document.getElementById(side === 'attacker' ? 'attacker-select' : 'defender-select').value];
+  const creature = getActiveCreature(side);
   renderStatGrid(side, creature);
   renderPresetButtons(side, creature);
   onCalculate();
@@ -219,7 +237,7 @@ function renderPresetButtons(side, creature) {
 
 function onPresetClick(e) {
   const side    = e.currentTarget.dataset.side;
-  const creature = CREATURES[document.getElementById(side === 'attacker' ? 'attacker-select' : 'defender-select').value];
+  const creature = getActiveCreature(side);
   const p = PRESETS[+e.currentTarget.dataset.preset];
   const reduce = getPresetReduce(creature, p.boost, p.ivs);
   const newIvs = Object.fromEntries(p.ivs.map(id => [id, 60]));
@@ -230,8 +248,25 @@ function onPresetClick(e) {
   onCalculate();
 }
 
+function onFormArrow(side, dir) {
+  const group = getFormGroup(getActiveCreature(side));
+  const cur  = group.findIndex(({ i }) => i === (side === 'attacker' ? attackerFormIdx : defenderFormIdx));
+  const next = (cur + dir + group.length) % group.length;
+  const nextIdx = group[next].i;
+  if (side === 'attacker') attackerFormIdx = nextIdx;
+  else defenderFormIdx = nextIdx;
+  const nextCreature = CREATURES[nextIdx];
+  loadCreatureDefaults(side, nextCreature);
+  renderStatGrid(side, nextCreature);
+  renderPresetButtons(side, nextCreature);
+  if (side === 'attacker') { abilityActive = false; populateMoves(nextCreature); }
+  onCalculate();
+}
+
 function onAttackerChange() {
-  const creature = CREATURES[document.getElementById('attacker-select').value];
+  const idx = +document.getElementById('attacker-select').value;
+  attackerFormIdx = idx;
+  const creature = CREATURES[idx];
   abilityActive = false;
   loadCreatureDefaults('attacker', creature);
   renderStatGrid('attacker', creature);
@@ -241,7 +276,9 @@ function onAttackerChange() {
 }
 
 function onDefenderChange() {
-  const creature = CREATURES[document.getElementById('defender-select').value];
+  const idx = +document.getElementById('defender-select').value;
+  defenderFormIdx = idx;
+  const creature = CREATURES[idx];
   loadCreatureDefaults('defender', creature);
   renderStatGrid('defender', creature);
   renderPresetButtons('defender', creature);
@@ -389,9 +426,9 @@ function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, st
 }
 
 function onCalculate() {
-  const creature   = CREATURES[document.getElementById('attacker-select').value];
+  const creature   = getActiveCreature('attacker');
   const attacker   = { ...creature, ivs: attackerIVs, nature: attackerNature };
-  const enemy      = CREATURES[document.getElementById('defender-select').value];
+  const enemy      = getActiveCreature('defender');
   const move       = MOVES.find(m => m.id === document.getElementById('move-select').value);
   const extraPower = parseFloat(document.getElementById('extra-power').value) || 0;
   const atkBuff    = parseFloat(document.getElementById('atk-buff').value)    || 0;
@@ -477,6 +514,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   attackerSel.addEventListener('change', onAttackerChange);
   defenderSel.addEventListener('change', onDefenderChange);
+
+  // 形态切换箭头（事件委托到两个 stat 容器）
+  ['attacker-stats', 'defender-stats'].forEach(id => {
+    document.getElementById(id).addEventListener('click', e => {
+      const btn = e.target.closest('.form-arrow');
+      if (btn) onFormArrow(btn.dataset.side, +btn.dataset.dir);
+    });
+  });
   document.getElementById('move-select').addEventListener('change', onMoveChange);
   ['extra-power', 'atk-buff', 'def-buff'].forEach(id =>
     document.getElementById(id).addEventListener('input', onCalculate));

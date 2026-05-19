@@ -113,9 +113,32 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
 
 /* creature image */
 .creature-img-wrap {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin: 0.6rem 0 0.4rem;
 }
+.creature-img-wrap.has-forms {
+  justify-content: space-between;
+}
+.form-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  background: rgba(168,216,255,0.05);
+  border: 1px solid rgba(168,216,255,0.2);
+  border-radius: 8px;
+  color: #a8d8ff;
+  cursor: pointer;
+  padding: 0.5rem 0.7rem;
+  opacity: 0.55;
+  transition: opacity 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+.form-arrow:hover { opacity: 1; background: rgba(168,216,255,0.12); }
+.arrow-icon { font-size: 2.4rem; line-height: 1; }
+.arrow-text { font-size: 0.7rem; white-space: nowrap; }
 .creature-img {
   max-height: 120px;
   max-width: 100%;
