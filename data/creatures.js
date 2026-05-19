@@ -146,7 +146,7 @@ const CREATURES = [
     ability: { name: "灵魂灼伤", desc: "冰系技能使敌方获得4层灼烧，火系技能使敌方获得2层冻结。", icon: "assets/icons/abilities/灵魂灼伤.png" },
     ivs: { hp: 60, def: 60, spdef: 60 },
     nature: { name: "沉默", boost: "hp", reduce: "atk" },
-    commonMoves: [],
+    commonMoves: ["炎枪"],
     learnableMoves: [
       "冷风", "霜降", "防御", "炎枪", "焚烧烙印", "火焰切割", "充分燃烧", "火焰护盾",
       "暴风雪", "冬至", "打雪仗", "冰点", "易燃物质", "热身", "爆裂飞弹", "星星撞击",
@@ -200,7 +200,7 @@ const CREATURES = [
     ability: { name: "洄游", desc: "每次进入蓄力状态，获得全技能能耗永久-2。", icon: "assets/icons/abilities/洄游.png" },
     ivs: { hp: 60, atk: 60, spd: 60 },
     nature: { name: "开朗", boost: "spd", reduce: "spatk" },
-    commonMoves: [],
+    commonMoves: ["隼鳞"],
     learnableMoves: [
       "魔法增效", "潮涌", "角击", "架势", "先发制人", "打湿", "水幕冲击", "龙吟",
       "龙炮", "润泽", "龙之利爪", "怨力打击", "龙息环爆", "水刃", "天洪", "拍击",

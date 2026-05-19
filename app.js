@@ -1,5 +1,5 @@
 const STAT_NAMES = { hp: 'HP', atk: '物攻', def: '物防', spatk: '魔攻', spdef: '魔防', spd: '速度' };
-const STAT_IDS   = ['hp', 'atk', 'def', 'spatk', 'spdef', 'spd'];
+const STAT_IDS         = ['hp', 'atk', 'spatk', 'def', 'spdef', 'spd'];
 
 const STAT_ICONS = {
   hp:    'assets/icons/stat-hp.png',
