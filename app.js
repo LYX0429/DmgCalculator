@@ -16,6 +16,8 @@ const TYPE_ICONS = {
   '冰': 'assets/icons/type-bing.png',
   '水': 'assets/icons/type-shui.png',
   '毒': 'assets/icons/type-du.png',
+  '龙': 'assets/icons/type-long.png',
+  '幽': 'assets/icons/type-you.png',
 };
 
 const TYPE_COLORS = {

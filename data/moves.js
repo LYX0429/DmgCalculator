@@ -14,6 +14,12 @@ const MOVES = [
   { id: "耀眼",       name: "耀眼",       power: 0,   category: "status",   type: "普通", icon: "assets/icons/moves/耀眼.png",   note: "敌方获得连击数-4" },
   { id: "血气",       name: "血气",       power: 0,   category: "defense",  type: "普通", icon: "assets/icons/moves/血气.png",   note: "减伤60%，应对攻击：本回合受到致命伤害时，保留1生命值" },
   { id: "防御",       name: "防御",       power: 0,   category: "defense",  type: "普通", icon: "assets/icons/moves/防御.png",   note: "减伤70%，应对攻击" },
+  { id: "先发制人",   name: "先发制人",   power: 55,  category: "physical", type: "普通", icon: "assets/icons/moves/先发制人.png", note: "先手+1" },
+  { id: "偷袭",       name: "偷袭",       power: 85,  category: "physical", type: "普通", icon: "assets/icons/moves/偷袭.png",   note: "应对状态：本次技能威力变为3倍" },
+  { id: "穿膛",       name: "穿膛",       power: 65,  category: "physical", type: "普通", icon: "assets/icons/moves/穿膛.png",   note: "若敌方能量小于等于2，造成5倍伤害" },
+  { id: "嗜痛",       name: "嗜痛",       power: 0,   category: "defense",  type: "普通", icon: "assets/icons/moves/嗜痛.png",   note: "减伤80%，应对攻击：期间自己每次受到伤害获得双攻+40%" },
+  { id: "无畏之心",   name: "无畏之心",   power: 0,   category: "defense",  type: "普通", icon: "assets/icons/moves/无畏之心.png", note: "减伤100%，应对攻击：减免的伤害变为回复自己生命，且本技能能耗永久+2" },
+  { id: "锐利眼神",   name: "锐利眼神",   power: 0,   category: "status",   type: "普通", icon: "assets/icons/moves/锐利眼神.png", note: "敌方获得物防和魔防-120%" },
   // 光
   { id: "闪光",       name: "闪光",       power: 60,  category: "special",  type: "光",   icon: "assets/icons/moves/闪光.png" },
   { id: "光球",       name: "光球",       power: 80,  category: "special",  type: "光",   icon: "assets/icons/moves/光球.png" },
@@ -25,6 +31,7 @@ const MOVES = [
   { id: "放晴",       name: "放晴",       power: 0,   category: "status",   type: "光",   icon: "assets/icons/moves/放晴.png",   note: "光系技能威力永久+50%，应对防御：改为永久+100%" },
   { id: "过曝",       name: "过曝",       power: 60,  category: "special",  type: "光",   icon: "assets/icons/moves/过曝.png",   note: "每使用过1个其他系别技能，本技能威力永久+30" },
   { id: "虹光冲击",   name: "虹光冲击",   power: 100, category: "special",  type: "光",   icon: "assets/icons/moves/虹光冲击.png" },
+  { id: "透射",       name: "透射",       power: 60,  category: "physical", type: "光",   icon: "assets/icons/moves/透射.png" },
   // 火
   { id: "火焰箭",     name: "火焰箭",     power: 80,  category: "physical", type: "火",   icon: "assets/icons/moves/火焰箭.png" },
   { id: "怒火",       name: "怒火",       power: 0,   category: "status",   type: "火",   icon: "assets/icons/moves/怒火.png",   note: "自己获得双攻+120%和双防-40%" },
@@ -47,6 +54,7 @@ const MOVES = [
   { id: "润泽",       name: "润泽",       power: 0,   category: "status",   type: "水",   icon: "assets/icons/moves/润泽.png",   note: "自己获得魔攻+190%" },
   { id: "潮汐",       name: "潮汐",       power: 0,   category: "defense",  type: "水",   icon: "assets/icons/moves/潮汐.png",   note: "减伤60%，应对攻击：自己获得1层湿润印记" },
   { id: "蓄水",       name: "蓄水",       power: 0,   category: "status",   type: "水",   icon: "assets/icons/moves/蓄水.png",   note: "下次使用的技能能耗-6" },
+  { id: "水泡盾",     name: "水泡盾",     power: 0,   category: "defense",  type: "水",   icon: "assets/icons/moves/水泡盾.png", note: "减伤80%，应对攻击：自己获得魔攻+70%" },
   // 草
   { id: "棘突",       name: "棘突",       power: 100, category: "special",  type: "草",   icon: "assets/icons/moves/棘突.png" },
   { id: "花香",       name: "花香",       power: 60,  category: "special",  type: "草",   icon: "assets/icons/moves/花香.png" },
@@ -59,6 +67,8 @@ const MOVES = [
   { id: "球状闪电",   name: "球状闪电",   power: 60,  category: "physical", type: "电",   icon: "assets/icons/moves/球状闪电.png" },
   { id: "电弧",       name: "电弧",       power: 80,  category: "physical", type: "电",   icon: "assets/icons/moves/电弧.png",   note: "迸发：本次技能威力+40" },
   { id: "触电",       name: "触电",       power: 80,  category: "special",  type: "电",   icon: "assets/icons/moves/触电.png" },
+  { id: "集中",       name: "集中",       power: 0,   category: "defense",  type: "电",   icon: "assets/icons/moves/集中.png",   note: "减伤80%，应对攻击：自己回合结束返场" },
+  { id: "电磁偏转",   name: "电磁偏转",   power: 0,   category: "defense",  type: "电",   icon: "assets/icons/moves/电磁偏转.png", note: "减伤70%，应对攻击：下回合所选技能使用次数+1" },
   // 冰
   { id: "冰爪",       name: "冰爪",       power: 80,  category: "physical", type: "冰",   icon: "assets/icons/moves/冰爪.png" },
   { id: "冷风",       name: "冷风",       power: 60,  category: "special",  type: "冰",   icon: "assets/icons/moves/冷风.png",   note: "敌方获得魔防-50%" },
@@ -76,6 +86,14 @@ const MOVES = [
   { id: "冥想",       name: "冥想",       power: 0,   category: "defense",  type: "幻",   icon: "assets/icons/moves/冥想.png",   note: "减伤80%，应对攻击：敌方获得2层星陨印记" },
   // 龙
   { id: "升龙咆哮",   name: "升龙咆哮",   power: 200, category: "special",  type: "龙",   icon: "assets/icons/moves/升龙咆哮.png", note: "蓄力" },
+  { id: "龙吼",       name: "龙吼",       power: 60,  category: "physical", type: "龙",   icon: "assets/icons/moves/龙吼.png" },
+  { id: "隼鳞",       name: "隼鳞",       power: 140, category: "physical", type: "龙",   icon: "assets/icons/moves/隼鳞.png" },
+  { id: "龙之利爪",   name: "龙之利爪",   power: 130, category: "physical", type: "龙",   icon: "assets/icons/moves/龙之利爪.png", note: "蓄力，吸血50%" },
+  { id: "吹炎",       name: "吹炎",       power: 170, category: "physical", type: "龙",   icon: "assets/icons/moves/吹炎.png",   note: "蓄力，应对状态：本次技能威力翻倍" },
+  { id: "角击",       name: "角击",       power: 80,  category: "special",  type: "龙",   icon: "assets/icons/moves/角击.png" },
+  { id: "龙血",       name: "龙血",       power: 0,   category: "defense",  type: "龙",   icon: "assets/icons/moves/龙血.png",   note: "减伤70%，可在蓄力状态下使用，应对攻击：下次技能无需蓄力" },
+  { id: "架势",       name: "架势",       power: 0,   category: "status",   type: "龙",   icon: "assets/icons/moves/架势.png",   note: "自己回复20%生命，下次技能无需蓄力" },
+  { id: "龙威",       name: "龙威",       power: 0,   category: "status",   type: "龙",   icon: "assets/icons/moves/龙威.png",   note: "自己获得1层龙噬印记" },
   // 恶
   { id: "恶能量",     name: "恶能量",     power: 60,  category: "physical", type: "恶",   icon: "assets/icons/moves/恶能量.png" },
   { id: "等价交换",   name: "等价交换",   power: 0,   category: "defense",  type: "恶",   icon: "assets/icons/moves/等价交换.png", note: "减伤90%，应对攻击：自己获得50%吸血" },
@@ -85,18 +103,26 @@ const MOVES = [
   // 翼
   { id: "鹰爪",       name: "鹰爪",       power: 60,  category: "physical", type: "翼",   icon: "assets/icons/moves/鹰爪.png" },
   { id: "风墙",       name: "风墙",       power: 0,   category: "defense",  type: "翼",   icon: "assets/icons/moves/风墙.png",   note: "减伤50%，迅捷，应对攻击" },
+  { id: "羽翼庇护",   name: "羽翼庇护",   power: 0,   category: "defense",  type: "翼",   icon: "assets/icons/moves/羽翼庇护.png", note: "减伤70%，应对攻击：自己获得连击数+3" },
   // 萌
   { id: "魅惑",       name: "魅惑",       power: 60,  category: "special",  type: "萌",   icon: "assets/icons/moves/魅惑.png" },
   { id: "飞吻",       name: "飞吻",       power: 80,  category: "special",  type: "萌",   icon: "assets/icons/moves/飞吻.png" },
   { id: "捧杀",       name: "捧杀",       power: 0,   category: "defense",  type: "萌",   icon: "assets/icons/moves/捧杀.png",   note: "减伤90%，应对攻击：敌方获得1层萌化" },
+  { id: "碰爪",       name: "碰爪",       power: 60,  category: "physical", type: "萌",   icon: "assets/icons/moves/碰爪.png" },
   // 幽
   { id: "幻象",       name: "幻象",       power: 60,  category: "physical", type: "幽",   icon: "assets/icons/moves/幻象.png" },
   { id: "虚化",       name: "虚化",       power: 0,   category: "defense",  type: "幽",   icon: "assets/icons/moves/虚化.png",   note: "减伤80%，应对攻击：自己获得魔防+70%" },
+  { id: "诡刺",       name: "诡刺",       power: 40,  category: "physical", type: "幽",   icon: "assets/icons/moves/诡刺.png" },
+  { id: "坟场搏击",   name: "坟场搏击",   power: 180, category: "physical", type: "幽",   icon: "assets/icons/moves/坟场搏击.png", note: "敌方每有1能量，本次技能威力-10%" },
+  { id: "灵媒",       name: "灵媒",       power: 100, category: "special",  type: "幽",   icon: "assets/icons/moves/灵媒.png" },
+  { id: "降灵",       name: "降灵",       power: 0,   category: "status",   type: "幽",   icon: "assets/icons/moves/降灵.png",   note: "敌方获得1层降灵印记" },
+  { id: "报复",       name: "报复",       power: 0,   category: "defense",  type: "幽",   icon: "assets/icons/moves/报复.png",   note: "减伤70%，应对攻击：敌方失去3能量" },
   // 虫
   { id: "噬心",       name: "噬心",       power: 60,  category: "physical", type: "虫",   icon: "assets/icons/moves/噬心.png" },
   { id: "掩护",       name: "掩护",       power: 0,   category: "defense",  type: "虫",   icon: "assets/icons/moves/掩护.png",   note: "减伤70%，紧急脱离，应对攻击：下个入场精灵获得减伤" },
   // 机械
   { id: "离子震荡",   name: "离子震荡",   power: 90,  category: "special",  type: "机械", icon: "assets/icons/moves/离子震荡.png", note: "本技能位于3号位时威力+40" },
+  { id: "械斗",       name: "械斗",       power: 45,  category: "physical", type: "机械", icon: "assets/icons/moves/械斗.png",   note: "1号位时威力+60，传动1" },
   // 毒
   { id: "溃烂触碰",   name: "溃烂触碰",   power: 60,  category: "physical", type: "毒",   icon: "assets/icons/moves/溃烂触碰.png" },
   { id: "不可接触",   name: "不可接触",   power: 0,   category: "defense",  type: "毒",   icon: "assets/icons/moves/不可接触.png", note: "减伤50%，敌方每有1层中毒效果，本技能减伤+10%，应对攻击" },
