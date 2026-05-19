@@ -40,6 +40,7 @@ const MOVES = [
   { id: "鼓劲",       name: "鼓劲",       power: 0,   category: "status",   type: "普通", icon: "assets/icons/moves/鼓劲.png",   note: "自己获得魔防+170%" },
   { id: "咆哮",       name: "咆哮",       power: 0,   category: "status",   type: "普通", icon: "assets/icons/moves/咆哮.png",   note: "敌方获得物攻-130%" },
   { id: "追打",       name: "追打",       power: 75,  category: "special",  type: "普通", icon: "assets/icons/moves/追打.png",   note: "1连击，应对状态：本技能变为3连击" },
+  { id: "以重制重",   name: "以重制重",   power: 0,   category: "physical", type: "普通", icon: "assets/icons/moves/以重制重.png", note: "敌方体重越高，本次技能威力越高" },
   // 光
   { id: "闪光",       name: "闪光",       power: 60,  category: "special",  type: "光",   icon: "assets/icons/moves/闪光.png" },
   { id: "光球",       name: "光球",       power: 80,  category: "special",  type: "光",   icon: "assets/icons/moves/光球.png" },
@@ -126,6 +127,7 @@ const MOVES = [
   { id: "冰点",       name: "冰点",       power: 0,   category: "status",   type: "冰",   icon: "assets/icons/moves/冰点.png",   note: "敌方获得5层冻结，应对防御：额外获得5层" },
   { id: "冰墙",       name: "冰墙",       power: 0,   category: "defense",  type: "冰",   icon: "assets/icons/moves/冰墙.png",   note: "减伤80%，应对攻击：敌方获得2层冻结" },
   { id: "速冻",       name: "速冻",       power: 0,   category: "status",   type: "冰",   icon: "assets/icons/moves/速冻.png",   note: "敌方获得2层减速印记" },
+  { id: "冰雹",       name: "冰雹",       power: 105, category: "physical", type: "冰",   icon: "assets/icons/moves/冰雹.png",   note: "应对状态：额外使敌方获得全技能能耗+3" },
   // 地
   { id: "热砂",       name: "热砂",       power: 80,  category: "special",  type: "地",   icon: "assets/icons/moves/热砂.png" },
   { id: "扬沙",       name: "扬沙",       power: 60,  category: "physical", type: "地",   icon: "assets/icons/moves/扬沙.png" },
@@ -185,6 +187,7 @@ const MOVES = [
   { id: "疾风连袭",   name: "疾风连袭",   power: 0,   category: "status",   type: "翼",   icon: "assets/icons/moves/疾风连袭.png", note: "释放自己使用过的迅捷技能，能耗逐渐增加" },
   { id: "闪击",       name: "闪击",       power: 60,  category: "physical", type: "翼",   icon: "assets/icons/moves/闪击.png",  note: "速度比敌方越高威力越高" },
   { id: "乘风",       name: "乘风",       power: 0,   category: "status",   type: "翼",   icon: "assets/icons/moves/乘风.png",   note: "自己获得速度+120" },
+  { id: "俯冲猛击",   name: "俯冲猛击",   power: 140, category: "physical", type: "翼",   icon: "assets/icons/moves/俯冲猛击.png" },
   // 萌
   { id: "魅惑",       name: "魅惑",       power: 60,  category: "special",  type: "萌",   icon: "assets/icons/moves/魅惑.png" },
   { id: "飞吻",       name: "飞吻",       power: 80,  category: "special",  type: "萌",   icon: "assets/icons/moves/飞吻.png" },
