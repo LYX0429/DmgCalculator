@@ -144,9 +144,9 @@ const CREATURES = [
     image: "assets/creatures/圣羽翼王.png",
     baseStats: { hp: 132, atk: 109, spatk: 109, def: 128, spdef: 83, spd: 125 },
     ability: { name: "飓风", desc: "对本精灵的技能，若其他翼系精灵携带相同技能，则获得迅捷。被敌方精灵击败时，自己额外损失1点魔力。", icon: "assets/icons/abilities/飓风.png" },
-    ivs: {},
-    nature: { name: "固执", boost: "atk", reduce: "spatk" },
-    commonMoves: [],
+    ivs: { hp: 60, atk: 60, spd: 60 },
+    nature: { name: "开朗", boost: "spd", reduce: "spatk" },
+    commonMoves: ["闪击", "水刃", "光之矛"],
     learnableMoves: [
       "魔法增效", "防御", "力量增效", "借用", "有效预防",
       "伺机而动", "后发制人", "三连破", "乘胜追击", "快速移动", "热身运动", "连续爪击", "阻断",
