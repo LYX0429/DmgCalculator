@@ -121,7 +121,7 @@ const CREATURES = [
     baseStats: { hp: 134, atk: 37, spatk: 85, def: 93, spdef: 136, spd: 95 },
     ivs: { hp: 60, def: 60, spdef: 60 },
     nature: { name: "沉默", boost: "hp", reduce: "atk" },
-    commonMoves: [],
+    commonMoves: ["甩水", "天洪"],
     learnableMoves: [
       "甩水", "腐蚀酸液", "瘴气喷射", "激流", "湮灭", "毒液渗透", "鸩毒", "天洪", "升龙咆哮",
       "触电", "反击拳", "虹光冲击", "离子震荡", "魅惑", "飞吻", "乱打", "水弹枪", "毒沼", "水炮",
@@ -139,7 +139,7 @@ const CREATURES = [
     baseStats: { hp: 120, atk: 137, spatk: 50, def: 104, spdef: 81, spd: 60 },
     ivs: { hp: 60, def: 60, spdef: 60 },
     nature: { name: "平和", boost: "hp", reduce: "spatk" },
-    commonMoves: [],
+    commonMoves: ["偷袭", "电弧", "隼鳞"],
     learnableMoves: [
       "龙吼", "隼鳞", "龙之利爪", "吹炎", "角击",
       "诡刺", "坟场搏击", "幻象", "灵媒",
