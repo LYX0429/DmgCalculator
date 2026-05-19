@@ -19,6 +19,7 @@ const TYPE_ICONS = {
   '龙': 'assets/icons/type-long.png',
   '幽': 'assets/icons/type-you.png',
   '草': 'assets/icons/type-cao.png',
+  '翼': 'assets/icons/type-yi.png',
 };
 
 const TYPE_COLORS = {
