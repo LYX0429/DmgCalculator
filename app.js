@@ -60,8 +60,18 @@ let abilityActive = false;
 let attackerFormIdx = 0;
 let defenderFormIdx = 0;
 
+// 首领形态覆盖状态
+let attackerBossActive = false;
+let defenderBossActive = false;
+
 function getActiveCreature(side) {
-  return CREATURES[side === 'attacker' ? attackerFormIdx : defenderFormIdx];
+  const base = CREATURES[side === 'attacker' ? attackerFormIdx : defenderFormIdx];
+  const bossActive = side === 'attacker' ? attackerBossActive : defenderBossActive;
+  if (bossActive) {
+    const boss = CREATURES.find(c => c.form === 'boss' && c.baseId === base.id);
+    if (boss) return { ...base, name: boss.name, types: boss.types, baseStats: boss.baseStats, ability: boss.ability, image: boss.image };
+  }
+  return base;
 }
 
 // 返回同编号的 base+regional 形态列表 [{c, i}, ...]
@@ -141,11 +151,15 @@ function renderStatGrid(side, creature) {
   const container = document.getElementById(side === 'attacker' ? 'attacker-stats' : 'defender-stats');
 
   const typeTagsHtml = creature.types.map(typeTag).join('');
+  const baseCreature = CREATURES[side === 'attacker' ? attackerFormIdx : defenderFormIdx];
   const group = getFormGroup(creature);
   const arrowLeft  = group.length > 1 ? `<button class="form-arrow" data-side="${side}" data-dir="-1"><span class="arrow-icon">&#8249;</span><span class="arrow-text">上一个形态</span></button>` : '';
   const arrowRight = group.length > 1 ? `<button class="form-arrow" data-side="${side}" data-dir="1"><span class="arrow-icon">&#8250;</span><span class="arrow-text">下一个形态</span></button>` : '';
+  const bossForm = CREATURES.find(c => c.form === 'boss' && c.baseId === baseCreature.id);
+  const bossActive = side === 'attacker' ? attackerBossActive : defenderBossActive;
+  const bossBtnHtml = bossForm ? `<button class="boss-btn${bossActive ? ' active' : ''}" data-side="${side}">首领</button>` : '';
   const imgHtml = creature.image
-    ? `<div class="creature-img-wrap${group.length > 1 ? ' has-forms' : ''}">${arrowLeft}<img class="creature-img" src="${creature.image}" alt="${creature.name}">${arrowRight}</div>`
+    ? `<div class="creature-img-area">${bossBtnHtml}<div class="creature-img-wrap${group.length > 1 ? ' has-forms' : ''}">${arrowLeft}<img class="creature-img" src="${creature.image}" alt="${creature.name}">${arrowRight}</div></div>`
     : '';
   const natureName = (NATURES.find(n => n.boost === nature.boost && n.reduce === nature.reduce) || {}).name || '—';
   const boostLabel  = nature.boost  ? STAT_NAMES[nature.boost]  : '—';
@@ -274,7 +288,18 @@ function onPresetClick(e) {
   onCalculate();
 }
 
+function onBossToggle(side) {
+  if (side === 'attacker') attackerBossActive = !attackerBossActive;
+  else defenderBossActive = !defenderBossActive;
+  const creature = getActiveCreature(side);
+  renderStatGrid(side, creature);
+  if (side === 'attacker') { abilityActive = false; populateMoves(creature); }
+  onCalculate();
+}
+
 function onFormArrow(side, dir) {
+  if (side === 'attacker') attackerBossActive = false;
+  else defenderBossActive = false;
   const group = getFormGroup(getActiveCreature(side));
   const cur  = group.findIndex(({ i }) => i === (side === 'attacker' ? attackerFormIdx : defenderFormIdx));
   const next = (cur + dir + group.length) % group.length;
@@ -292,6 +317,7 @@ function onFormArrow(side, dir) {
 function onAttackerChange() {
   const idx = +document.getElementById('attacker-select').value;
   attackerFormIdx = idx;
+  attackerBossActive = false;
   const creature = CREATURES[idx];
   abilityActive = false;
   loadCreatureDefaults('attacker', creature);
@@ -304,6 +330,7 @@ function onAttackerChange() {
 function onDefenderChange() {
   const idx = +document.getElementById('defender-select').value;
   defenderFormIdx = idx;
+  defenderBossActive = false;
   const creature = CREATURES[idx];
   loadCreatureDefaults('defender', creature);
   renderStatGrid('defender', creature);
@@ -573,7 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const defenderSel = document.getElementById('defender-select');
 
   CREATURES.forEach((c, i) => {
-    if (c.form === 'regional') return;
+    if (c.form === 'regional' || c.form === 'boss') return;
     const displayName = c.name.replace(/（[^）]*）$/, '');
     const mkOpt = () => {
       const o = document.createElement('option');
@@ -588,11 +615,13 @@ document.addEventListener('DOMContentLoaded', () => {
   attackerSel.addEventListener('change', onAttackerChange);
   defenderSel.addEventListener('change', onDefenderChange);
 
-  // 形态切换箭头（事件委托到两个 stat 容器）
+  // 形态切换箭头 + 首领按钮（事件委托到两个 stat 容器）
   ['attacker-stats', 'defender-stats'].forEach(id => {
     document.getElementById(id).addEventListener('click', e => {
-      const btn = e.target.closest('.form-arrow');
-      if (btn) onFormArrow(btn.dataset.side, +btn.dataset.dir);
+      const formBtn = e.target.closest('.form-arrow');
+      if (formBtn) { onFormArrow(formBtn.dataset.side, +formBtn.dataset.dir); return; }
+      const bossBtn = e.target.closest('.boss-btn');
+      if (bossBtn) onBossToggle(bossBtn.dataset.side);
     });
   });
   document.getElementById('move-select').addEventListener('change', onMoveChange);

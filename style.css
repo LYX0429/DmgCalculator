@@ -112,6 +112,26 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
 }
 
 /* creature image */
+.creature-img-area {
+  position: relative;
+}
+.boss-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 2px 8px;
+  background: #1a1a2e;
+  border: 1px solid #4a6a9a;
+  border-radius: 4px;
+  color: #9ca3af;
+  font-size: 0.72rem;
+  cursor: pointer;
+  z-index: 1;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.boss-btn:hover { background: #1a4a7a; color: #e0e0e0; }
+.boss-btn.active { background: #7c2d12; border-color: #f97316; color: #f97316; font-weight: 600; }
+
 .creature-img-wrap {
   display: flex;
   align-items: center;
