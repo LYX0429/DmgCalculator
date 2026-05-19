@@ -44,6 +44,35 @@ let attackerIVs    = {};
 let defenderNature = { boost: null, reduce: null };
 let defenderIVs    = {};
 
+// 技能特效 toggle 状态：{ effectName: boolean }
+let activeMoveEffects = {};
+
+// 各技能的特效 toggle 定义
+// apply({ basePower, atkStats, defStats }) → 额外威力加值
+const MOVE_EFFECTS = {
+  "电弧": [{ name: "迸发",   apply: () => 40 }],
+  "偷袭": [{ name: "应对状态", apply: ({ basePower }) => basePower * 2 }],
+  "闪击": [{ name: "速度差", auto: true, apply: ({ basePower, atkStats, defStats }) => {
+    const diff = atkStats.spd - defStats.spd;
+    const total = diff < 0    ? 60
+                : diff <= 14  ? 100
+                : diff <= 29  ? 130
+                : diff <= 44  ? 140
+                : diff <= 59  ? 150
+                : diff <= 74  ? 160
+                : diff <= 89  ? 170
+                : diff <= 104 ? 180
+                : diff <= 119 ? 190
+                : diff <= 134 ? 194
+                : 200;
+    return total - basePower;
+  }}],
+};
+
+function getMoveEffects(moveName) {
+  return MOVE_EFFECTS[moveName] || [];
+}
+
 function loadCreatureDefaults(side, creature) {
   const nature = creature.nature
     ? { boost: creature.nature.boost, reduce: creature.nature.reduce }
@@ -256,20 +285,40 @@ function onMoveChange() {
   const move = MOVES.find(m => m.id === document.getElementById('move-select').value);
   if (!move) return;
 
+  // 切换技能时重置特效状态（auto 效果始终激活）
+  const effects = getMoveEffects(move.name);
+  activeMoveEffects = {};
+  effects.forEach(e => { activeMoveEffects[e.name] = !!e.auto; });
+
   const iconHtml = move.icon ? `<img class="move-info-icon" src="${move.icon}" alt="">` : '';
   const noteHtml = move.note ? `<span class="move-note">${move.note}</span>` : '';
   const catLabel  = move.category === 'physical' ? '物理' : '魔法';
+  const manualEffects = effects.filter(e => !e.auto);
+  const togglesHtml = manualEffects.length
+    ? `<div class="move-effect-toggles">${manualEffects.map(e =>
+        `<button class="effect-toggle" data-effect="${e.name}">${e.name}</button>`
+      ).join('')}</div>`
+    : '';
+
   document.getElementById('move-info-bar').innerHTML = `
     ${iconHtml}
     <div class="move-info-text">
       <span class="move-info-name">${move.name}</span>
       <span class="move-info-stats">威力 ${move.power} · ${catLabel} · ${move.type}属性</span>
       ${noteHtml}
-    </div>`;
+    </div>
+    ${togglesHtml}`;
 
   // 同步高亮常用技能栏
   document.querySelectorAll('.common-move-btn').forEach(b =>
     b.classList.toggle('active', b.dataset.id === move.id));
+  onCalculate();
+}
+
+function onEffectToggle(btn) {
+  const name = btn.dataset.effect;
+  activeMoveEffects[name] = !activeMoveEffects[name];
+  btn.classList.toggle('active', activeMoveEffects[name]);
   onCalculate();
 }
 
@@ -291,11 +340,18 @@ function onCalculate() {
 
   // 当前敌方配置结算
   const defStats   = calcAllStats({ ...enemy, ivs: defenderIVs, nature: defenderNature });
-  const currentDmg = calcDamage(atkStat, defStats[defStatId], move.power, extraPower, atkBuff, defBuff, typeMult, stabMult);
+
+  // 累加激活的特效威力加成（需要 atkStats/defStats 就绪后计算）
+  const effectCtx = { basePower: move.power, atkStats, defStats };
+  const effectBonus = getMoveEffects(move.name)
+    .filter(e => activeMoveEffects[e.name])
+    .reduce((sum, e) => sum + e.apply(effectCtx), 0);
+  const totalExtra = extraPower + effectBonus;
+  const currentDmg = calcDamage(atkStat, defStats[defStatId], move.power, totalExtra, atkBuff, defBuff, typeMult, stabMult);
   const currentPct = defStats.hp > 0 ? (currentDmg / defStats.hp * 100).toFixed(1) : '∞';
 
   // 9种假设区间
-  const scenarios = runCalculation({ attacker, enemy, move, extraPower, atkBuff, defBuff });
+  const scenarios = runCalculation({ attacker, enemy, move, extraPower: totalExtra, atkBuff, defBuff });
 
   renderResultBars({ dmg: currentDmg, pct: currentPct }, scenarios);
   document.getElementById('result-panel').hidden = false;
@@ -341,6 +397,12 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('move-select').addEventListener('change', onMoveChange);
   ['extra-power', 'atk-buff', 'def-buff'].forEach(id =>
     document.getElementById(id).addEventListener('input', onCalculate));
+
+  // 特效 toggle 事件委托（按钮由 onMoveChange 动态注入）
+  document.getElementById('move-info-bar').addEventListener('click', e => {
+    const btn = e.target.closest('.effect-toggle');
+    if (btn) onEffectToggle(btn);
+  });
 
   onAttackerChange();
   onDefenderChange();

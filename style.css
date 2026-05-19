@@ -215,6 +215,28 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
   border-bottom: 1px solid #0f3460;
   height: 4.5rem; overflow: hidden; box-sizing: border-box;
 }
+
+.move-effect-toggles {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-self: center;
+  flex-shrink: 0;
+}
+.effect-toggle {
+  padding: 2px 8px;
+  border: 1px solid #1a4a7a;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  background: #0f3460;
+  color: #4a6a9a;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.effect-toggle.active  { background: #14532d; border-color: #4ade80; color: #4ade80; font-weight: 600; }
+.effect-toggle:not(.active):hover { background: #1a4a7a; color: #9ca3af; }
 .move-info-icon { width: 42px; height: 42px; border-radius: 6px; flex-shrink: 0; }
 .move-info-text { display: flex; flex-direction: column; gap: 0.15rem; }
 .move-info-name  { font-weight: 600; font-size: 0.95rem; color: #e0e0e0; }
