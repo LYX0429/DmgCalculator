@@ -198,6 +198,7 @@ foreach ($block in $skillBlocks) {
     $sname = $Matches[1].Trim()
 
     $power  = if ($block -match '<div class="rocom_sprite_skill_power[^"]*">(\d+)</div>') { $Matches[1] } else { "0" }
+    $cost   = if ($block -match '<div class="rocom_sprite_skillDamage[^"]*">[^>]*>(\d+)</div>') { $Matches[1] } else { "0" }
     $attr   = if ($block -match 'alt="图标 宠物 属性 ([^.]+)\.png"') { $Matches[1] } else { "普通" }
     $catRaw = if ($block -match 'alt="图标 技能 类别 ([^.]+)\.png"') { $Matches[1] } else { "状态" }
     $cat    = if ($catMap.ContainsKey($catRaw)) { $catMap[$catRaw] } else { "status" }
@@ -214,5 +215,5 @@ foreach ($block in $skillBlocks) {
         $note = Clean-Note $Matches[1].Trim()
     }
 
-    Write-Host "$sname | $attr | $power | $cat | $icon | $note"
+    Write-Host "$sname | $attr | $power | $cost | $cat | $icon | $note"
 }
