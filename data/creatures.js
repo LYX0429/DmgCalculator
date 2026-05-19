@@ -1,5 +1,10 @@
 // 性格列表：boost/reduce 对应 "hp"|"atk"|"def"|"spatk"|"spdef"|"spd"
 const NATURES = [
+  { name: "沉默", boost: "hp",    reduce: "atk"   },
+  { name: "平和", boost: "hp",    reduce: "spatk" },
+  { name: "忧郁", boost: "hp",    reduce: "def"   },
+  { name: "粗心", boost: "hp",    reduce: "spdef" },
+  { name: "踏实", boost: "hp",    reduce: "spd"   },
   { name: "逞强", boost: "atk",   reduce: "hp"    },
   { name: "固执", boost: "atk",   reduce: "spatk" },
   { name: "大胆", boost: "atk",   reduce: "def"   },
@@ -114,8 +119,8 @@ const CREATURES = [
     types: ["水", "毒"],
     image: "assets/creatures/琉璃水母.png",
     baseStats: { hp: 134, atk: 37, spatk: 85, def: 93, spdef: 136, spd: 95 },
-    ivs: {},
-    nature: { name: "固执", boost: "atk", reduce: "spdef" },
+    ivs: { hp: 60, def: 60, spdef: 60 },
+    nature: { name: "沉默", boost: "hp", reduce: "atk" },
     commonMoves: [],
     learnableMoves: [
       "甩水", "腐蚀酸液", "瘴气喷射", "激流", "湮灭", "毒液渗透", "鸩毒", "天洪", "升龙咆哮",
