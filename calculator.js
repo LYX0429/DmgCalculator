@@ -41,7 +41,7 @@ function calcStabMultiplier(moveType, attackerTypes) {
 
 // 伤害 = 我方攻 / 敌方防 × 0.9 × (技能威力 + 额外威力)
 //        × (1 + 攻击buff) / (1 + 防守buff) × 属性克制 × 本系加成
-function calcDamage(atkStat, defStat, movePower, extraPower, atkBuff, defBuff, typeMult, stabMult) {
+function calcDamage(atkStat, defStat, movePower, extraPower, atkBuff, defBuff, typeMult, stabMult, abilityMult = 1) {
   return Math.round(
     (atkStat / defStat)
     * 0.9
@@ -50,6 +50,7 @@ function calcDamage(atkStat, defStat, movePower, extraPower, atkBuff, defBuff, t
     / (1 + defBuff)
     * typeMult
     * stabMult
+    * abilityMult
   );
 }
 
@@ -73,7 +74,7 @@ function calcEnemyScenarios(enemy, defStatId) {
 }
 
 function runCalculation(params) {
-  const { attacker, enemy, move, extraPower, atkBuff, defBuff } = params;
+  const { attacker, enemy, move, extraPower, atkBuff, defBuff, abilityMult = 1 } = params;
   const atkStats  = calcAllStats(attacker);
   const atkStat   = move.category === 'physical' ? atkStats.atk : atkStats.spatk;
   const defStatId = move.category === 'physical' ? 'def' : 'spdef';
@@ -81,7 +82,7 @@ function runCalculation(params) {
   const stabMult  = calcStabMultiplier(move.type, attacker.types);
 
   return calcEnemyScenarios(enemy, defStatId).map(s => {
-    const dmg = calcDamage(atkStat, s.def, move.power, extraPower, atkBuff, defBuff, typeMult, stabMult);
+    const dmg = calcDamage(atkStat, s.def, move.power, extraPower, atkBuff, defBuff, typeMult, stabMult, abilityMult);
     const pct = s.hp > 0 ? (dmg / s.hp * 100).toFixed(1) : '∞';
     return { ...s, dmg, pct };
   });

@@ -70,6 +70,8 @@ function getFormGroup(creature) {
 // 可覆盖任意字段：atkBuff / defBuff / typeMult / stabMult / atkStat / defStat
 const CREATURE_ABILITY_EFFECTS = {
   "音速犬": [{ name: "专注力", apply: ({ atkBuff }) => ({ atkBuff: atkBuff + 1.0 }) }],
+  "岚鸟（本来的样子）": [{ name: "顺风", auto: true, apply: ({ atkStats, defStats, abilityMult }) => atkStats.spd > defStats.spd ? { abilityMult: abilityMult * 1.5 } : {} }],
+  "岚鸟（春天的样子）": [{ name: "顺风", auto: true, apply: ({ atkStats, defStats, abilityMult }) => atkStats.spd > defStats.spd ? { abilityMult: abilityMult * 1.5 } : {} }],
 };
 
 // 各技能的特效 toggle 定义
@@ -345,9 +347,10 @@ function onMoveChange() {
   const catLabel  = move.category === 'physical' ? '物理' : '魔法';
   const manualEffects = effects.filter(e => !e.auto);
   const creature = CREATURES[document.getElementById('attacker-select').value];
-  const abilityEffects = CREATURE_ABILITY_EFFECTS[creature.name];
-  const abilityBtnHtml = abilityEffects?.length
-    ? `<button class="effect-toggle effect-toggle--ability${abilityActive ? ' active' : ''}" id="ability-toggle">${creature.ability?.name ?? '特性'}</button>`
+  const abilityEffects = CREATURE_ABILITY_EFFECTS[getActiveCreature('attacker').name];
+  const hasManualAbility = abilityEffects?.some(e => !e.auto);
+  const abilityBtnHtml = hasManualAbility
+    ? `<button class="effect-toggle effect-toggle--ability${abilityActive ? ' active' : ''}" id="ability-toggle">${getActiveCreature('attacker').ability?.name ?? '特性'}</button>`
     : '';
   const allToggleBtns = manualEffects.map(e =>
     `<button class="effect-toggle" data-effect="${e.name}">${e.name}</button>`
@@ -384,10 +387,10 @@ function onEffectToggle(btn) {
   onCalculate();
 }
 
-function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, stabMult, typeMult) {
+function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, stabMult, typeMult, abilityMult = 1) {
   const effectBonus  = activeEffectDetails.reduce((s, e) => s + e.bonus, 0);
   const rawPower     = move.power + extraPower + effectBonus;
-  const displayPower = Math.round(rawPower * (1 + atkBuff) * stabMult * typeMult);
+  const displayPower = Math.round(rawPower * (1 + atkBuff) * stabMult * typeMult * abilityMult);
 
   const powerItems = [];
   const multItems  = [];
@@ -412,6 +415,8 @@ function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, st
     multItems.push(`<span class="pw-chip pw-chip--super">属性克制 <b>×${typeMult}</b></span>`);
   if (typeMult < 1)
     multItems.push(`<span class="pw-chip pw-chip--resist">属性抵抗 <b>×${typeMult}</b></span>`);
+  if (abilityMult !== 1)
+    multItems.push(`<span class="pw-chip pw-chip--stab">特性 <b>×${abilityMult}</b></span>`);
 
   const powerGroup = '<span class="pw-paren">(</span>'
     + powerItems.join('<span class="pw-sep">+</span>')
@@ -449,13 +454,16 @@ function onCalculate() {
     stabMult: calcStabMultiplier(move.type, attacker.types),
     atkStat:  move.category === 'physical' ? atkStats.atk : atkStats.spatk,
     defStat:  defStats[defStatId],
+    abilityMult: 1,
     atkStats, defStats, move,
   };
-  if (abilityActive) {
-    const abilityEffects = CREATURE_ABILITY_EFFECTS[creature.name] || [];
-    abilityEffects.forEach(e => { abilityCtx = { ...abilityCtx, ...e.apply(abilityCtx) }; });
-  }
-  const { atkBuff: calcAtkBuff, defBuff: calcDefBuff, typeMult, stabMult, atkStat } = abilityCtx;
+  const abilityEffects = CREATURE_ABILITY_EFFECTS[creature.name] || [];
+  abilityEffects.forEach(e => {
+    if (e.auto || abilityActive) {
+      abilityCtx = { ...abilityCtx, ...e.apply(abilityCtx) };
+    }
+  });
+  const { atkBuff: calcAtkBuff, defBuff: calcDefBuff, typeMult, stabMult, atkStat, abilityMult } = abilityCtx;
 
   // 累加激活的特效威力加成
   const effectCtx = { basePower: move.power, atkStats, defStats };
@@ -464,13 +472,13 @@ function onCalculate() {
     .map(e => ({ name: e.name, bonus: Math.round(e.apply(effectCtx)) }));
   const effectBonus = activeEffectDetails.reduce((s, e) => s + e.bonus, 0);
   const totalExtra  = extraPower + effectBonus;
-  renderPowerBreakdown(move, extraPower, activeEffectDetails, calcAtkBuff, stabMult, typeMult);
+  renderPowerBreakdown(move, extraPower, activeEffectDetails, calcAtkBuff, stabMult, typeMult, abilityMult);
 
-  const currentDmg = calcDamage(atkStat, defStats[defStatId], move.power, totalExtra, calcAtkBuff, calcDefBuff, typeMult, stabMult);
+  const currentDmg = calcDamage(atkStat, defStats[defStatId], move.power, totalExtra, calcAtkBuff, calcDefBuff, typeMult, stabMult, abilityMult);
   const currentPct = defStats.hp > 0 ? (currentDmg / defStats.hp * 100).toFixed(1) : '∞';
 
   // 9种假设区间
-  const scenarios = runCalculation({ attacker, enemy, move, extraPower: totalExtra, atkBuff: calcAtkBuff, defBuff: calcDefBuff });
+  const scenarios = runCalculation({ attacker, enemy, move, extraPower: totalExtra, atkBuff: calcAtkBuff, defBuff: calcDefBuff, abilityMult });
 
   renderResultBars({ dmg: currentDmg, pct: currentPct }, scenarios);
   document.getElementById('result-panel').hidden = false;
