@@ -14,6 +14,8 @@ const TYPE_ICONS = {
   '光': 'assets/icons/type-guang.png',
   '火': 'assets/icons/type-huo.png',
   '冰': 'assets/icons/type-bing.png',
+  '水': 'assets/icons/type-shui.png',
+  '毒': 'assets/icons/type-du.png',
 };
 
 const TYPE_COLORS = {
