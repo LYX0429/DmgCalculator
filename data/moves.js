@@ -41,6 +41,13 @@
   { id: "咆哮",       name: "咆哮",       power: 0, cost: 1,   category: "status",   type: "普通", icon: "assets/icons/moves/咆哮.png",   note: "敌方获得物攻-130%" },
   { id: "追打",       name: "追打",       power: 75, cost: 3,  category: "special",  type: "普通", icon: "assets/icons/moves/追打.png",   note: "1连击，应对状态：本技能变为3连击" },
   { id: "以重制重",   name: "以重制重",   power: 0, cost: 3,   category: "physical", type: "普通", icon: "assets/icons/moves/以重制重.png", note: "敌方体重越高，本次技能威力越高" },
+  { id: "许愿星",     name: "许愿星",     power: 110, cost: 3, category: "special",  type: "普通", icon: "assets/icons/moves/许愿星.png" },
+  { id: "音爆",       name: "音爆",       power: 130, cost: 4, category: "special",  type: "普通", icon: "assets/icons/moves/音爆.png" },
+  { id: "聒噪",       name: "聒噪",       power: 0, cost: 3,   category: "status",   type: "普通", icon: "assets/icons/moves/聒噪.png",   note: "敌方获得全攻击技能能耗+3，持续3回合" },
+  { id: "主场优势",   name: "主场优势",   power: 0, cost: 3,   category: "status",   type: "普通", icon: "assets/icons/moves/主场优势.png", note: "自己获得1层攻击印记" },
+  { id: "彗星",       name: "彗星",       power: 240, cost: 0, category: "special",  type: "普通", icon: "assets/icons/moves/彗星.png",   note: "每失去5%生命，本次技能威力-10，使用后消耗全部生命" },
+  { id: "精神扰乱",   name: "精神扰乱",   power: 0, cost: 0,   category: "status",   type: "普通", icon: "assets/icons/moves/精神扰乱.png", note: "敌方获得全技能能耗+1，应对防御：改为能耗+3" },
+  { id: "魔能爆",     name: "魔能爆",     power: 0, cost: 0,   category: "special",  type: "普通", icon: "assets/icons/moves/魔能爆.png",   note: "使用时消耗所有能量，消耗越高，伤害越高" },
   // 光
   { id: "闪光",       name: "闪光",       power: 60, cost: 1,  category: "special",  type: "光",   icon: "assets/icons/moves/闪光.png" },
   { id: "光球",       name: "光球",       power: 80, cost: 2,  category: "special",  type: "光",   icon: "assets/icons/moves/光球.png" },
@@ -206,6 +213,9 @@
   { id: "降灵",       name: "降灵",       power: 0, cost: 2,   category: "status",   type: "幽",   icon: "assets/icons/moves/降灵.png",   note: "敌方获得1层降灵印记" },
   { id: "报复",       name: "报复",       power: 0, cost: 2,   category: "defense",  type: "幽",   icon: "assets/icons/moves/报复.png",   note: "减伤70%，应对攻击：敌方失去3能量" },
   { id: "勾魂",       name: "勾魂",       power: 0, cost: 1,   category: "status",   type: "幽",   icon: "assets/icons/moves/勾魂.png",   note: "偷取敌方3能量" },
+  { id: "午夜噪音",   name: "午夜噪音",   power: 20, cost: 4,  category: "special",  type: "幽",   icon: "assets/icons/moves/午夜噪音.png", note: "5连击" },
+  { id: "嘲弄",       name: "嘲弄",       power: 0, cost: 2,   category: "status",   type: "幽",   icon: "assets/icons/moves/嘲弄.png",   note: "自己获得魔攻+90%，若敌方本回合更换精灵，自己获得速度+70" },
+  { id: "恐吓",       name: "恐吓",       power: 80, cost: 2,  category: "special",  type: "幽",   icon: "assets/icons/moves/恐吓.png" },
   // 虫
   { id: "噬心",       name: "噬心",       power: 60, cost: 1,  category: "physical", type: "虫",   icon: "assets/icons/moves/噬心.png" },
   { id: "掩护",       name: "掩护",       power: 0, cost: 2,   category: "defense",  type: "虫",   icon: "assets/icons/moves/掩护.png",   note: "减伤70%，紧急脱离，应对攻击：下个入场精灵获得减伤" },
