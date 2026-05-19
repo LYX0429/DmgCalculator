@@ -101,7 +101,7 @@ function onNatureClick(e) {
 
   const creature = CREATURES[document.getElementById(side === 'attacker' ? 'attacker-select' : 'defender-select').value];
   renderStatGrid(side, creature);
-  if (side === 'attacker') renderPresetButtons(creature);
+  if (side === 'attacker') renderPresetButtons(side, creature);
   onCalculate();
 }
 
@@ -118,7 +118,7 @@ function onIVToggle(e) {
 
   const creature = CREATURES[document.getElementById(side === 'attacker' ? 'attacker-select' : 'defender-select').value];
   renderStatGrid(side, creature);
-  if (side === 'attacker') renderPresetButtons(creature);
+  renderPresetButtons(side, creature);
   onCalculate();
 }
 
@@ -132,38 +132,40 @@ const PRESETS = [
 ];
 
 function getPresetReduce(creature, boost, ivStatIds) {
-  if (boost === 'atk')   return 'spatk';
-  if (boost === 'spatk') return 'atk';
+  const atkInIv   = ivStatIds.includes('atk');
+  const spatkInIv = ivStatIds.includes('spatk');
+  if (atkInIv && !spatkInIv)  return 'spatk';
+  if (spatkInIv && !atkInIv)  return 'atk';
+  // neither or both in ivs: pick the lower base stat, default atk
   const a = creature.baseStats.atk, s = creature.baseStats.spatk;
-  if (a < s) return 'atk';
-  if (s < a) return 'spatk';
-  // equal base: reduce whichever is NOT getting IVs; if tied, reduce atk
-  const atkHasIv = ivStatIds.includes('atk'), spatkHasIv = ivStatIds.includes('spatk');
-  if (!atkHasIv && spatkHasIv)  return 'atk';
-  if (!spatkHasIv && atkHasIv)  return 'spatk';
-  return 'atk';
+  return s < a ? 'spatk' : 'atk';
 }
 
-function renderPresetButtons(creature) {
-  const container = document.getElementById('attacker-presets');
+function renderPresetButtons(side, creature) {
+  const nature = side === 'attacker' ? attackerNature : defenderNature;
+  const ivs    = side === 'attacker' ? attackerIVs    : defenderIVs;
+  const container = document.getElementById(side === 'attacker' ? 'attacker-presets' : 'defender-presets');
   container.innerHTML = PRESETS.map((p, i) => {
     const reduce = getPresetReduce(creature, p.boost, p.ivs);
-    const isActive = attackerNature.boost === p.boost &&
-                     attackerNature.reduce === reduce &&
-                     p.ivs.every(id => !!attackerIVs[id]) &&
-                     Object.keys(attackerIVs).length === p.ivs.length;
-    return `<button class="preset-btn ${isActive ? 'active' : ''}" data-preset="${i}">${p.label}</button>`;
+    const isActive = nature.boost === p.boost &&
+                     nature.reduce === reduce &&
+                     p.ivs.every(id => !!ivs[id]) &&
+                     Object.keys(ivs).length === p.ivs.length;
+    return `<button class="preset-btn ${isActive ? 'active' : ''}" data-side="${side}" data-preset="${i}">${p.label}</button>`;
   }).join('');
   container.querySelectorAll('.preset-btn').forEach(btn => btn.addEventListener('click', onPresetClick));
 }
 
 function onPresetClick(e) {
-  const creature = CREATURES[document.getElementById('attacker-select').value];
+  const side    = e.currentTarget.dataset.side;
+  const creature = CREATURES[document.getElementById(side === 'attacker' ? 'attacker-select' : 'defender-select').value];
   const p = PRESETS[+e.currentTarget.dataset.preset];
-  attackerNature = { boost: p.boost, reduce: getPresetReduce(creature, p.boost, p.ivs) };
-  attackerIVs = Object.fromEntries(p.ivs.map(id => [id, 60]));
-  renderStatGrid('attacker', creature);
-  renderPresetButtons(creature);
+  const reduce = getPresetReduce(creature, p.boost, p.ivs);
+  const newIvs = Object.fromEntries(p.ivs.map(id => [id, 60]));
+  if (side === 'attacker') { attackerNature = { boost: p.boost, reduce }; attackerIVs = newIvs; }
+  else                     { defenderNature = { boost: p.boost, reduce }; defenderIVs = newIvs; }
+  renderStatGrid(side, creature);
+  renderPresetButtons(side, creature);
   onCalculate();
 }
 
@@ -171,7 +173,7 @@ function onAttackerChange() {
   const creature = CREATURES[document.getElementById('attacker-select').value];
   loadCreatureDefaults('attacker', creature);
   renderStatGrid('attacker', creature);
-  renderPresetButtons(creature);
+  renderPresetButtons('attacker', creature);
   populateMoves(creature);
   onCalculate();
 }
@@ -180,6 +182,7 @@ function onDefenderChange() {
   const creature = CREATURES[document.getElementById('defender-select').value];
   loadCreatureDefaults('defender', creature);
   renderStatGrid('defender', creature);
+  renderPresetButtons('defender', creature);
   onCalculate();
 }
 
