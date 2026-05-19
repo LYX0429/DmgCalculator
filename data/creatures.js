@@ -1,4 +1,4 @@
-// 性格列表：boost/reduce 对应 "hp"|"atk"|"def"|"spatk"|"spdef"|"spd"
+﻿// 性格列表：boost/reduce 对应 "hp"|"atk"|"def"|"spatk"|"spdef"|"spd"
 const NATURES = [
   { name: "沉默", boost: "hp",    reduce: "atk"   },
   { name: "平和", boost: "hp",    reduce: "spatk" },
@@ -83,6 +83,7 @@ const CREATURES = [
   {
     id: "di-mo",
     no: "001",
+    form: "base",
     name: "迪莫",
     types: ["光"],
     image: "assets/creatures/迪莫.png",
@@ -114,8 +115,30 @@ const CREATURES = [
     ],
   },
   {
+    id: "lan-niao-ben-lai-de-yang-zi",
+    no: "020",
+    form: "base",
+    name: "岚鸟（本来的样子）",
+    types: ["翼"],
+    image: "assets/creatures/岚鸟（本来的样子）.png",
+    baseStats: { hp: 90, atk: 128, spatk: 55, def: 108, spdef: 74, spd: 115 },
+    ability: { name: "顺风", desc: "若先于敌方攻击，本次技能威力+50%。", icon: "assets/icons/abilities/顺风.png" },
+    ivs: {},
+    nature: { name: "固执", boost: "atk", reduce: "spatk" },
+    commonMoves: [],
+    learnableMoves: [
+      "啄击", "力量增效", "先发制人", "乘风", "防御", "扇风", "羽化加速", "闪击",
+      "风起", "俯冲猛击", "快速移动", "羽刃", "龙卷风", "星星撞击", "恶能量",
+      "升龙咆哮", "球状闪电", "缠丝劲", "火焰冲锋", "灵媒", "花香", "冷风",
+      "噬心", "透射", "械斗", "碰爪", "星云漩涡", "跺地", "毒沼", "泡沫",
+      "风矢", "以重制重", "伺机而动", "借用", "偷袭", "冰爪", "冰雹", "撕咬",
+      "有效预防", "水刃", "水幕冲击", "潮涌", "热身运动", "疾风刺", "蓄水", "速冻",
+    ],
+  },
+  {
     id: "yin-su-quan",
     no: "048",
+    form: "base",
     name: "音速犬",
     types: ["火"],
     image: "assets/creatures/音速犬.png",
@@ -139,6 +162,7 @@ const CREATURES = [
   {
     id: "jian-zui-hu-xian",
     no: "149",
+    form: "base",
     name: "尖嘴狐仙",
     types: ["火", "冰"],
     image: "assets/creatures/尖嘴狐仙.png",
@@ -160,6 +184,7 @@ const CREATURES = [
   {
     id: "sheng-yu-yi-wang",
     no: "152",
+    form: "base",
     name: "圣羽翼王",
     types: ["翼"],
     image: "assets/creatures/圣羽翼王.png",
@@ -193,6 +218,7 @@ const CREATURES = [
   {
     id: "long-yu",
     no: "241",
+    form: "base",
     name: "龙鱼",
     types: ["水", "龙"],
     image: "assets/creatures/龙鱼.png",
@@ -212,28 +238,9 @@ const CREATURES = [
     ],
   },
   {
-    id: "lan-niao-ben-lai-de-yang-zi",
-    no: "020",
-    name: "岚鸟（本来的样子）",
-    types: ["翼"],
-    image: "assets/creatures/岚鸟（本来的样子）.png",
-    baseStats: { hp: 90, atk: 128, spatk: 55, def: 108, spdef: 74, spd: 115 },
-    ability: { name: "顺风", desc: "若先于敌方攻击，本次技能威力+50%。", icon: "assets/icons/abilities/顺风.png" },
-    ivs: {},
-    nature: { name: "固执", boost: "atk", reduce: "spatk" },
-    commonMoves: [],
-    learnableMoves: [
-      "啄击", "力量增效", "先发制人", "乘风", "防御", "扇风", "羽化加速", "闪击",
-      "风起", "俯冲猛击", "快速移动", "羽刃", "龙卷风", "星星撞击", "恶能量",
-      "升龙咆哮", "球状闪电", "缠丝劲", "火焰冲锋", "灵媒", "花香", "冷风",
-      "噬心", "透射", "械斗", "碰爪", "星云漩涡", "跺地", "毒沼", "泡沫",
-      "风矢", "以重制重", "伺机而动", "借用", "偷袭", "冰爪", "冰雹", "撕咬",
-      "有效预防", "水刃", "水幕冲击", "潮涌", "热身运动", "疾风刺", "蓄水", "速冻",
-    ],
-  },
-  {
     id: "liu-li-shui-mu",
     no: "245",
+    form: "base",
     name: "琉璃水母",
     types: ["水", "毒"],
     image: "assets/creatures/琉璃水母.png",
@@ -253,6 +260,7 @@ const CREATURES = [
   {
     id: "ji-mie-gu-long",
     no: "290",
+    form: "base",
     name: "寂灭骨龙",
     types: ["龙", "幽"],
     image: "assets/creatures/寂灭骨龙.png",
