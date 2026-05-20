@@ -63,6 +63,7 @@
   { id: "激怒",       name: "激怒",       power: 0, cost: 3,   category: "status",   type: "普通", icon: "assets/icons/moves/激怒.png",   note: "敌方除本回合使用的技能，其他技能能耗+3，持续3回合" },
   { id: "退化",       name: "退化",       power: 0, cost: 2,   category: "status",   type: "普通", icon: "assets/icons/moves/退化.png",   note: "敌方获得1层萌化" },
   { id: "垂死反击",   name: "垂死反击",   power: 80, cost: 4,  category: "physical", type: "普通", icon: "assets/icons/moves/垂死反击.png", note: "自己每失去5%生命，本次技能威力+5" },
+  { id: "旋转突击",   name: "旋转突击",   power: 35, cost: 3,  category: "physical", type: "普通", icon: "assets/icons/moves/旋转突击.png", note: "3连击" },
   // 光
   { id: "闪光",       name: "闪光",       power: 60, cost: 1,  category: "special",  type: "光",   icon: "assets/icons/moves/闪光.png" },
   { id: "光球",       name: "光球",       power: 80, cost: 2,  category: "special",  type: "光",   icon: "assets/icons/moves/光球.png" },
@@ -164,6 +165,8 @@
   { id: "电磁偏转",   name: "电磁偏转",   power: 0, cost: 3,   category: "defense",  type: "电",   icon: "assets/icons/moves/电磁偏转.png", note: "减伤70%，应对攻击：下回合所选技能使用次数+1" },
   { id: "磁干扰",     name: "磁干扰",     power: 60, cost: 1,  category: "special",  type: "电",   icon: "assets/icons/moves/磁干扰.png" },
   { id: "远程访问",   name: "远程访问",   power: 0, cost: 2,   category: "status",   type: "电",   icon: "assets/icons/moves/远程访问.png", note: "使敌方精灵返场" },
+  { id: "强制重启",   name: "强制重启",   power: 90, cost: 3,  category: "special",  type: "电",   icon: "assets/icons/moves/强制重启.png", note: "应对状态：回合结束时使敌方精灵返场" },
+  { id: "闪击折返",   name: "闪击折返",   power: 45, cost: 5,  category: "physical", type: "电",   icon: "assets/icons/moves/闪击折返.png", note: "2连击，自己脱离" },
   // 冰
   { id: "冰爪",       name: "冰爪",       power: 80, cost: 2,  category: "physical", type: "冰",   icon: "assets/icons/moves/冰爪.png" },
   { id: "冷风",       name: "冷风",       power: 60, cost: 1,  category: "special",  type: "冰",   icon: "assets/icons/moves/冷风.png",   note: "敌方获得魔防-50%" },
@@ -203,6 +206,13 @@
   { id: "地震",       name: "地震",       power: 190, cost: 10, category: "physical", type: "地",  icon: "assets/icons/moves/地震.png" },
   { id: "石肤术",     name: "石肤术",     power: 0, cost: 3,   category: "status",   type: "地",   icon: "assets/icons/moves/石肤术.png", note: "自己获得物防+160%和魔防-60%" },
   { id: "落石",       name: "落石",       power: 55, cost: 1,  category: "physical", type: "地",   icon: "assets/icons/moves/落石.png" },
+  { id: "泥浆",       name: "泥浆",       power: 40, cost: 0,  category: "special",  type: "地",   icon: "assets/icons/moves/泥浆.png" },
+  { id: "泥巴喷射",   name: "泥巴喷射",   power: 60, cost: 1,  category: "special",  type: "地",   icon: "assets/icons/moves/泥巴喷射.png" },
+  { id: "硬化",       name: "硬化",       power: 0, cost: 2,   category: "defense",  type: "地",   icon: "assets/icons/moves/硬化.png",   note: "减伤90%，若上次使用攻击技则本技能能耗-2，应对攻击" },
+  { id: "蓄势待发",   name: "蓄势待发",   power: 0, cost: 4,   category: "status",   type: "地",   icon: "assets/icons/moves/蓄势待发.png", note: "自己获得1层蓄势印记" },
+  { id: "流沙",       name: "流沙",       power: 0, cost: 2,   category: "status",   type: "地",   icon: "assets/icons/moves/流沙.png",   note: "敌方3回合无法更换精灵，应对防御：敌方获得双防-60%" },
+  { id: "沙涌",       name: "沙涌",       power: 0, cost: 7,   category: "status",   type: "地",   icon: "assets/icons/moves/沙涌.png",   note: "将天气改为沙暴，持续8回合" },
+  { id: "遁地",       name: "遁地",       power: 0, cost: 3,   category: "defense",  type: "地",   icon: "assets/icons/moves/遁地.png",   note: "减伤50%并脱离，应对攻击" },
   // 幻
   { id: "念力膨胀",   name: "念力膨胀",   power: 80, cost: 2,  category: "physical", type: "幻",   icon: "assets/icons/moves/念力膨胀.png" },
   { id: "星云漩涡",   name: "星云漩涡",   power: 60, cost: 1,  category: "physical", type: "幻",   icon: "assets/icons/moves/星云漩涡.png" },
@@ -277,6 +287,7 @@
   { id: "硬门",       name: "硬门",       power: 0, cost: 2,   category: "defense",  type: "武",   icon: "assets/icons/moves/硬门.png",   note: "应对攻击：打断被应对技能，并造成90威力物伤" },
   { id: "破防",       name: "破防",       power: 0, cost: 3,   category: "status",   type: "武",   icon: "assets/icons/moves/破防.png",   note: "敌方获得双防-130%，应对防御：额外使被应对技能冷却2回合" },
   { id: "预备势",     name: "预备势",     power: 0, cost: 1,   category: "status",   type: "武",   icon: "assets/icons/moves/预备势.png",  note: "自己获得物攻+80%，应对防御：额外使敌方获得物防-80%" },
+  { id: "崩拳",       name: "崩拳",       power: 65, cost: 2,  category: "physical", type: "武",   icon: "assets/icons/moves/崩拳.png",   note: "应对状态：自己获得物攻+100%" },
   // 翼
   { id: "鹰爪",       name: "鹰爪",       power: 60, cost: 1,  category: "physical", type: "翼",   icon: "assets/icons/moves/鹰爪.png" },
   { id: "风矢",       name: "风矢",       power: 80, cost: 2,  category: "physical", type: "翼",   icon: "assets/icons/moves/风矢.png" },
@@ -374,4 +385,5 @@
   { id: "腐化",       name: "腐化",       power: 0, cost: 1,   category: "status",   type: "毒",   icon: "assets/icons/moves/腐化.png",   note: "敌方每有1层中毒效果，敌方获得双攻-30%" },
   { id: "毒雾",       name: "毒雾",       power: 0, cost: 7,   category: "status",   type: "毒",   icon: "assets/icons/moves/毒雾.png",   note: "将敌方所有增益，转化成中毒" },
   { id: "毒孢子",     name: "毒孢子",     power: 0, cost: 3,   category: "status",   type: "毒",   icon: "assets/icons/moves/毒孢子.png", note: "敌方获得5层中毒" },
+  { id: "毒泡泡",     name: "毒泡泡",     power: 40, cost: 0,  category: "special",  type: "毒",   icon: "assets/icons/moves/毒泡泡.png" },
 ];
