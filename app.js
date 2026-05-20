@@ -599,6 +599,36 @@ function renderResultBars(current, scenarios) {
   }).join('');
 }
 
+function onSwap() {
+  // swap select values
+  const attackerSel = document.getElementById('attacker-select');
+  const defenderSel = document.getElementById('defender-select');
+  const tmpVal = attackerSel.value;
+  attackerSel.value = defenderSel.value;
+  defenderSel.value = tmpVal;
+
+  // swap form indices and boss state
+  [attackerFormIdx, defenderFormIdx] = [defenderFormIdx, attackerFormIdx];
+  [attackerBossActive, defenderBossActive] = [defenderBossActive, attackerBossActive];
+
+  // swap natures and ivs (travel with creature)
+  [attackerNature, defenderNature] = [defenderNature, attackerNature];
+  [attackerIVs, defenderIVs] = [defenderIVs, attackerIVs];
+
+  // reset ability and move effects
+  abilityActive = false;
+  activeMoveEffects = {};
+  moveStepperValues = {};
+
+  const newAttacker = getActiveCreature('attacker');
+  const newDefender = getActiveCreature('defender');
+  renderStatGrid('attacker', newAttacker);
+  renderPresetButtons('attacker', newAttacker);
+  renderStatGrid('defender', newDefender);
+  renderPresetButtons('defender', newDefender);
+  populateMoves(newAttacker);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const attackerSel = document.getElementById('attacker-select');
   const defenderSel = document.getElementById('defender-select');
@@ -628,6 +658,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (bossBtn) onBossToggle(bossBtn.dataset.side);
     });
   });
+  document.getElementById('swap-btn').addEventListener('click', onSwap);
   document.getElementById('move-select').addEventListener('change', onMoveChange);
   ['extra-power', 'atk-buff', 'def-buff'].forEach(id =>
     document.getElementById(id).addEventListener('input', onCalculate));
