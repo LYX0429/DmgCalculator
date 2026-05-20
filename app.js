@@ -23,6 +23,7 @@ const TYPE_ICONS = {
   '幽': 'assets/icons/type-you.png',
   '草': 'assets/icons/type-cao.png',
   '翼': 'assets/icons/type-yi.png',
+  '地': 'assets/icons/type-di.png',
 };
 
 const TYPE_COLORS = {

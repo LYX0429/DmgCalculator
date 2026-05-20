@@ -159,6 +159,11 @@
   { id: "钧势",       name: "钧势",       power: 0, cost: 3,   category: "status",   type: "地",   icon: "assets/icons/moves/钧势.png",   note: "自己获得物防+140%和速度-30" },
   { id: "陨石",       name: "陨石",       power: 100, cost: 3, category: "special",  type: "地",   icon: "assets/icons/moves/陨石.png" },
   { id: "鸣沙陷阱",   name: "鸣沙陷阱",   power: 60, cost: 4,  category: "physical", type: "地",   icon: "assets/icons/moves/鸣沙陷阱.png", note: "物防比敌方越高，本次技能威力越高" },
+  { id: "砂石冲撞",   name: "砂石冲撞",   power: 80, cost: 3,  category: "physical", type: "地",   icon: "assets/icons/moves/砂石冲撞.png", note: "若敌方本回合更换精灵，自己获得物防+100%" },
+  { id: "地刺",       name: "地刺",       power: 95, cost: 3,  category: "physical", type: "地",   icon: "assets/icons/moves/地刺.png",   note: "应对状态：额外打断被应对技能" },
+  { id: "岩土暴击",   name: "岩土暴击",   power: 140, cost: 8, category: "physical", type: "地",   icon: "assets/icons/moves/岩土暴击.png", note: "每被攻击1次，本技能能耗永久-1" },
+  { id: "地震",       name: "地震",       power: 190, cost: 10, category: "physical", type: "地",  icon: "assets/icons/moves/地震.png" },
+  { id: "石肤术",     name: "石肤术",     power: 0, cost: 3,   category: "status",   type: "地",   icon: "assets/icons/moves/石肤术.png", note: "自己获得物防+160%和魔防-60%" },
   // 幻
   { id: "念力膨胀",   name: "念力膨胀",   power: 80, cost: 2,  category: "physical", type: "幻",   icon: "assets/icons/moves/念力膨胀.png" },
   { id: "星云漩涡",   name: "星云漩涡",   power: 60, cost: 1,  category: "physical", type: "幻",   icon: "assets/icons/moves/星云漩涡.png" },
