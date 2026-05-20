@@ -206,6 +206,9 @@
   { id: "离子火花",   name: "离子火花",   power: 80, cost: 2,  category: "physical", type: "电",   icon: "assets/icons/moves/离子火花.png" },
   { id: "交叉闪电",   name: "交叉闪电",   power: 100, cost: 3, category: "physical", type: "电",   icon: "assets/icons/moves/交叉闪电.png" },
   { id: "雷暴",       name: "雷暴",       power: 55, cost: 1,  category: "special",  type: "电",   icon: "assets/icons/moves/雷暴.png",   note: "迸发：本技能获得所有生效过的迸发，每获得1种，本技能能耗+1，威力+10" },
+  { id: "超导加速",   name: "超导加速",   power: 70, cost: 2,  category: "special",  type: "电",   icon: "assets/icons/moves/超导加速.png", note: "自己获得速度+30" },
+  { id: "电流",       name: "电流",       power: 40, cost: 0,  category: "special",  type: "电",   icon: "assets/icons/moves/电流.png" },
+  { id: "增程电池",   name: "增程电池",   power: 0, cost: 2,   category: "status",   type: "电",   icon: "assets/icons/moves/增程电池.png", note: "自己获得1层蓄电印记" },
   // 冰
   { id: "冰爪",       name: "冰爪",       power: 80, cost: 2,  category: "physical", type: "冰",   icon: "assets/icons/moves/冰爪.png" },
   { id: "冷风",       name: "冷风",       power: 60, cost: 1,  category: "special",  type: "冰",   icon: "assets/icons/moves/冷风.png",   note: "敌方获得魔防-50%" },
@@ -231,6 +234,11 @@
   { id: "雾气环绕",   name: "雾气环绕",   power: 0, cost: 1,   category: "status",   type: "冰",   icon: "assets/icons/moves/雾气环绕.png", note: "回复能量，回复值等于敌方技能总能耗的一半" },
   { id: "碎冰冰",     name: "碎冰冰",     power: 40, cost: 3,  category: "special",  type: "冰",   icon: "assets/icons/moves/碎冰冰.png",  note: "敌方每有1层冻结，本次技能威力+20" },
   { id: "霜天",       name: "霜天",       power: 0, cost: 4,   category: "status",   type: "冰",   icon: "assets/icons/moves/霜天.png",   note: "敌方获得1层冻结，且每有1层冻结获得全技能能耗+1" },
+  { id: "霜冻",       name: "霜冻",       power: 0, cost: 1,   category: "status",   type: "冰",   icon: "assets/icons/moves/霜冻.png",   note: "敌方获得魔防-100%" },
+  { id: "冰锋横扫",   name: "冰锋横扫",   power: 0, cost: 4,   category: "special",  type: "冰",   icon: "assets/icons/moves/冰锋横扫.png", note: "本技能威力等于敌方精灵技能总能耗的10倍" },
+  { id: "冰锥",       name: "冰锥",       power: 40, cost: 0,  category: "physical", type: "冰",   icon: "assets/icons/moves/冰锥.png" },
+  { id: "冰蛋壳",     name: "冰蛋壳",     power: 0, cost: 3,   category: "defense",  type: "冰",   icon: "assets/icons/moves/冰蛋壳.png", note: "减伤60%，应对攻击：敌方获得2层减速印记" },
+  { id: "冰冻光线",   name: "冰冻光线",   power: 90, cost: 7,  category: "special",  type: "冰",   icon: "assets/icons/moves/冰冻光线.png", note: "敌方获得全技能能耗+2" },
   // 地
   { id: "热砂",       name: "热砂",       power: 80, cost: 2,  category: "special",  type: "地",   icon: "assets/icons/moves/热砂.png" },
   { id: "扬沙",       name: "扬沙",       power: 60, cost: 1,  category: "physical", type: "地",   icon: "assets/icons/moves/扬沙.png" },
@@ -443,6 +451,7 @@
   { id: "联动装置",   name: "联动装置",   power: 0, cost: 0,   category: "status",   type: "机械", icon: "assets/icons/moves/联动装置.png", note: "使用后两侧技能的威力永久+20，应对防御：变为威力永久+30" },
   { id: "杠杆置换",   name: "杠杆置换",   power: 0, cost: 0,   category: "status",   type: "机械", icon: "assets/icons/moves/杠杆置换.png", note: "自己回复2能量，交换两侧技能位置" },
   { id: "能量守恒",   name: "能量守恒",   power: 0, cost: 2,   category: "defense",  type: "机械", icon: "assets/icons/moves/能量守恒.png", note: "减伤80%，应对攻击：两侧技能能耗永久-1" },
+  { id: "钢铁洪流",   name: "钢铁洪流",   power: 70, cost: 3,  category: "physical", type: "机械", icon: "assets/icons/moves/钢铁洪流.png", note: "本技能位于1号位时威力+90，传动2" },
   // 毒
   { id: "溃烂触碰",   name: "溃烂触碰",   power: 60, cost: 1,  category: "physical", type: "毒",   icon: "assets/icons/moves/溃烂触碰.png" },
   { id: "不可接触",   name: "不可接触",   power: 0, cost: 1,   category: "defense",  type: "毒",   icon: "assets/icons/moves/不可接触.png", note: "减伤50%，敌方每有1层中毒效果，本技能减伤+10%，应对攻击" },
