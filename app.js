@@ -68,7 +68,7 @@ function getActiveCreature(side) {
   const base = CREATURES[side === 'attacker' ? attackerFormIdx : defenderFormIdx];
   const bossActive = side === 'attacker' ? attackerBossActive : defenderBossActive;
   if (bossActive) {
-    const boss = CREATURES.find(c => c.form === 'boss' && c.baseId === base.id);
+    const boss = CREATURES.find(c => c.id === base.bossId);
     if (boss) return { ...base, name: boss.name, types: boss.types, baseStats: boss.baseStats, ability: boss.ability, image: boss.image };
   }
   return base;
@@ -155,7 +155,7 @@ function renderStatGrid(side, creature) {
   const group = getFormGroup(creature);
   const arrowLeft  = group.length > 1 ? `<button class="form-arrow" data-side="${side}" data-dir="-1"><span class="arrow-icon">&#8249;</span><span class="arrow-text">上一个形态</span></button>` : '';
   const arrowRight = group.length > 1 ? `<button class="form-arrow" data-side="${side}" data-dir="1"><span class="arrow-icon">&#8250;</span><span class="arrow-text">下一个形态</span></button>` : '';
-  const bossForm = CREATURES.find(c => c.form === 'boss' && c.baseId === baseCreature.id);
+  const bossForm = CREATURES.find(c => c.id === baseCreature.bossId);
   const bossActive = side === 'attacker' ? attackerBossActive : defenderBossActive;
   const bossBtnHtml = bossForm ? `<button class="boss-btn${bossActive ? ' active' : ''}" data-side="${side}">首领</button>` : '';
   const imgHtml = creature.image
