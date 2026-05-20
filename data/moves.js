@@ -62,6 +62,7 @@
   { id: "棘刺",       name: "棘刺",       power: 0, cost: 2,   category: "status",   type: "普通", icon: "assets/icons/moves/棘刺.png",   note: "敌方获得1层棘刺印记" },
   { id: "激怒",       name: "激怒",       power: 0, cost: 3,   category: "status",   type: "普通", icon: "assets/icons/moves/激怒.png",   note: "敌方除本回合使用的技能，其他技能能耗+3，持续3回合" },
   { id: "退化",       name: "退化",       power: 0, cost: 2,   category: "status",   type: "普通", icon: "assets/icons/moves/退化.png",   note: "敌方获得1层萌化" },
+  { id: "垂死反击",   name: "垂死反击",   power: 80, cost: 4,  category: "physical", type: "普通", icon: "assets/icons/moves/垂死反击.png", note: "自己每失去5%生命，本次技能威力+5" },
   // 光
   { id: "闪光",       name: "闪光",       power: 60, cost: 1,  category: "special",  type: "光",   icon: "assets/icons/moves/闪光.png" },
   { id: "光球",       name: "光球",       power: 80, cost: 2,  category: "special",  type: "光",   icon: "assets/icons/moves/光球.png" },
@@ -130,6 +131,7 @@
   { id: "涌泉",       name: "涌泉",       power: 60, cost: 6,  category: "special",  type: "水",   icon: "assets/icons/moves/涌泉.png",   note: "本技能能耗每-1，威力+10" },
   { id: "落雨",       name: "落雨",       power: 0, cost: 5,   category: "status",   type: "水",   icon: "assets/icons/moves/落雨.png",   note: "将天气改为雨天，持续8回合" },
   { id: "盐水浴",     name: "盐水浴",     power: 0, cost: 2,   category: "status",   type: "水",   icon: "assets/icons/moves/盐水浴.png", note: "自己获得全技能能耗-2，应对防御：改为技能能耗-3" },
+  { id: "水波术",     name: "水波术",     power: 90, cost: 6,  category: "special",  type: "水",   icon: "assets/icons/moves/水波术.png", note: "回合结束时，本技能威力永久+20" },
   // 草
   { id: "棘突",       name: "棘突",       power: 100, cost: 3, category: "special",  type: "草",   icon: "assets/icons/moves/棘突.png" },
   { id: "花香",       name: "花香",       power: 60, cost: 1,  category: "special",  type: "草",   icon: "assets/icons/moves/花香.png" },
@@ -171,6 +173,7 @@
   { id: "冰雹",       name: "冰雹",       power: 105, cost: 4, category: "physical", type: "冰",   icon: "assets/icons/moves/冰雹.png",   note: "应对状态：额外使敌方获得全技能能耗+3" },
   { id: "冰晶坠",     name: "冰晶坠",     power: 90, cost: 4,  category: "physical", type: "冰",   icon: "assets/icons/moves/冰晶坠.png", note: "敌方获得全技能能耗+1" },
   { id: "极寒领域",   name: "极寒领域",   power: 105, cost: 6, category: "special",  type: "冰",   icon: "assets/icons/moves/极寒领域.png", note: "若敌方有冻结，本次技能威力+60，应对状态：使冻结翻倍" },
+  { id: "丢冰块",     name: "丢冰块",     power: 90, cost: 3,  category: "physical", type: "冰",   icon: "assets/icons/moves/丢冰块.png", note: "敌方获得速度-30" },
   // 地
   { id: "热砂",       name: "热砂",       power: 80, cost: 2,  category: "special",  type: "地",   icon: "assets/icons/moves/热砂.png" },
   { id: "扬沙",       name: "扬沙",       power: 60, cost: 1,  category: "physical", type: "地",   icon: "assets/icons/moves/扬沙.png" },
@@ -248,6 +251,13 @@
   { id: "截拳",       name: "截拳",       power: 90, cost: 3,  category: "physical", type: "武",   icon: "assets/icons/moves/截拳.png",   note: "应对状态：额外造成打断，回复该技能能耗的能量" },
   { id: "气沉丹田",   name: "气沉丹田",   power: 0, cost: 10,  category: "status",   type: "武",   icon: "assets/icons/moves/气沉丹田.png", note: "自己回复60%生命，获得物攻+130%，每次应对后本技能能耗-3，使用后能耗重置" },
   { id: "爆冲",       name: "爆冲",       power: 65, cost: 3,  category: "physical", type: "武",   icon: "assets/icons/moves/爆冲.png",   note: "应对状态：本次技能威力变为5倍" },
+  { id: "气波",       name: "气波",       power: 40, cost: 0,  category: "special",  type: "武",   icon: "assets/icons/moves/气波.png" },
+  { id: "防御反击",   name: "防御反击",   power: 0, cost: 3,   category: "defense",  type: "武",   icon: "assets/icons/moves/防御反击.png", note: "减伤80%，应对攻击：自己获得全技能威力+40" },
+  { id: "听桥",       name: "听桥",       power: 0, cost: 4,   category: "defense",  type: "武",   icon: "assets/icons/moves/听桥.png",   note: "减伤60%，应对攻击：对敌方造成物理伤害，威力与被应对技能相等" },
+  { id: "一拳",       name: "一拳",       power: 140, cost: 5, category: "physical", type: "武",   icon: "assets/icons/moves/一拳.png" },
+  { id: "斩断",       name: "斩断",       power: 75, cost: 2,  category: "physical", type: "武",   icon: "assets/icons/moves/斩断.png",   note: "应对状态：额外打断被应对技能" },
+  { id: "叠势",       name: "叠势",       power: 25, cost: 3,  category: "special",  type: "武",   icon: "assets/icons/moves/叠势.png",   note: "2连击，每成功应对1次，本技能连击数永久+2" },
+  { id: "硬门",       name: "硬门",       power: 0, cost: 2,   category: "defense",  type: "武",   icon: "assets/icons/moves/硬门.png",   note: "应对攻击：打断被应对技能，并造成90威力物伤" },
   // 翼
   { id: "鹰爪",       name: "鹰爪",       power: 60, cost: 1,  category: "physical", type: "翼",   icon: "assets/icons/moves/鹰爪.png" },
   { id: "风矢",       name: "风矢",       power: 80, cost: 2,  category: "physical", type: "翼",   icon: "assets/icons/moves/风矢.png" },
