@@ -174,6 +174,9 @@
   { id: "冰晶坠",     name: "冰晶坠",     power: 90, cost: 4,  category: "physical", type: "冰",   icon: "assets/icons/moves/冰晶坠.png", note: "敌方获得全技能能耗+1" },
   { id: "极寒领域",   name: "极寒领域",   power: 105, cost: 6, category: "special",  type: "冰",   icon: "assets/icons/moves/极寒领域.png", note: "若敌方有冻结，本次技能威力+60，应对状态：使冻结翻倍" },
   { id: "丢冰块",     name: "丢冰块",     power: 90, cost: 3,  category: "physical", type: "冰",   icon: "assets/icons/moves/丢冰块.png", note: "敌方获得速度-30" },
+  { id: "冰捆缚",     name: "冰捆缚",     power: 0, cost: 3,   category: "status",   type: "冰",   icon: "assets/icons/moves/冰捆缚.png", note: "2连击，每次连击敌方获得全技能能耗+1" },
+  { id: "瞬间零度",   name: "瞬间零度",   power: 0, cost: 0,   category: "status",   type: "冰",   icon: "assets/icons/moves/瞬间零度.png", note: "本回合敌方使用的技能能耗+3，应对防御：改为全技能能耗+3" },
+  { id: "滚雪球",     name: "滚雪球",     power: 55, cost: 3,  category: "physical", type: "冰",   icon: "assets/icons/moves/滚雪球.png", note: "敌方获得2层冻结，应对状态：额外获得2层，本次技能威力翻倍" },
   // 地
   { id: "热砂",       name: "热砂",       power: 80, cost: 2,  category: "special",  type: "地",   icon: "assets/icons/moves/热砂.png" },
   { id: "扬沙",       name: "扬沙",       power: 60, cost: 1,  category: "physical", type: "地",   icon: "assets/icons/moves/扬沙.png" },
@@ -189,6 +192,7 @@
   { id: "岩土暴击",   name: "岩土暴击",   power: 140, cost: 8, category: "physical", type: "地",   icon: "assets/icons/moves/岩土暴击.png", note: "每被攻击1次，本技能能耗永久-1" },
   { id: "地震",       name: "地震",       power: 190, cost: 10, category: "physical", type: "地",  icon: "assets/icons/moves/地震.png" },
   { id: "石肤术",     name: "石肤术",     power: 0, cost: 3,   category: "status",   type: "地",   icon: "assets/icons/moves/石肤术.png", note: "自己获得物防+160%和魔防-60%" },
+  { id: "落石",       name: "落石",       power: 55, cost: 1,  category: "physical", type: "地",   icon: "assets/icons/moves/落石.png" },
   // 幻
   { id: "念力膨胀",   name: "念力膨胀",   power: 80, cost: 2,  category: "physical", type: "幻",   icon: "assets/icons/moves/念力膨胀.png" },
   { id: "星云漩涡",   name: "星云漩涡",   power: 60, cost: 1,  category: "physical", type: "幻",   icon: "assets/icons/moves/星云漩涡.png" },
@@ -242,6 +246,7 @@
   { id: "恶念交换",   name: "恶念交换",   power: 0, cost: 4,   category: "status",   type: "恶",   icon: "assets/icons/moves/恶念交换.png", note: "与敌方交换生命比例" },
   { id: "掠夺",       name: "掠夺",       power: 60, cost: 1,  category: "special",  type: "恶",   icon: "assets/icons/moves/掠夺.png" },
   { id: "暗箱操作",   name: "暗箱操作",   power: 0, cost: 1,   category: "status",   type: "恶",   icon: "assets/icons/moves/暗箱操作.png", note: "自己获得双攻和双防-100%，应对防御：改为敌方获得双攻和双防-100%" },
+  { id: "迫害",       name: "迫害",       power: 40, cost: 0,  category: "physical", type: "恶",   icon: "assets/icons/moves/迫害.png" },
   // 武
   { id: "缠丝劲",     name: "缠丝劲",     power: 25, cost: 1,  category: "physical", type: "武",   icon: "assets/icons/moves/缠丝劲.png", note: "2连击" },
   { id: "反击拳",     name: "反击拳",     power: 25, cost: 2,  category: "physical", type: "武",   icon: "assets/icons/moves/反击拳.png", note: "2连击，若后手攻击，改为3连击" },
