@@ -88,6 +88,8 @@
   { id: "爆裂飞弹",   name: "爆裂飞弹",   power: 160, cost: 7, category: "special",  type: "火",   icon: "assets/icons/moves/爆裂飞弹.png" },
   { id: "天火",       name: "天火",       power: 0, cost: 3,   category: "status",   type: "火",   icon: "assets/icons/moves/天火.png",   note: "敌方获得10层灼烧，应对防御：改为获得30层" },
   { id: "除厄",       name: "除厄",       power: 60, cost: 2,  category: "special",  type: "火",   icon: "assets/icons/moves/除厄.png",   note: "驱散自己的减益" },
+  { id: "烈焰风暴",   name: "烈焰风暴",   power: 75, cost: 4,  category: "special",  type: "火",   icon: "assets/icons/moves/烈焰风暴.png", note: "敌方获得6层灼烧" },
+  { id: "燃尽",       name: "燃尽",       power: 155, cost: 4, category: "special",  type: "火",   icon: "assets/icons/moves/燃尽.png",   note: "敌方每失去5%生命，本次技能威力-5" },
   // 水
   { id: "潮涌",       name: "潮涌",       power: 80, cost: 2,  category: "physical", type: "水",   icon: "assets/icons/moves/潮涌.png" },
   { id: "泡沫",       name: "泡沫",       power: 60, cost: 1,  category: "physical", type: "水",   icon: "assets/icons/moves/泡沫.png" },
@@ -164,6 +166,7 @@
   { id: "双星",       name: "双星",       power: 100, cost: 3, category: "physical", type: "幻",   icon: "assets/icons/moves/双星.png" },
   { id: "多维击打",   name: "多维击打",   power: 15, cost: 4,  category: "special",  type: "幻",   icon: "assets/icons/moves/多维击打.png", note: "1连击，敌方每有1层星陨印记，本次技能连击数+1" },
   { id: "星轨裂变",   name: "星轨裂变",   power: 0, cost: 1,   category: "status",   type: "幻",   icon: "assets/icons/moves/星轨裂变.png", note: "敌方获得2层星陨印记" },
+  { id: "四维降解",   name: "四维降解",   power: 100, cost: 7, category: "special",  type: "幻",   icon: "assets/icons/moves/四维降解.png", note: "敌方每有1层印记，本技能能耗-1" },
   // 龙
   { id: "升龙咆哮",   name: "升龙咆哮",   power: 200, cost: 3, category: "special",  type: "龙",   icon: "assets/icons/moves/升龙咆哮.png", note: "蓄力" },
   { id: "龙吼",       name: "龙吼",       power: 60, cost: 1,  category: "physical", type: "龙",   icon: "assets/icons/moves/龙吼.png" },
@@ -255,6 +258,8 @@
   { id: "轴承支撑",   name: "轴承支撑",   power: 0, cost: 3,   category: "status",   type: "机械", icon: "assets/icons/moves/轴承支撑.png", note: "主动：本技能被动额外-1能耗，被动：两侧技能能耗-1，传动1" },
   { id: "钢钻",       name: "钢钻",       power: 0, cost: 4,   category: "physical", type: "机械", icon: "assets/icons/moves/钢钻.png",   note: "技能威力为两侧技能威力和的三分之一，传动1" },
   { id: "联动装置",   name: "联动装置",   power: 0, cost: 0,   category: "status",   type: "机械", icon: "assets/icons/moves/联动装置.png", note: "使用后两侧技能的威力永久+20，应对防御：变为威力永久+30" },
+  { id: "杠杆置换",   name: "杠杆置换",   power: 0, cost: 0,   category: "status",   type: "机械", icon: "assets/icons/moves/杠杆置换.png", note: "自己回复2能量，交换两侧技能位置" },
+  { id: "能量守恒",   name: "能量守恒",   power: 0, cost: 2,   category: "defense",  type: "机械", icon: "assets/icons/moves/能量守恒.png", note: "减伤80%，应对攻击：两侧技能能耗永久-1" },
   // 毒
   { id: "溃烂触碰",   name: "溃烂触碰",   power: 60, cost: 1,  category: "physical", type: "毒",   icon: "assets/icons/moves/溃烂触碰.png" },
   { id: "不可接触",   name: "不可接触",   power: 0, cost: 1,   category: "defense",  type: "毒",   icon: "assets/icons/moves/不可接触.png", note: "减伤50%，敌方每有1层中毒效果，本技能减伤+10%，应对攻击" },
