@@ -275,6 +275,8 @@
   { id: "斩断",       name: "斩断",       power: 75, cost: 2,  category: "physical", type: "武",   icon: "assets/icons/moves/斩断.png",   note: "应对状态：额外打断被应对技能" },
   { id: "叠势",       name: "叠势",       power: 25, cost: 3,  category: "special",  type: "武",   icon: "assets/icons/moves/叠势.png",   note: "2连击，每成功应对1次，本技能连击数永久+2" },
   { id: "硬门",       name: "硬门",       power: 0, cost: 2,   category: "defense",  type: "武",   icon: "assets/icons/moves/硬门.png",   note: "应对攻击：打断被应对技能，并造成90威力物伤" },
+  { id: "破防",       name: "破防",       power: 0, cost: 3,   category: "status",   type: "武",   icon: "assets/icons/moves/破防.png",   note: "敌方获得双防-130%，应对防御：额外使被应对技能冷却2回合" },
+  { id: "预备势",     name: "预备势",     power: 0, cost: 1,   category: "status",   type: "武",   icon: "assets/icons/moves/预备势.png",  note: "自己获得物攻+80%，应对防御：额外使敌方获得物防-80%" },
   // 翼
   { id: "鹰爪",       name: "鹰爪",       power: 60, cost: 1,  category: "physical", type: "翼",   icon: "assets/icons/moves/鹰爪.png" },
   { id: "风矢",       name: "风矢",       power: 80, cost: 2,  category: "physical", type: "翼",   icon: "assets/icons/moves/风矢.png" },
