@@ -51,6 +51,8 @@
   { id: "彗星",       name: "彗星",       power: 240, cost: 0, category: "special",  type: "普通", icon: "assets/icons/moves/彗星.png",   note: "每失去5%生命，本次技能威力-10，使用后消耗全部生命" },
   { id: "精神扰乱",   name: "精神扰乱",   power: 0, cost: 0,   category: "status",   type: "普通", icon: "assets/icons/moves/精神扰乱.png", note: "敌方获得全技能能耗+1，应对防御：改为能耗+3" },
   { id: "魔能爆",     name: "魔能爆",     power: 0, cost: 0,   category: "special",  type: "普通", icon: "assets/icons/moves/魔能爆.png",   note: "使用时消耗所有能量，消耗越高，伤害越高" },
+  { id: "能量刃",     name: "能量刃",     power: 80, cost: 3,  category: "physical", type: "普通", icon: "assets/icons/moves/能量刃.png",   note: "每应对成功1次，本技能威力永久+90" },
+  { id: "气势一击",   name: "气势一击",   power: 80, cost: 3,  category: "physical", type: "普通", icon: "assets/icons/moves/气势一击.png", note: "若上回合应对成功，本次技能威力+180" },
   // 光
   { id: "闪光",       name: "闪光",       power: 60, cost: 1,  category: "special",  type: "光",   icon: "assets/icons/moves/闪光.png" },
   { id: "光球",       name: "光球",       power: 80, cost: 2,  category: "special",  type: "光",   icon: "assets/icons/moves/光球.png" },
@@ -170,6 +172,7 @@
   { id: "四维降解",   name: "四维降解",   power: 100, cost: 7, category: "special",  type: "幻",   icon: "assets/icons/moves/四维降解.png", note: "敌方每有1层印记，本技能能耗-1" },
   { id: "大爆炸",     name: "大爆炸",     power: 100, cost: 3, category: "special",  type: "幻",   icon: "assets/icons/moves/大爆炸.png" },
   { id: "心灵洞悉",   name: "心灵洞悉",   power: 0, cost: 7,   category: "status",   type: "幻",   icon: "assets/icons/moves/心灵洞悉.png", note: "敌方获得星陨印记，获得层数等于敌方印记层数" },
+  { id: "粒子对撞",   name: "粒子对撞",   power: 40, cost: 0,  category: "physical", type: "幻",   icon: "assets/icons/moves/粒子对撞.png" },
   // 龙
   { id: "升龙咆哮",   name: "升龙咆哮",   power: 200, cost: 3, category: "special",  type: "龙",   icon: "assets/icons/moves/升龙咆哮.png", note: "蓄力" },
   { id: "龙吼",       name: "龙吼",       power: 60, cost: 1,  category: "physical", type: "龙",   icon: "assets/icons/moves/龙吼.png" },
@@ -233,6 +236,9 @@
   { id: "捧杀",       name: "捧杀",       power: 0, cost: 4,   category: "defense",  type: "萌",   icon: "assets/icons/moves/捧杀.png",   note: "减伤90%，应对攻击：敌方获得1层萌化" },
   { id: "碰爪",       name: "碰爪",       power: 60, cost: 1,  category: "physical", type: "萌",   icon: "assets/icons/moves/碰爪.png" },
   { id: "甜心续航",   name: "甜心续航",   power: 0, cost: 3,   category: "status",   type: "萌",   icon: "assets/icons/moves/甜心续航.png", note: "自己和敌方获得萌化：回复40%生命和4能量" },
+  { id: "鞭打",       name: "鞭打",       power: 40, cost: 0,  category: "physical", type: "萌",   icon: "assets/icons/moves/鞭打.png" },
+  { id: "超级糖果",   name: "超级糖果",   power: 100, cost: 3, category: "physical", type: "萌",   icon: "assets/icons/moves/超级糖果.png", note: "自己获得萌化：本次技能威力+60" },
+  { id: "砂糖弹球",   name: "砂糖弹球",   power: 0, cost: 2,   category: "physical", type: "萌",   icon: "assets/icons/moves/砂糖弹球.png", note: "双方体重差越大，本次技能威力越高" },
   // 幽
   { id: "幻象",       name: "幻象",       power: 60, cost: 1,  category: "physical", type: "幽",   icon: "assets/icons/moves/幻象.png" },
   { id: "虚化",       name: "虚化",       power: 0, cost: 2,   category: "defense",  type: "幽",   icon: "assets/icons/moves/虚化.png",   note: "减伤80%，应对攻击：自己获得魔防+70%" },
@@ -247,6 +253,7 @@
   { id: "恐吓",       name: "恐吓",       power: 80, cost: 2,  category: "special",  type: "幽",   icon: "assets/icons/moves/恐吓.png" },
   { id: "灵光",       name: "灵光",       power: 25, cost: 3,  category: "special",  type: "幽",   icon: "assets/icons/moves/灵光.png",   note: "3连击，若敌方本回合更换精灵，本次技能连击数翻倍" },
   { id: "恶作剧",     name: "恶作剧",     power: 0, cost: 1,   category: "status",   type: "幽",   icon: "assets/icons/moves/恶作剧.png", note: "敌方失去3能量，应对防御：改为敌方失去6能量" },
+  { id: "惊吓盒子",   name: "惊吓盒子",   power: 80, cost: 3,  category: "physical", type: "幽",   icon: "assets/icons/moves/惊吓盒子.png", note: "应对状态：使敌方失去6能量" },
   // 虫
   { id: "噬心",       name: "噬心",       power: 60, cost: 1,  category: "physical", type: "虫",   icon: "assets/icons/moves/噬心.png" },
   { id: "掩护",       name: "掩护",       power: 0, cost: 2,   category: "defense",  type: "虫",   icon: "assets/icons/moves/掩护.png",   note: "减伤70%，紧急脱离，应对攻击：下个入场精灵获得减伤" },
