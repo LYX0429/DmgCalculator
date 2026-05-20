@@ -263,6 +263,8 @@
   { id: "遁地",       name: "遁地",       power: 0, cost: 3,   category: "defense",  type: "地",   icon: "assets/icons/moves/遁地.png",   note: "减伤50%并脱离，应对攻击" },
   { id: "震击",       name: "震击",       power: 80, cost: 3,  category: "physical", type: "地",   icon: "assets/icons/moves/震击.png",   note: "造成伤害，敌方获得连击数-3" },
   // 幻
+  { id: "偷师",       name: "偷师",       power: 30, cost: 0,  category: "physical", type: "幻",   icon: "assets/icons/moves/偷师.png",   note: "自己回复1能量" },
+  { id: "超新星馈赠", name: "超新星馈赠", power: 0, cost: 2,   category: "status",   type: "幻",   icon: "assets/icons/moves/超新星馈赠.png", note: "敌方获得2层星陨印记，每使用1次，赋予的星陨印记层数+1" },
   { id: "念力膨胀",   name: "念力膨胀",   power: 80, cost: 2,  category: "physical", type: "幻",   icon: "assets/icons/moves/念力膨胀.png" },
   { id: "星云漩涡",   name: "星云漩涡",   power: 60, cost: 1,  category: "physical", type: "幻",   icon: "assets/icons/moves/星云漩涡.png" },
   { id: "坍缩",       name: "坍缩",       power: 85, cost: 3,  category: "special",  type: "幻",   icon: "assets/icons/moves/坍缩.png",   note: "若击败敌方，自己获得魔攻+70%" },
@@ -278,6 +280,8 @@
   { id: "粒子对撞",   name: "粒子对撞",   power: 40, cost: 0,  category: "physical", type: "幻",   icon: "assets/icons/moves/粒子对撞.png" },
   { id: "针状物",     name: "针状物",     power: 30, cost: 3,  category: "special",  type: "幻",   icon: "assets/icons/moves/针状物.png",  note: "3连击" },
   { id: "空间压迫",   name: "空间压迫",   power: 70, cost: 3,  category: "physical", type: "幻",   icon: "assets/icons/moves/空间压迫.png", note: "敌方获得1层星陨印记" },
+  { id: "星链",       name: "星链",       power: 0, cost: 3,   category: "status",   type: "幻",   icon: "assets/icons/moves/星链.png",   note: "2连击，每次连击使敌方获得1层星陨印记" },
+  { id: "错乱",       name: "错乱",       power: 65, cost: 2,  category: "special",  type: "幻",   icon: "assets/icons/moves/错乱.png",   note: "应对状态：敌方获得3层星陨印记" },
   // 龙
   { id: "升龙咆哮",   name: "升龙咆哮",   power: 200, cost: 3, category: "special",  type: "龙",   icon: "assets/icons/moves/升龙咆哮.png", note: "蓄力" },
   { id: "龙吼",       name: "龙吼",       power: 60, cost: 1,  category: "physical", type: "龙",   icon: "assets/icons/moves/龙吼.png" },
