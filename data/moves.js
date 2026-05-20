@@ -54,6 +54,7 @@
   { id: "能量刃",     name: "能量刃",     power: 80, cost: 3,  category: "physical", type: "普通", icon: "assets/icons/moves/能量刃.png",   note: "每应对成功1次，本技能威力永久+90" },
   { id: "气势一击",   name: "气势一击",   power: 80, cost: 3,  category: "physical", type: "普通", icon: "assets/icons/moves/气势一击.png", note: "若上回合应对成功，本次技能威力+180" },
   { id: "压扁",       name: "压扁",       power: 155, cost: 5, category: "physical", type: "普通", icon: "assets/icons/moves/压扁.png" },
+  { id: "突袭",       name: "突袭",       power: 70, cost: 2,  category: "special",  type: "普通", icon: "assets/icons/moves/突袭.png",   note: "应对状态：本次技能威力变为3倍" },
   // 光
   { id: "闪光",       name: "闪光",       power: 60, cost: 1,  category: "special",  type: "光",   icon: "assets/icons/moves/闪光.png" },
   { id: "光球",       name: "光球",       power: 80, cost: 2,  category: "special",  type: "光",   icon: "assets/icons/moves/光球.png" },
@@ -97,9 +98,11 @@
   { id: "吹火",       name: "吹火",       power: 50, cost: 1,  category: "physical", type: "火",   icon: "assets/icons/moves/吹火.png",   note: "每次使用后，本技能威力永久+20" },
   { id: "持续高温",   name: "持续高温",   power: 70, cost: 2,  category: "special",  type: "火",   icon: "assets/icons/moves/持续高温.png", note: "应对状态：下次攻击技能威力翻倍" },
   { id: "山火",       name: "山火",       power: 15, cost: 3,  category: "physical", type: "火",   icon: "assets/icons/moves/山火.png",   note: "每使用1次其他火系技能，本技能威力永久翻倍" },
+  { id: "火爪",       name: "火爪",       power: 60, cost: 1,  category: "special",  type: "火",   icon: "assets/icons/moves/火爪.png" },
   // 水
   { id: "潮涌",       name: "潮涌",       power: 80, cost: 2,  category: "physical", type: "水",   icon: "assets/icons/moves/潮涌.png" },
   { id: "泡沫",       name: "泡沫",       power: 60, cost: 1,  category: "physical", type: "水",   icon: "assets/icons/moves/泡沫.png" },
+  { id: "肥皂泡",     name: "肥皂泡",     power: 60, cost: 1,  category: "special",  type: "水",   icon: "assets/icons/moves/肥皂泡.png" },
   { id: "气泡",       name: "气泡",       power: 100, cost: 3, category: "special",  type: "水",   icon: "assets/icons/moves/气泡.png" },
   { id: "天洪",       name: "天洪",       power: 150, cost: 7, category: "special",  type: "水",   icon: "assets/icons/moves/天洪.png",   note: "应对状态：本技能能耗永久-6" },
   { id: "甩水",       name: "甩水",       power: 30, cost: 0,  category: "special",  type: "水",   icon: "assets/icons/moves/甩水.png",   note: "自己回复1能量" },
@@ -129,6 +132,8 @@
   { id: "移花接木",   name: "移花接木",   power: 0, cost: 2,   category: "status",   type: "草",   icon: "assets/icons/moves/移花接木.png", note: "自己回复15%生命，随后脱离" },
   { id: "筛管奔流",   name: "筛管奔流",   power: 80, cost: 3,  category: "physical", type: "草",   icon: "assets/icons/moves/筛管奔流.png", note: "自己生命大于80%时，本次技能威力+75" },
   { id: "种皮爆裂",   name: "种皮爆裂",   power: 25, cost: 1,  category: "physical", type: "草",   icon: "assets/icons/moves/种皮爆裂.png", note: "2连击" },
+  { id: "叶绿光束",   name: "叶绿光束",   power: 120, cost: 4, category: "special",  type: "草",   icon: "assets/icons/moves/叶绿光束.png" },
+  { id: "根吸收",     name: "根吸收",     power: 0, cost: 2,   category: "status",   type: "草",   icon: "assets/icons/moves/根吸收.png",  note: "自己回复15%生命和4能量" },
   // 电
   { id: "超导",       name: "超导",       power: 95, cost: 3,  category: "special",  type: "电",   icon: "assets/icons/moves/超导.png",   note: "迸发：本技能能耗-1" },
   { id: "球状闪电",   name: "球状闪电",   power: 60, cost: 1,  category: "physical", type: "电",   icon: "assets/icons/moves/球状闪电.png" },
@@ -139,6 +144,8 @@
   { id: "过载回路",   name: "过载回路",   power: 0, cost: 1,   category: "status",   type: "电",   icon: "assets/icons/moves/过载回路.png", note: "回合结束自己返场，下回合所选技能使用次数+1" },
   { id: "麻痹",       name: "麻痹",       power: 0, cost: 2,   category: "status",   type: "电",   icon: "assets/icons/moves/麻痹.png",   note: "敌方先手-1，应对防御：额外使敌方获得双攻-70%" },
   { id: "电磁偏转",   name: "电磁偏转",   power: 0, cost: 3,   category: "defense",  type: "电",   icon: "assets/icons/moves/电磁偏转.png", note: "减伤70%，应对攻击：下回合所选技能使用次数+1" },
+  { id: "磁干扰",     name: "磁干扰",     power: 60, cost: 1,  category: "special",  type: "电",   icon: "assets/icons/moves/磁干扰.png" },
+  { id: "远程访问",   name: "远程访问",   power: 0, cost: 2,   category: "status",   type: "电",   icon: "assets/icons/moves/远程访问.png", note: "使敌方精灵返场" },
   // 冰
   { id: "冰爪",       name: "冰爪",       power: 80, cost: 2,  category: "physical", type: "冰",   icon: "assets/icons/moves/冰爪.png" },
   { id: "冷风",       name: "冷风",       power: 60, cost: 1,  category: "special",  type: "冰",   icon: "assets/icons/moves/冷风.png",   note: "敌方获得魔防-50%" },
@@ -153,6 +160,7 @@
   { id: "速冻",       name: "速冻",       power: 0, cost: 4,   category: "status",   type: "冰",   icon: "assets/icons/moves/速冻.png",   note: "敌方获得2层减速印记" },
   { id: "冰雹",       name: "冰雹",       power: 105, cost: 4, category: "physical", type: "冰",   icon: "assets/icons/moves/冰雹.png",   note: "应对状态：额外使敌方获得全技能能耗+3" },
   { id: "冰晶坠",     name: "冰晶坠",     power: 90, cost: 4,  category: "physical", type: "冰",   icon: "assets/icons/moves/冰晶坠.png", note: "敌方获得全技能能耗+1" },
+  { id: "极寒领域",   name: "极寒领域",   power: 105, cost: 6, category: "special",  type: "冰",   icon: "assets/icons/moves/极寒领域.png", note: "若敌方有冻结，本次技能威力+60，应对状态：使冻结翻倍" },
   // 地
   { id: "热砂",       name: "热砂",       power: 80, cost: 2,  category: "special",  type: "地",   icon: "assets/icons/moves/热砂.png" },
   { id: "扬沙",       name: "扬沙",       power: 60, cost: 1,  category: "physical", type: "地",   icon: "assets/icons/moves/扬沙.png" },
@@ -182,6 +190,7 @@
   { id: "大爆炸",     name: "大爆炸",     power: 100, cost: 3, category: "special",  type: "幻",   icon: "assets/icons/moves/大爆炸.png" },
   { id: "心灵洞悉",   name: "心灵洞悉",   power: 0, cost: 7,   category: "status",   type: "幻",   icon: "assets/icons/moves/心灵洞悉.png", note: "敌方获得星陨印记，获得层数等于敌方印记层数" },
   { id: "粒子对撞",   name: "粒子对撞",   power: 40, cost: 0,  category: "physical", type: "幻",   icon: "assets/icons/moves/粒子对撞.png" },
+  { id: "针状物",     name: "针状物",     power: 30, cost: 3,  category: "special",  type: "幻",   icon: "assets/icons/moves/针状物.png",  note: "3连击" },
   // 龙
   { id: "升龙咆哮",   name: "升龙咆哮",   power: 200, cost: 3, category: "special",  type: "龙",   icon: "assets/icons/moves/升龙咆哮.png", note: "蓄力" },
   { id: "龙吼",       name: "龙吼",       power: 60, cost: 1,  category: "physical", type: "龙",   icon: "assets/icons/moves/龙吼.png" },
@@ -200,6 +209,7 @@
   { id: "恶能量",     name: "恶能量",     power: 60, cost: 1,  category: "physical", type: "恶",   icon: "assets/icons/moves/恶能量.png" },
   { id: "撕咬",       name: "撕咬",       power: 30, cost: 3,  category: "physical", type: "恶",   icon: "assets/icons/moves/撕咬.png",   note: "3连击，若自己生命低于50%，本次技能连击数+2" },
   { id: "诋毁",       name: "诋毁",       power: 80, cost: 2,  category: "physical", type: "恶",   icon: "assets/icons/moves/诋毁.png" },
+  { id: "黑手",       name: "黑手",       power: 45, cost: 3,  category: "special",  type: "恶",   icon: "assets/icons/moves/黑手.png",   note: "2连击" },
   { id: "跌落",       name: "跌落",       power: 120, cost: 3, category: "physical", type: "恶",   icon: "assets/icons/moves/跌落.png",   note: "自己获得物攻-50%，应对状态：改为获得物攻+50%" },
   { id: "魔爪",       name: "魔爪",       power: 30, cost: 0,  category: "physical", type: "恶",   icon: "assets/icons/moves/魔爪.png",   note: "自己回复1能量" },
   { id: "趁火打劫",   name: "趁火打劫",   power: 35, cost: 3,  category: "physical", type: "恶",   icon: "assets/icons/moves/趁火打劫.png", note: "2连击，若击败敌方，本技能连击数永久+2" },
@@ -220,6 +230,7 @@
   { id: "缠丝劲",     name: "缠丝劲",     power: 25, cost: 1,  category: "physical", type: "武",   icon: "assets/icons/moves/缠丝劲.png", note: "2连击" },
   { id: "反击拳",     name: "反击拳",     power: 25, cost: 2,  category: "physical", type: "武",   icon: "assets/icons/moves/反击拳.png", note: "2连击，若后手攻击，改为3连击" },
   { id: "化劲",       name: "化劲",       power: 0, cost: 2,   category: "status",   type: "武",   icon: "assets/icons/moves/化劲.png",   note: "自己获得全技能威力+40" },
+  { id: "贯手",       name: "贯手",       power: 80, cost: 2,  category: "special",  type: "武",   icon: "assets/icons/moves/贯手.png" },
   // 翼
   { id: "鹰爪",       name: "鹰爪",       power: 60, cost: 1,  category: "physical", type: "翼",   icon: "assets/icons/moves/鹰爪.png" },
   { id: "风矢",       name: "风矢",       power: 80, cost: 2,  category: "physical", type: "翼",   icon: "assets/icons/moves/风矢.png" },
@@ -265,6 +276,7 @@
   { id: "惊吓盒子",   name: "惊吓盒子",   power: 80, cost: 3,  category: "physical", type: "幽",   icon: "assets/icons/moves/惊吓盒子.png", note: "应对状态：使敌方失去6能量" },
   // 虫
   { id: "噬心",       name: "噬心",       power: 60, cost: 1,  category: "physical", type: "虫",   icon: "assets/icons/moves/噬心.png" },
+  { id: "尾后针",     name: "尾后针",     power: 80, cost: 2,  category: "physical", type: "虫",   icon: "assets/icons/moves/尾后针.png" },
   { id: "掩护",       name: "掩护",       power: 0, cost: 2,   category: "defense",  type: "虫",   icon: "assets/icons/moves/掩护.png",   note: "减伤70%，紧急脱离，应对攻击：下个入场精灵获得减伤" },
   { id: "假寐",       name: "假寐",       power: 0, cost: 2,   category: "status",   type: "虫",   icon: "assets/icons/moves/假寐.png",   note: "自己回复2能量，己方队伍获得1次奉献：能耗-2" },
   // 机械
