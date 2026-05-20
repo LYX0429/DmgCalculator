@@ -225,6 +225,7 @@ const CREATURES = [
   {
     id: "e-mo-lang",
     no: "131",
+    bossId: "e-mo-lang-wang",
     form: "base",
     name: "恶魔狼",
     types: ["恶"],
@@ -242,6 +243,16 @@ const CREATURES = [
       "借用", "偷袭", "勾魂", "吞噬", "坟场搏击", "应激反应", "当头棒喝", "怒火",
       "惊吓盒子", "晒太阳", "有效预防", "火焰切割", "诡刺", "闪燃", "龙之利爪",
     ],
+  },
+  {
+    id: "e-mo-lang-wang",
+    no: "131",
+    form: "boss",
+    name: "恶魔狼王",
+    types: ["恶"],
+    image: "assets/creatures/恶魔狼王.png",
+    baseStats: { hp: 115, atk: 121, spatk: 50, def: 91, spdef: 63, spd: 120 },
+    ability: { name: "悼亡", desc: "双方队伍中每有1只力竭的精灵，自己获得双攻+30%。", icon: "assets/icons/abilities/悼亡.png" },
   },
   {
     id: "jian-zui-hu-xian",
