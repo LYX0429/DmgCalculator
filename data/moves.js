@@ -127,6 +127,9 @@
   { id: "水幕冲击",   name: "水幕冲击",   power: 100, cost: 3, category: "physical", type: "水",   icon: "assets/icons/moves/水幕冲击.png" },
   { id: "水花四溅",   name: "水花四溅",   power: 20, cost: 3,  category: "special",  type: "水",   icon: "assets/icons/moves/水花四溅.png", note: "4连击" },
   { id: "打湿",       name: "打湿",       power: 0, cost: 4,   category: "status",   type: "水",   icon: "assets/icons/moves/打湿.png",   note: "自己获得1层湿润印记" },
+  { id: "涌泉",       name: "涌泉",       power: 60, cost: 6,  category: "special",  type: "水",   icon: "assets/icons/moves/涌泉.png",   note: "本技能能耗每-1，威力+10" },
+  { id: "落雨",       name: "落雨",       power: 0, cost: 5,   category: "status",   type: "水",   icon: "assets/icons/moves/落雨.png",   note: "将天气改为雨天，持续8回合" },
+  { id: "盐水浴",     name: "盐水浴",     power: 0, cost: 2,   category: "status",   type: "水",   icon: "assets/icons/moves/盐水浴.png", note: "自己获得全技能能耗-2，应对防御：改为技能能耗-3" },
   // 草
   { id: "棘突",       name: "棘突",       power: 100, cost: 3, category: "special",  type: "草",   icon: "assets/icons/moves/棘突.png" },
   { id: "花香",       name: "花香",       power: 60, cost: 1,  category: "special",  type: "草",   icon: "assets/icons/moves/花香.png" },
