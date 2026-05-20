@@ -27,6 +27,7 @@ const TYPE_ICONS = {
   '武': 'assets/icons/type-wu.png',
   '虫': 'assets/icons/type-chong.png',
   '萌': 'assets/icons/type-meng.png',
+  '电': 'assets/icons/type-dian.png',
 };
 
 const TYPE_COLORS = {
