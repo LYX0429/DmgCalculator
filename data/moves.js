@@ -254,6 +254,8 @@
   { id: "泥巴喷射",   name: "泥巴喷射",   power: 60, cost: 1,  category: "special",  type: "地",   icon: "assets/icons/moves/泥巴喷射.png" },
   { id: "硬化",       name: "硬化",       power: 0, cost: 2,   category: "defense",  type: "地",   icon: "assets/icons/moves/硬化.png",   note: "减伤90%，若上次使用攻击技则本技能能耗-2，应对攻击" },
   { id: "蓄势待发",   name: "蓄势待发",   power: 0, cost: 4,   category: "status",   type: "地",   icon: "assets/icons/moves/蓄势待发.png", note: "自己获得1层蓄势印记" },
+  { id: "裂石",       name: "裂石",       power: 95, cost: 3,  category: "physical", type: "地",   icon: "assets/icons/moves/裂石.png",   note: "应对状态：敌方获得物防-80%" },
+  { id: "抛石",       name: "抛石",       power: 140, cost: 30, category: "physical", type: "地",  icon: "assets/icons/moves/抛石.png",   note: "回合结束时，本技能能耗永久-5" },
   { id: "流沙",       name: "流沙",       power: 0, cost: 2,   category: "status",   type: "地",   icon: "assets/icons/moves/流沙.png",   note: "敌方3回合无法更换精灵，应对防御：敌方获得双防-60%" },
   { id: "沙涌",       name: "沙涌",       power: 0, cost: 7,   category: "status",   type: "地",   icon: "assets/icons/moves/沙涌.png",   note: "将天气改为沙暴，持续8回合" },
   { id: "遁地",       name: "遁地",       power: 0, cost: 3,   category: "defense",  type: "地",   icon: "assets/icons/moves/遁地.png",   note: "减伤50%并脱离，应对攻击" },
@@ -313,6 +315,8 @@
   { id: "暗箱操作",   name: "暗箱操作",   power: 0, cost: 1,   category: "status",   type: "恶",   icon: "assets/icons/moves/暗箱操作.png", note: "自己获得双攻和双防-100%，应对防御：改为敌方获得双攻和双防-100%" },
   { id: "虚假破产",   name: "虚假破产",   power: 0, cost: 2,   category: "defense",  type: "恶",   icon: "assets/icons/moves/虚假破产.png", note: "减伤80%，能量不足时消耗5%生命代替1能量，应对攻击" },
   { id: "迫害",       name: "迫害",       power: 40, cost: 0,  category: "physical", type: "恶",   icon: "assets/icons/moves/迫害.png" },
+  { id: "栽赃",       name: "栽赃",       power: 150, cost: 6, category: "special",  type: "恶",   icon: "assets/icons/moves/栽赃.png" },
+  { id: "灾厄",       name: "灾厄",       power: 150, cost: 1, category: "physical", type: "恶",   icon: "assets/icons/moves/灾厄.png",   note: "对自己造成物伤，应对状态：改为对敌方造成物伤" },
   // 武
   { id: "缠丝劲",     name: "缠丝劲",     power: 25, cost: 1,  category: "physical", type: "武",   icon: "assets/icons/moves/缠丝劲.png", note: "2连击" },
   { id: "反击拳",     name: "反击拳",     power: 25, cost: 2,  category: "physical", type: "武",   icon: "assets/icons/moves/反击拳.png", note: "2连击，若后手攻击，改为3连击" },
