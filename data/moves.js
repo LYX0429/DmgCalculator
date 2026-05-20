@@ -58,6 +58,10 @@
   { id: "扫尾",       name: "扫尾",       power: 90, cost: 2,  category: "physical", type: "普通", icon: "assets/icons/moves/扫尾.png" },
   { id: "飞踢",       name: "飞踢",       power: 110, cost: 3, category: "physical", type: "普通", icon: "assets/icons/moves/飞踢.png" },
   { id: "能量炮",     name: "能量炮",     power: 50, cost: 3,  category: "special",  type: "普通", icon: "assets/icons/moves/能量炮.png", note: "2连击" },
+  { id: "打鼾",       name: "打鼾",       power: 165, cost: 6, category: "special",  type: "普通", icon: "assets/icons/moves/打鼾.png" },
+  { id: "棘刺",       name: "棘刺",       power: 0, cost: 2,   category: "status",   type: "普通", icon: "assets/icons/moves/棘刺.png",   note: "敌方获得1层棘刺印记" },
+  { id: "激怒",       name: "激怒",       power: 0, cost: 3,   category: "status",   type: "普通", icon: "assets/icons/moves/激怒.png",   note: "敌方除本回合使用的技能，其他技能能耗+3，持续3回合" },
+  { id: "退化",       name: "退化",       power: 0, cost: 2,   category: "status",   type: "普通", icon: "assets/icons/moves/退化.png",   note: "敌方获得1层萌化" },
   // 光
   { id: "闪光",       name: "闪光",       power: 60, cost: 1,  category: "special",  type: "光",   icon: "assets/icons/moves/闪光.png" },
   { id: "光球",       name: "光球",       power: 80, cost: 2,  category: "special",  type: "光",   icon: "assets/icons/moves/光球.png" },
@@ -260,6 +264,7 @@
   { id: "闪击",       name: "闪击",       power: 60, cost: 4,  category: "physical", type: "翼",   icon: "assets/icons/moves/闪击.png",  note: "速度比敌方越高威力越高" },
   { id: "乘风",       name: "乘风",       power: 0, cost: 2,   category: "status",   type: "翼",   icon: "assets/icons/moves/乘风.png",   note: "自己获得速度+120" },
   { id: "俯冲猛击",   name: "俯冲猛击",   power: 140, cost: 5, category: "physical", type: "翼",   icon: "assets/icons/moves/俯冲猛击.png" },
+  { id: "鸣叫",       name: "鸣叫",       power: 40, cost: 0,  category: "special",  type: "翼",   icon: "assets/icons/moves/鸣叫.png" },
   // 萌
   { id: "魅惑",       name: "魅惑",       power: 60, cost: 1,  category: "special",  type: "萌",   icon: "assets/icons/moves/魅惑.png" },
   { id: "飞吻",       name: "飞吻",       power: 80, cost: 2,  category: "special",  type: "萌",   icon: "assets/icons/moves/飞吻.png" },
@@ -269,6 +274,10 @@
   { id: "鞭打",       name: "鞭打",       power: 40, cost: 0,  category: "physical", type: "萌",   icon: "assets/icons/moves/鞭打.png" },
   { id: "超级糖果",   name: "超级糖果",   power: 100, cost: 3, category: "physical", type: "萌",   icon: "assets/icons/moves/超级糖果.png", note: "自己获得萌化：本次技能威力+60" },
   { id: "砂糖弹球",   name: "砂糖弹球",   power: 0, cost: 2,   category: "physical", type: "萌",   icon: "assets/icons/moves/砂糖弹球.png", note: "双方体重差越大，本次技能威力越高" },
+  { id: "生日蛋糕",   name: "生日蛋糕",   power: 0, cost: 4,   category: "status",   type: "萌",   icon: "assets/icons/moves/生日蛋糕.png", note: "驱散自己的减益，自己的增益翻倍" },
+  { id: "爆米花爆破", name: "爆米花爆破", power: 140, cost: 5, category: "physical", type: "萌",   icon: "assets/icons/moves/爆米花爆破.png" },
+  { id: "破罐破摔",   name: "破罐破摔",   power: 80, cost: 3,  category: "special",  type: "萌",   icon: "assets/icons/moves/破罐破摔.png", note: "自己有减益时，本次技能威力+60" },
+  { id: "反弹",       name: "反弹",       power: 0, cost: 4,   category: "status",   type: "萌",   icon: "assets/icons/moves/反弹.png",   note: "将自己的萌化转移给敌方" },
   // 幽
   { id: "幻象",       name: "幻象",       power: 60, cost: 1,  category: "physical", type: "幽",   icon: "assets/icons/moves/幻象.png" },
   { id: "虚化",       name: "虚化",       power: 0, cost: 2,   category: "defense",  type: "幽",   icon: "assets/icons/moves/虚化.png",   note: "减伤80%，应对攻击：自己获得魔防+70%" },
@@ -290,6 +299,12 @@
   { id: "尾后针",     name: "尾后针",     power: 80, cost: 2,  category: "physical", type: "虫",   icon: "assets/icons/moves/尾后针.png" },
   { id: "掩护",       name: "掩护",       power: 0, cost: 2,   category: "defense",  type: "虫",   icon: "assets/icons/moves/掩护.png",   note: "减伤70%，紧急脱离，应对攻击：下个入场精灵获得减伤" },
   { id: "假寐",       name: "假寐",       power: 0, cost: 2,   category: "status",   type: "虫",   icon: "assets/icons/moves/假寐.png",   note: "自己回复2能量，己方队伍获得1次奉献：能耗-2" },
+  { id: "蛰针",       name: "蛰针",       power: 40, cost: 0,  category: "physical", type: "虫",   icon: "assets/icons/moves/蛰针.png" },
+  { id: "虫茧",       name: "虫茧",       power: 0, cost: 1,   category: "status",   type: "虫",   icon: "assets/icons/moves/虫茧.png",   note: "自己回复20%生命，己方队伍获得1次奉献：获得10%吸血" },
+  { id: "捆缚",       name: "捆缚",       power: 0, cost: 2,   category: "status",   type: "虫",   icon: "assets/icons/moves/捆缚.png",   note: "敌方获得2层中毒，获得1次奉献：敌方获得2层中毒" },
+  { id: "虫刺",       name: "虫刺",       power: 15, cost: 1,  category: "special",  type: "虫",   icon: "assets/icons/moves/虫刺.png",   note: "3连击" },
+  { id: "食腐",       name: "食腐",       power: 0, cost: 2,   category: "status",   type: "虫",   icon: "assets/icons/moves/食腐.png",   note: "驱散敌方印记，每层印记回复自己10%生命" },
+  { id: "虫蛊",       name: "虫蛊",       power: 100, cost: 3, category: "special",  type: "虫",   icon: "assets/icons/moves/虫蛊.png" },
   // 机械
   { id: "离子震荡",   name: "离子震荡",   power: 90, cost: 3,  category: "special",  type: "机械", icon: "assets/icons/moves/离子震荡.png", note: "本技能位于3号位时威力+40" },
   { id: "械斗",       name: "械斗",       power: 45, cost: 1,  category: "physical", type: "机械", icon: "assets/icons/moves/械斗.png",   note: "1号位时威力+60，传动1" },
