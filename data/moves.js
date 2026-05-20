@@ -67,6 +67,7 @@
   { id: "天光",       name: "天光",       power: 95, cost: 3,  category: "special",  type: "光",   icon: "assets/icons/moves/天光.png",  note: "系别随天气变化" },
   { id: "脉冲光线",   name: "脉冲光线",   power: 40, cost: 0,  category: "special",  type: "光",   icon: "assets/icons/moves/脉冲光线.png" },
   // 火
+  { id: "流火",       name: "流火",       power: 15, cost: 1,  category: "special",  type: "火",   icon: "assets/icons/moves/流火.png",   note: "3连击" },
   { id: "火焰箭",     name: "火焰箭",     power: 80, cost: 2,  category: "physical", type: "火",   icon: "assets/icons/moves/火焰箭.png" },
   { id: "火苗",       name: "火苗",       power: 30, cost: 0,  category: "physical", type: "火",   icon: "assets/icons/moves/火苗.png",   note: "自己回复1能量" },
   { id: "流星火雨",   name: "流星火雨",   power: 75, cost: 3,  category: "physical", type: "火",   icon: "assets/icons/moves/流星火雨.png", note: "每次击败敌方，本技能威力永久+75" },
@@ -167,6 +168,8 @@
   { id: "多维击打",   name: "多维击打",   power: 15, cost: 4,  category: "special",  type: "幻",   icon: "assets/icons/moves/多维击打.png", note: "1连击，敌方每有1层星陨印记，本次技能连击数+1" },
   { id: "星轨裂变",   name: "星轨裂变",   power: 0, cost: 1,   category: "status",   type: "幻",   icon: "assets/icons/moves/星轨裂变.png", note: "敌方获得2层星陨印记" },
   { id: "四维降解",   name: "四维降解",   power: 100, cost: 7, category: "special",  type: "幻",   icon: "assets/icons/moves/四维降解.png", note: "敌方每有1层印记，本技能能耗-1" },
+  { id: "大爆炸",     name: "大爆炸",     power: 100, cost: 3, category: "special",  type: "幻",   icon: "assets/icons/moves/大爆炸.png" },
+  { id: "心灵洞悉",   name: "心灵洞悉",   power: 0, cost: 7,   category: "status",   type: "幻",   icon: "assets/icons/moves/心灵洞悉.png", note: "敌方获得星陨印记，获得层数等于敌方印记层数" },
   // 龙
   { id: "升龙咆哮",   name: "升龙咆哮",   power: 200, cost: 3, category: "special",  type: "龙",   icon: "assets/icons/moves/升龙咆哮.png", note: "蓄力" },
   { id: "龙吼",       name: "龙吼",       power: 60, cost: 1,  category: "physical", type: "龙",   icon: "assets/icons/moves/龙吼.png" },
@@ -242,6 +245,8 @@
   { id: "午夜噪音",   name: "午夜噪音",   power: 20, cost: 4,  category: "special",  type: "幽",   icon: "assets/icons/moves/午夜噪音.png", note: "5连击" },
   { id: "嘲弄",       name: "嘲弄",       power: 0, cost: 2,   category: "status",   type: "幽",   icon: "assets/icons/moves/嘲弄.png",   note: "自己获得魔攻+90%，若敌方本回合更换精灵，自己获得速度+70" },
   { id: "恐吓",       name: "恐吓",       power: 80, cost: 2,  category: "special",  type: "幽",   icon: "assets/icons/moves/恐吓.png" },
+  { id: "灵光",       name: "灵光",       power: 25, cost: 3,  category: "special",  type: "幽",   icon: "assets/icons/moves/灵光.png",   note: "3连击，若敌方本回合更换精灵，本次技能连击数翻倍" },
+  { id: "恶作剧",     name: "恶作剧",     power: 0, cost: 1,   category: "status",   type: "幽",   icon: "assets/icons/moves/恶作剧.png", note: "敌方失去3能量，应对防御：改为敌方失去6能量" },
   // 虫
   { id: "噬心",       name: "噬心",       power: 60, cost: 1,  category: "physical", type: "虫",   icon: "assets/icons/moves/噬心.png" },
   { id: "掩护",       name: "掩护",       power: 0, cost: 2,   category: "defense",  type: "虫",   icon: "assets/icons/moves/掩护.png",   note: "减伤70%，紧急脱离，应对攻击：下个入场精灵获得减伤" },
