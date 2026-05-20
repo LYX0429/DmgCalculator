@@ -315,6 +315,7 @@ function onFormArrow(side, dir) {
   renderStatGrid(side, nextCreature);
   renderPresetButtons(side, nextCreature);
   if (side === 'attacker') { abilityActive = false; populateMoves(nextCreature); }
+  searchCtrl[side]?.syncDisplay();
   onCalculate();
 }
 
@@ -328,6 +329,7 @@ function onAttackerChange() {
   renderStatGrid('attacker', creature);
   renderPresetButtons('attacker', creature);
   populateMoves(creature);
+  searchCtrl.attacker?.syncDisplay();
   onCalculate();
 }
 
@@ -339,6 +341,7 @@ function onDefenderChange() {
   loadCreatureDefaults('defender', creature);
   renderStatGrid('defender', creature);
   renderPresetButtons('defender', creature);
+  searchCtrl.defender?.syncDisplay();
   onCalculate();
 }
 
@@ -599,6 +602,65 @@ function renderResultBars(current, scenarios) {
   }).join('');
 }
 
+// 精灵搜索下拉控制器
+const searchCtrl = {};
+
+function setupCreatureSearch(side) {
+  const input = document.getElementById(`${side}-search-input`);
+  const list  = document.getElementById(`${side}-search-list`);
+
+  const allItems = CREATURES
+    .map((c, i) => ({ c, i }))
+    .filter(({ c }) => c.form !== 'regional' && c.form !== 'boss')
+    .map(({ c, i }) => {
+      const displayName = c.name.replace(/（[^）]*）$/, '');
+      const label = c.no ? `${c.no} ${displayName}` : displayName;
+      return { idx: i, label, key: label.toLowerCase() };
+    });
+
+  function showList(filter) {
+    const q = (filter || '').trim().toLowerCase();
+    const filtered = q ? allItems.filter(it => it.key.includes(q)) : allItems;
+    if (!filtered.length) { list.hidden = true; return; }
+    list.innerHTML = filtered.map(it =>
+      `<div class="csearch-item" data-idx="${it.idx}">${it.label}</div>`
+    ).join('');
+    list.hidden = false;
+  }
+
+  function pick(idx) {
+    const item = allItems.find(it => it.idx === idx);
+    if (!item) return;
+    input.value = '';
+    list.hidden = true;
+    input.blur();
+    document.getElementById(`${side}-select`).value = idx;
+    if (side === 'attacker') onAttackerChange();
+    else onDefenderChange();
+  }
+
+  function syncDisplay() {
+    input.value = '';
+  }
+
+  input.addEventListener('focus', () => showList(input.value));
+  input.addEventListener('input', () => showList(input.value));
+  input.addEventListener('blur',  () => { list.hidden = true; });
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { list.hidden = true; input.blur(); return; }
+    if (e.key === 'Enter') {
+      const first = list.querySelector('.csearch-item');
+      if (first) pick(+first.dataset.idx);
+    }
+  });
+  list.addEventListener('mousedown', e => {
+    const item = e.target.closest('.csearch-item');
+    if (item) { e.preventDefault(); pick(+item.dataset.idx); }
+  });
+
+  return { pick, syncDisplay };
+}
+
 function onSwap() {
   // swap select values
   const attackerSel = document.getElementById('attacker-select');
@@ -627,6 +689,8 @@ function onSwap() {
   renderStatGrid('defender', newDefender);
   renderPresetButtons('defender', newDefender);
   populateMoves(newAttacker);
+  searchCtrl.attacker?.syncDisplay();
+  searchCtrl.defender?.syncDisplay();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -648,6 +712,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   attackerSel.addEventListener('change', onAttackerChange);
   defenderSel.addEventListener('change', onDefenderChange);
+
+  searchCtrl.attacker = setupCreatureSearch('attacker');
+  searchCtrl.defender = setupCreatureSearch('defender');
 
   // 形态切换箭头 + 首领按钮（事件委托到两个 stat 容器）
   ['attacker-stats', 'defender-stats'].forEach(id => {

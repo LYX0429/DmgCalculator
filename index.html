@@ -13,7 +13,13 @@
     <div class="battle-row">
       <section class="panel attacker-panel">
         <h2>我方</h2>
-        <label>精灵<select id="attacker-select"></select></label>
+        <label>精灵
+          <div class="csearch-wrap">
+            <input type="text" id="attacker-search-input" class="csearch-input" placeholder="搜索精灵…" autocomplete="off" spellcheck="false">
+            <div id="attacker-search-list" class="csearch-list" hidden></div>
+          </div>
+          <select id="attacker-select" hidden></select>
+        </label>
         <div id="attacker-stats" class="stat-grid"></div>
         <div id="attacker-presets" class="attacker-presets"></div>
       </section>
@@ -24,7 +30,13 @@
 
       <section class="panel defender-panel">
         <h2>敌方</h2>
-        <label>精灵<select id="defender-select"></select></label>
+        <label>精灵
+          <div class="csearch-wrap">
+            <input type="text" id="defender-search-input" class="csearch-input" placeholder="搜索精灵…" autocomplete="off" spellcheck="false">
+            <div id="defender-search-list" class="csearch-list" hidden></div>
+          </div>
+          <select id="defender-select" hidden></select>
+        </label>
         <div id="defender-stats" class="stat-grid"></div>
         <div id="defender-presets" class="attacker-presets"></div>
       </section>
