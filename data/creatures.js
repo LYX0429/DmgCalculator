@@ -226,6 +226,7 @@ const CREATURES = [
   {
     id: "bai-jin-du-jiao-shou",
     no: "117",
+    bossId: "cai-hong-du-jiao-shou",
     form: "base",
     name: "白金独角兽",
     types: ["光"],
@@ -243,6 +244,16 @@ const CREATURES = [
       "冷风", "叶绿光束", "回旋风暴", "复写", "极寒领域", "根吸收", "气泡", "羽化加速",
       "翼击", "耀眼", "蓄水", "超导", "远程访问", "追打", "速冻", "麻痹", "龙卷风",
     ],
+  },
+  {
+    id: "cai-hong-du-jiao-shou",
+    no: "117",
+    form: "boss",
+    name: "彩虹独角兽",
+    types: ["光"],
+    image: "assets/creatures/彩虹独角兽.png",
+    baseStats: { hp: 99, atk: 78, spatk: 192, def: 77, spdef: 92, spd: 105 },
+    ability: { name: "夺目", desc: "额外获得三个未携带的随机技能，且非光系技能威力+25%。", icon: "assets/icons/abilities/夺目.png" },
   },
   {
     id: "hei-mao-wu-shi",
