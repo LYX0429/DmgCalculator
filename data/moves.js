@@ -291,6 +291,8 @@
   { id: "乘风",       name: "乘风",       power: 0, cost: 2,   category: "status",   type: "翼",   icon: "assets/icons/moves/乘风.png",   note: "自己获得速度+120" },
   { id: "俯冲猛击",   name: "俯冲猛击",   power: 140, cost: 5, category: "physical", type: "翼",   icon: "assets/icons/moves/俯冲猛击.png" },
   { id: "鸣叫",       name: "鸣叫",       power: 40, cost: 0,  category: "special",  type: "翼",   icon: "assets/icons/moves/鸣叫.png" },
+  { id: "飞羽",       name: "飞羽",       power: 0, cost: 0,   category: "status",   type: "翼",   icon: "assets/icons/moves/飞羽.png",   note: "迅捷，驱散敌方1种增益" },
+  { id: "风隐",       name: "风隐",       power: 0, cost: 1,   category: "status",   type: "翼",   icon: "assets/icons/moves/风隐.png",   note: "敌方和自己均脱离，先手-1" },
   // 萌
   { id: "魅惑",       name: "魅惑",       power: 60, cost: 1,  category: "special",  type: "萌",   icon: "assets/icons/moves/魅惑.png" },
   { id: "飞吻",       name: "飞吻",       power: 80, cost: 2,  category: "special",  type: "萌",   icon: "assets/icons/moves/飞吻.png" },
