@@ -240,6 +240,8 @@
   { id: "撕裂",       name: "撕裂",       power: 85, cost: 3,  category: "physical", type: "恶",   icon: "assets/icons/moves/撕裂.png",   note: "应对状态：本次攻击吸血100%" },
   { id: "暗突袭",     name: "暗突袭",     power: 70, cost: 4,  category: "physical", type: "恶",   icon: "assets/icons/moves/暗突袭.png", note: "吸血50%，应对状态：本次技能威力翻倍" },
   { id: "恶念交换",   name: "恶念交换",   power: 0, cost: 4,   category: "status",   type: "恶",   icon: "assets/icons/moves/恶念交换.png", note: "与敌方交换生命比例" },
+  { id: "掠夺",       name: "掠夺",       power: 60, cost: 1,  category: "special",  type: "恶",   icon: "assets/icons/moves/掠夺.png" },
+  { id: "暗箱操作",   name: "暗箱操作",   power: 0, cost: 1,   category: "status",   type: "恶",   icon: "assets/icons/moves/暗箱操作.png", note: "自己获得双攻和双防-100%，应对防御：改为敌方获得双攻和双防-100%" },
   // 武
   { id: "缠丝劲",     name: "缠丝劲",     power: 25, cost: 1,  category: "physical", type: "武",   icon: "assets/icons/moves/缠丝劲.png", note: "2连击" },
   { id: "反击拳",     name: "反击拳",     power: 25, cost: 2,  category: "physical", type: "武",   icon: "assets/icons/moves/反击拳.png", note: "2连击，若后手攻击，改为3连击" },
@@ -342,6 +344,7 @@
   { id: "毒液渗透",   name: "毒液渗透",   power: 120, cost: 5, category: "special",  type: "毒",   icon: "assets/icons/moves/毒液渗透.png", note: "敌方每有1层中毒效果，本技能能耗-1，敌方获得1层中毒" },
   { id: "鸩毒",       name: "鸩毒",       power: 75, cost: 3,  category: "special",  type: "毒",   icon: "assets/icons/moves/鸩毒.png",   note: "敌方每有1层中毒效果，本次技能威力+10，应对状态：改为本次威力+20" },
   { id: "毒沼",       name: "毒沼",       power: 80, cost: 2,  category: "physical", type: "毒",   icon: "assets/icons/moves/毒沼.png" },
+  { id: "剧毒",       name: "剧毒",       power: 0, cost: 2,   category: "status",   type: "毒",   icon: "assets/icons/moves/剧毒.png",   note: "敌方获得3层中毒，应对防御：改为获得8层" },
   { id: "毒针",       name: "毒针",       power: 20, cost: 0,  category: "physical", type: "毒",   icon: "assets/icons/moves/毒针.png",   note: "敌方获得1层中毒" },
   { id: "连续毒针",   name: "连续毒针",   power: 15, cost: 2,  category: "physical", type: "毒",   icon: "assets/icons/moves/连续毒针.png", note: "2连击，每次连击使敌方获得1层中毒" },
   { id: "毒囊",       name: "毒囊",       power: 25, cost: 2,  category: "physical", type: "毒",   icon: "assets/icons/moves/毒囊.png",   note: "敌方获得2层中毒，应对状态：改为获得6层" },
