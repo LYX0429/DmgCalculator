@@ -53,6 +53,7 @@
   { id: "魔能爆",     name: "魔能爆",     power: 0, cost: 0,   category: "special",  type: "普通", icon: "assets/icons/moves/魔能爆.png",   note: "使用时消耗所有能量，消耗越高，伤害越高" },
   { id: "能量刃",     name: "能量刃",     power: 80, cost: 3,  category: "physical", type: "普通", icon: "assets/icons/moves/能量刃.png",   note: "每应对成功1次，本技能威力永久+90" },
   { id: "气势一击",   name: "气势一击",   power: 80, cost: 3,  category: "physical", type: "普通", icon: "assets/icons/moves/气势一击.png", note: "若上回合应对成功，本次技能威力+180" },
+  { id: "压扁",       name: "压扁",       power: 155, cost: 5, category: "physical", type: "普通", icon: "assets/icons/moves/压扁.png" },
   // 光
   { id: "闪光",       name: "闪光",       power: 60, cost: 1,  category: "special",  type: "光",   icon: "assets/icons/moves/闪光.png" },
   { id: "光球",       name: "光球",       power: 80, cost: 2,  category: "special",  type: "光",   icon: "assets/icons/moves/光球.png" },
@@ -93,6 +94,9 @@
   { id: "除厄",       name: "除厄",       power: 60, cost: 2,  category: "special",  type: "火",   icon: "assets/icons/moves/除厄.png",   note: "驱散自己的减益" },
   { id: "烈焰风暴",   name: "烈焰风暴",   power: 75, cost: 4,  category: "special",  type: "火",   icon: "assets/icons/moves/烈焰风暴.png", note: "敌方获得6层灼烧" },
   { id: "燃尽",       name: "燃尽",       power: 155, cost: 4, category: "special",  type: "火",   icon: "assets/icons/moves/燃尽.png",   note: "敌方每失去5%生命，本次技能威力-5" },
+  { id: "吹火",       name: "吹火",       power: 50, cost: 1,  category: "physical", type: "火",   icon: "assets/icons/moves/吹火.png",   note: "每次使用后，本技能威力永久+20" },
+  { id: "持续高温",   name: "持续高温",   power: 70, cost: 2,  category: "special",  type: "火",   icon: "assets/icons/moves/持续高温.png", note: "应对状态：下次攻击技能威力翻倍" },
+  { id: "山火",       name: "山火",       power: 15, cost: 3,  category: "physical", type: "火",   icon: "assets/icons/moves/山火.png",   note: "每使用1次其他火系技能，本技能威力永久翻倍" },
   // 水
   { id: "潮涌",       name: "潮涌",       power: 80, cost: 2,  category: "physical", type: "水",   icon: "assets/icons/moves/潮涌.png" },
   { id: "泡沫",       name: "泡沫",       power: 60, cost: 1,  category: "physical", type: "水",   icon: "assets/icons/moves/泡沫.png" },
