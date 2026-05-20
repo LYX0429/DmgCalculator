@@ -107,6 +107,8 @@
   { id: "持续高温",   name: "持续高温",   power: 70, cost: 2,  category: "special",  type: "火",   icon: "assets/icons/moves/持续高温.png", note: "应对状态：下次攻击技能威力翻倍" },
   { id: "山火",       name: "山火",       power: 15, cost: 3,  category: "physical", type: "火",   icon: "assets/icons/moves/山火.png",   note: "每使用1次其他火系技能，本技能威力永久翻倍" },
   { id: "火爪",       name: "火爪",       power: 60, cost: 1,  category: "special",  type: "火",   icon: "assets/icons/moves/火爪.png" },
+  { id: "炙热波动",   name: "炙热波动",   power: 55, cost: 3,  category: "special",  type: "火",   icon: "assets/icons/moves/炙热波动.png", note: "敌方获得4层灼烧，应对状态：本次技能威力和赋予灼烧翻倍" },
+  { id: "淬火",       name: "淬火",       power: 0, cost: 4,   category: "defense",  type: "火",   icon: "assets/icons/moves/淬火.png",   note: "减伤80%，应对攻击：下次攻击技能威力翻倍" },
   // 水
   { id: "潮涌",       name: "潮涌",       power: 80, cost: 2,  category: "physical", type: "水",   icon: "assets/icons/moves/潮涌.png" },
   { id: "泡沫",       name: "泡沫",       power: 60, cost: 1,  category: "physical", type: "水",   icon: "assets/icons/moves/泡沫.png" },
@@ -146,6 +148,10 @@
   { id: "种皮爆裂",   name: "种皮爆裂",   power: 25, cost: 1,  category: "physical", type: "草",   icon: "assets/icons/moves/种皮爆裂.png", note: "2连击" },
   { id: "叶绿光束",   name: "叶绿光束",   power: 120, cost: 4, category: "special",  type: "草",   icon: "assets/icons/moves/叶绿光束.png" },
   { id: "根吸收",     name: "根吸收",     power: 0, cost: 2,   category: "status",   type: "草",   icon: "assets/icons/moves/根吸收.png",  note: "自己回复15%生命和4能量" },
+  { id: "种子弹",     name: "种子弹",     power: 30, cost: 0,  category: "physical", type: "草",   icon: "assets/icons/moves/种子弹.png",  note: "自己回复1能量" },
+  { id: "纤维化",     name: "纤维化",     power: 0, cost: 2,   category: "defense",  type: "草",   icon: "assets/icons/moves/纤维化.png",  note: "减伤80%，应对攻击：自己获得物防+70%" },
+  { id: "酶浓度调整", name: "酶浓度调整", power: 0, cost: 3,   category: "defense",  type: "草",   icon: "assets/icons/moves/酶浓度调整.png", note: "减伤80%，应对攻击：自己回复20%生命" },
+  { id: "顶端优势",   name: "顶端优势",   power: 100, cost: 3, category: "physical", type: "草",   icon: "assets/icons/moves/顶端优势.png" },
   // 电
   { id: "超导",       name: "超导",       power: 95, cost: 3,  category: "special",  type: "电",   icon: "assets/icons/moves/超导.png",   note: "迸发：本技能能耗-1" },
   { id: "球状闪电",   name: "球状闪电",   power: 60, cost: 1,  category: "physical", type: "电",   icon: "assets/icons/moves/球状闪电.png" },
