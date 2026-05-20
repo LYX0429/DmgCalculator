@@ -120,6 +120,7 @@
   { id: "肥皂泡",     name: "肥皂泡",     power: 60, cost: 1,  category: "special",  type: "水",   icon: "assets/icons/moves/肥皂泡.png" },
   { id: "气泡",       name: "气泡",       power: 100, cost: 3, category: "special",  type: "水",   icon: "assets/icons/moves/气泡.png" },
   { id: "天洪",       name: "天洪",       power: 150, cost: 7, category: "special",  type: "水",   icon: "assets/icons/moves/天洪.png",   note: "应对状态：本技能能耗永久-6" },
+  { id: "水光冲击",   name: "水光冲击",   power: 140, cost: 5, category: "special",  type: "水",   icon: "assets/icons/moves/水光冲击.png" },
   { id: "甩水",       name: "甩水",       power: 30, cost: 0,  category: "special",  type: "水",   icon: "assets/icons/moves/甩水.png",   note: "自己回复1能量" },
   { id: "激流",       name: "激流",       power: 120, cost: 4, category: "special",  type: "水",   icon: "assets/icons/moves/激流.png" },
   { id: "水弹枪",     name: "水弹枪",     power: 80, cost: 2,  category: "special",  type: "水",   icon: "assets/icons/moves/水弹枪.png" },
