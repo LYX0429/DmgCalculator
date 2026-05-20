@@ -64,6 +64,7 @@
   { id: "落星",       name: "落星",       power: 45, cost: 0,  category: "physical", type: "普通", icon: "assets/icons/moves/落星.png" },
   { id: "践踏",       name: "践踏",       power: 130, cost: 4, category: "physical", type: "普通", icon: "assets/icons/moves/践踏.png" },
   { id: "触底强击",   name: "触底强击",   power: 65, cost: 3,  category: "special",  type: "普通", icon: "assets/icons/moves/触底强击.png", note: "使用后若能量耗尽，本次技能威力+110" },
+  { id: "蓄能轰击",   name: "蓄能轰击",   power: 130, cost: 6, category: "special",  type: "普通", icon: "assets/icons/moves/蓄能轰击.png", note: "每使用1次普通系技能，本技能能耗永久-2" },
   { id: "退化",       name: "退化",       power: 0, cost: 2,   category: "status",   type: "普通", icon: "assets/icons/moves/退化.png",   note: "敌方获得1层萌化" },
   { id: "垂死反击",   name: "垂死反击",   power: 80, cost: 4,  category: "physical", type: "普通", icon: "assets/icons/moves/垂死反击.png", note: "自己每失去5%生命，本次技能威力+5" },
   { id: "旋转突击",   name: "旋转突击",   power: 35, cost: 3,  category: "physical", type: "普通", icon: "assets/icons/moves/旋转突击.png", note: "3连击" },
@@ -74,6 +75,8 @@
   { id: "冲撞",       name: "冲撞",       power: 135, cost: 7, category: "physical", type: "普通", icon: "assets/icons/moves/冲撞.png",   note: "回合结束时，本技能能耗永久-1" },
   { id: "逆袭",       name: "逆袭",       power: 100, cost: 3, category: "physical", type: "普通", icon: "assets/icons/moves/逆袭.png",   note: "本技能能耗每+1，威力+50" },
   { id: "天旋地转",   name: "天旋地转",   power: 60, cost: 3,  category: "physical", type: "普通", icon: "assets/icons/moves/天旋地转.png", note: "先手+1，迸发：本次技能威力+30" },
+  { id: "埋伏",       name: "埋伏",       power: 30, cost: 4,  category: "special",  type: "普通", icon: "assets/icons/moves/埋伏.png",   note: "3连击，若敌方本回合更换精灵，本次技能连击数+3" },
+  { id: "迫近攻击",   name: "迫近攻击",   power: 90, cost: 3,  category: "physical", type: "普通", icon: "assets/icons/moves/迫近攻击.png", note: "每次使用后，本技能威力永久+45" },
   // 光
   { id: "闪光",       name: "闪光",       power: 60, cost: 1,  category: "special",  type: "光",   icon: "assets/icons/moves/闪光.png" },
   { id: "光球",       name: "光球",       power: 80, cost: 2,  category: "special",  type: "光",   icon: "assets/icons/moves/光球.png" },
@@ -175,6 +178,7 @@
   { id: "刺藤",       name: "刺藤",       power: 45, cost: 3,  category: "physical", type: "草",   icon: "assets/icons/moves/刺藤.png",   note: "2连击" },
   { id: "孢子",       name: "孢子",       power: 0, cost: 3,   category: "status",   type: "草",   icon: "assets/icons/moves/孢子.png",   note: "敌方获得1层寄生" },
   { id: "仙人掌刺击", name: "仙人掌刺击", power: 150, cost: 6, category: "physical", type: "草",   icon: "assets/icons/moves/仙人掌刺击.png" },
+  { id: "针刺射击",   name: "针刺射击",   power: 80, cost: 3,  category: "physical", type: "草",   icon: "assets/icons/moves/针刺射击.png",  note: "若敌方本回合更换精灵，自己回复7点能量" },
   { id: "丰饶",       name: "丰饶",       power: 0, cost: 3,   category: "status",   type: "草",   icon: "assets/icons/moves/丰饶.png",   note: "自己获得物攻和魔攻+140%" },
   { id: "光合作用",   name: "光合作用",   power: 0, cost: 4,   category: "status",   type: "草",   icon: "assets/icons/moves/光合作用.png", note: "自己获得1层光合印记" },
   { id: "光能聚集",   name: "光能聚集",   power: 100, cost: 7, category: "special",  type: "草",   icon: "assets/icons/moves/光能聚集.png", note: "每次使用其他草系技能后，本技能威力永久+60" },
@@ -313,6 +317,7 @@
   { id: "气沉丹田",   name: "气沉丹田",   power: 0, cost: 10,  category: "status",   type: "武",   icon: "assets/icons/moves/气沉丹田.png", note: "自己回复60%生命，获得物攻+130%，每次应对后本技能能耗-3，使用后能耗重置" },
   { id: "爆冲",       name: "爆冲",       power: 65, cost: 3,  category: "physical", type: "武",   icon: "assets/icons/moves/爆冲.png",   note: "应对状态：本次技能威力变为5倍" },
   { id: "气波",       name: "气波",       power: 40, cost: 0,  category: "special",  type: "武",   icon: "assets/icons/moves/气波.png" },
+  { id: "寸拳",       name: "寸拳",       power: 30, cost: 0,  category: "physical", type: "武",   icon: "assets/icons/moves/寸拳.png",   note: "自己回复1能量" },
   { id: "防御反击",   name: "防御反击",   power: 0, cost: 3,   category: "defense",  type: "武",   icon: "assets/icons/moves/防御反击.png", note: "减伤80%，应对攻击：自己获得全技能威力+40" },
   { id: "听桥",       name: "听桥",       power: 0, cost: 4,   category: "defense",  type: "武",   icon: "assets/icons/moves/听桥.png",   note: "减伤60%，应对攻击：对敌方造成物理伤害，威力与被应对技能相等" },
   { id: "一拳",       name: "一拳",       power: 140, cost: 5, category: "physical", type: "武",   icon: "assets/icons/moves/一拳.png" },
@@ -376,6 +381,7 @@
   { id: "灵光",       name: "灵光",       power: 25, cost: 3,  category: "special",  type: "幽",   icon: "assets/icons/moves/灵光.png",   note: "3连击，若敌方本回合更换精灵，本次技能连击数翻倍" },
   { id: "恶作剧",     name: "恶作剧",     power: 0, cost: 1,   category: "status",   type: "幽",   icon: "assets/icons/moves/恶作剧.png", note: "敌方失去3能量，应对防御：改为敌方失去6能量" },
   { id: "幽灵爆发",   name: "幽灵爆发",   power: 140, cost: 5, category: "special",  type: "幽",   icon: "assets/icons/moves/幽灵爆发.png" },
+  { id: "背袭",       name: "背袭",       power: 40, cost: 2,  category: "special",  type: "幽",   icon: "assets/icons/moves/背袭.png",   note: "若敌方能量等于0，造成20倍伤害" },
   { id: "惊吓盒子",   name: "惊吓盒子",   power: 80, cost: 3,  category: "physical", type: "幽",   icon: "assets/icons/moves/惊吓盒子.png", note: "应对状态：使敌方失去6能量" },
   { id: "鬼火",       name: "鬼火",       power: 30, cost: 0,  category: "special",  type: "幽",   icon: "assets/icons/moves/鬼火.png",   note: "自己回复1能量" },
   // 虫
@@ -391,6 +397,8 @@
   { id: "虫蛊",       name: "虫蛊",       power: 100, cost: 3, category: "special",  type: "虫",   icon: "assets/icons/moves/虫蛊.png" },
   { id: "虫击",       name: "虫击",       power: 90, cost: 3,  category: "physical", type: "虫",   icon: "assets/icons/moves/虫击.png",   note: "应对状态：本次技能威力变为2倍，无视敌方系别抵抗" },
   { id: "虫群智慧",   name: "虫群智慧",   power: 0, cost: 3,   category: "status",   type: "虫",   icon: "assets/icons/moves/虫群智慧.png", note: "己方队伍获得2次随机奉献" },
+  { id: "虫鸣",       name: "虫鸣",       power: 15, cost: 2,  category: "special",  type: "虫",   icon: "assets/icons/moves/虫鸣.png",   note: "队伍中的精灵每携带1个虫鸣，本次技能连击数+1" },
+  { id: "飞断",       name: "飞断",       power: 20, cost: 1,  category: "physical", type: "虫",   icon: "assets/icons/moves/飞断.png",   note: "己方队伍获得1次奉献：威力+20" },
   // 机械
   { id: "离子震荡",   name: "离子震荡",   power: 90, cost: 3,  category: "special",  type: "机械", icon: "assets/icons/moves/离子震荡.png", note: "本技能位于3号位时威力+40" },
   { id: "械斗",       name: "械斗",       power: 45, cost: 1,  category: "physical", type: "机械", icon: "assets/icons/moves/械斗.png",   note: "1号位时威力+60，传动1" },
@@ -422,6 +430,7 @@
   { id: "感染病",     name: "感染病",     power: 85, cost: 4,  category: "special",  type: "毒",   icon: "assets/icons/moves/感染病.png", note: "若击败敌方则将中毒转化为中毒印记" },
   { id: "腐化",       name: "腐化",       power: 0, cost: 1,   category: "status",   type: "毒",   icon: "assets/icons/moves/腐化.png",   note: "敌方每有1层中毒效果，敌方获得双攻-30%" },
   { id: "毒雾",       name: "毒雾",       power: 0, cost: 7,   category: "status",   type: "毒",   icon: "assets/icons/moves/毒雾.png",   note: "将敌方所有增益，转化成中毒" },
+  { id: "落井下毒",   name: "落井下毒",   power: 0, cost: 6,   category: "status",   type: "毒",   icon: "assets/icons/moves/落井下毒.png", note: "使敌方精灵减益的层数翻倍" },
   { id: "毒孢子",     name: "毒孢子",     power: 0, cost: 3,   category: "status",   type: "毒",   icon: "assets/icons/moves/毒孢子.png", note: "敌方获得5层中毒" },
   { id: "毒泡泡",     name: "毒泡泡",     power: 40, cost: 0,  category: "special",  type: "毒",   icon: "assets/icons/moves/毒泡泡.png" },
 ];
