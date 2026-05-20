@@ -24,6 +24,7 @@ const TYPE_ICONS = {
   '草': 'assets/icons/type-cao.png',
   '翼': 'assets/icons/type-yi.png',
   '地': 'assets/icons/type-di.png',
+  '武': 'assets/icons/type-wu.png',
 };
 
 const TYPE_COLORS = {

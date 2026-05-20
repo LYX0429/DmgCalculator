@@ -55,6 +55,9 @@
   { id: "气势一击",   name: "气势一击",   power: 80, cost: 3,  category: "physical", type: "普通", icon: "assets/icons/moves/气势一击.png", note: "若上回合应对成功，本次技能威力+180" },
   { id: "压扁",       name: "压扁",       power: 155, cost: 5, category: "physical", type: "普通", icon: "assets/icons/moves/压扁.png" },
   { id: "突袭",       name: "突袭",       power: 70, cost: 2,  category: "special",  type: "普通", icon: "assets/icons/moves/突袭.png",   note: "应对状态：本次技能威力变为3倍" },
+  { id: "扫尾",       name: "扫尾",       power: 90, cost: 2,  category: "physical", type: "普通", icon: "assets/icons/moves/扫尾.png" },
+  { id: "飞踢",       name: "飞踢",       power: 110, cost: 3, category: "physical", type: "普通", icon: "assets/icons/moves/飞踢.png" },
+  { id: "能量炮",     name: "能量炮",     power: 50, cost: 3,  category: "special",  type: "普通", icon: "assets/icons/moves/能量炮.png", note: "2连击" },
   // 光
   { id: "闪光",       name: "闪光",       power: 60, cost: 1,  category: "special",  type: "光",   icon: "assets/icons/moves/闪光.png" },
   { id: "光球",       name: "光球",       power: 80, cost: 2,  category: "special",  type: "光",   icon: "assets/icons/moves/光球.png" },
@@ -191,6 +194,7 @@
   { id: "心灵洞悉",   name: "心灵洞悉",   power: 0, cost: 7,   category: "status",   type: "幻",   icon: "assets/icons/moves/心灵洞悉.png", note: "敌方获得星陨印记，获得层数等于敌方印记层数" },
   { id: "粒子对撞",   name: "粒子对撞",   power: 40, cost: 0,  category: "physical", type: "幻",   icon: "assets/icons/moves/粒子对撞.png" },
   { id: "针状物",     name: "针状物",     power: 30, cost: 3,  category: "special",  type: "幻",   icon: "assets/icons/moves/针状物.png",  note: "3连击" },
+  { id: "空间压迫",   name: "空间压迫",   power: 70, cost: 3,  category: "physical", type: "幻",   icon: "assets/icons/moves/空间压迫.png", note: "敌方获得1层星陨印记" },
   // 龙
   { id: "升龙咆哮",   name: "升龙咆哮",   power: 200, cost: 3, category: "special",  type: "龙",   icon: "assets/icons/moves/升龙咆哮.png", note: "蓄力" },
   { id: "龙吼",       name: "龙吼",       power: 60, cost: 1,  category: "physical", type: "龙",   icon: "assets/icons/moves/龙吼.png" },
@@ -231,6 +235,12 @@
   { id: "反击拳",     name: "反击拳",     power: 25, cost: 2,  category: "physical", type: "武",   icon: "assets/icons/moves/反击拳.png", note: "2连击，若后手攻击，改为3连击" },
   { id: "化劲",       name: "化劲",       power: 0, cost: 2,   category: "status",   type: "武",   icon: "assets/icons/moves/化劲.png",   note: "自己获得全技能威力+40" },
   { id: "贯手",       name: "贯手",       power: 80, cost: 2,  category: "special",  type: "武",   icon: "assets/icons/moves/贯手.png" },
+  { id: "回旋踢",     name: "回旋踢",     power: 80, cost: 3,  category: "physical", type: "武",   icon: "assets/icons/moves/回旋踢.png", note: "若敌方本回合更换精灵，本次技能威力翻倍" },
+  { id: "提气",       name: "提气",       power: 0, cost: 4,   category: "status",   type: "武",   icon: "assets/icons/moves/提气.png",   note: "自己获得全技能威力+40，若敌方本回合更换精灵，额外获得威力+50" },
+  { id: "影袭",       name: "影袭",       power: 100, cost: 3, category: "physical", type: "武",   icon: "assets/icons/moves/影袭.png" },
+  { id: "截拳",       name: "截拳",       power: 90, cost: 3,  category: "physical", type: "武",   icon: "assets/icons/moves/截拳.png",   note: "应对状态：额外造成打断，回复该技能能耗的能量" },
+  { id: "气沉丹田",   name: "气沉丹田",   power: 0, cost: 10,  category: "status",   type: "武",   icon: "assets/icons/moves/气沉丹田.png", note: "自己回复60%生命，获得物攻+130%，每次应对后本技能能耗-3，使用后能耗重置" },
+  { id: "爆冲",       name: "爆冲",       power: 65, cost: 3,  category: "physical", type: "武",   icon: "assets/icons/moves/爆冲.png",   note: "应对状态：本次技能威力变为5倍" },
   // 翼
   { id: "鹰爪",       name: "鹰爪",       power: 60, cost: 1,  category: "physical", type: "翼",   icon: "assets/icons/moves/鹰爪.png" },
   { id: "风矢",       name: "风矢",       power: 80, cost: 2,  category: "physical", type: "翼",   icon: "assets/icons/moves/风矢.png" },
@@ -274,6 +284,7 @@
   { id: "灵光",       name: "灵光",       power: 25, cost: 3,  category: "special",  type: "幽",   icon: "assets/icons/moves/灵光.png",   note: "3连击，若敌方本回合更换精灵，本次技能连击数翻倍" },
   { id: "恶作剧",     name: "恶作剧",     power: 0, cost: 1,   category: "status",   type: "幽",   icon: "assets/icons/moves/恶作剧.png", note: "敌方失去3能量，应对防御：改为敌方失去6能量" },
   { id: "惊吓盒子",   name: "惊吓盒子",   power: 80, cost: 3,  category: "physical", type: "幽",   icon: "assets/icons/moves/惊吓盒子.png", note: "应对状态：使敌方失去6能量" },
+  { id: "鬼火",       name: "鬼火",       power: 30, cost: 0,  category: "special",  type: "幽",   icon: "assets/icons/moves/鬼火.png",   note: "自己回复1能量" },
   // 虫
   { id: "噬心",       name: "噬心",       power: 60, cost: 1,  category: "physical", type: "虫",   icon: "assets/icons/moves/噬心.png" },
   { id: "尾后针",     name: "尾后针",     power: 80, cost: 2,  category: "physical", type: "虫",   icon: "assets/icons/moves/尾后针.png" },
