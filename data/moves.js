@@ -183,6 +183,10 @@
   { id: "冰捆缚",     name: "冰捆缚",     power: 0, cost: 3,   category: "status",   type: "冰",   icon: "assets/icons/moves/冰捆缚.png", note: "2连击，每次连击敌方获得全技能能耗+1" },
   { id: "瞬间零度",   name: "瞬间零度",   power: 0, cost: 0,   category: "status",   type: "冰",   icon: "assets/icons/moves/瞬间零度.png", note: "本回合敌方使用的技能能耗+3，应对防御：改为全技能能耗+3" },
   { id: "滚雪球",     name: "滚雪球",     power: 55, cost: 3,  category: "physical", type: "冰",   icon: "assets/icons/moves/滚雪球.png", note: "敌方获得2层冻结，应对状态：额外获得2层，本次技能威力翻倍" },
+  { id: "风吹雪",     name: "风吹雪",     power: 30, cost: 0,  category: "special",  type: "冰",   icon: "assets/icons/moves/风吹雪.png",  note: "自己回复1能量" },
+  { id: "雾气环绕",   name: "雾气环绕",   power: 0, cost: 1,   category: "status",   type: "冰",   icon: "assets/icons/moves/雾气环绕.png", note: "回复能量，回复值等于敌方技能总能耗的一半" },
+  { id: "碎冰冰",     name: "碎冰冰",     power: 40, cost: 3,  category: "special",  type: "冰",   icon: "assets/icons/moves/碎冰冰.png",  note: "敌方每有1层冻结，本次技能威力+20" },
+  { id: "霜天",       name: "霜天",       power: 0, cost: 4,   category: "status",   type: "冰",   icon: "assets/icons/moves/霜天.png",   note: "敌方获得1层冻结，且每有1层冻结获得全技能能耗+1" },
   // 地
   { id: "热砂",       name: "热砂",       power: 80, cost: 2,  category: "special",  type: "地",   icon: "assets/icons/moves/热砂.png" },
   { id: "扬沙",       name: "扬沙",       power: 60, cost: 1,  category: "physical", type: "地",   icon: "assets/icons/moves/扬沙.png" },
@@ -306,6 +310,9 @@
   { id: "爆米花爆破", name: "爆米花爆破", power: 140, cost: 5, category: "physical", type: "萌",   icon: "assets/icons/moves/爆米花爆破.png" },
   { id: "破罐破摔",   name: "破罐破摔",   power: 80, cost: 3,  category: "special",  type: "萌",   icon: "assets/icons/moves/破罐破摔.png", note: "自己有减益时，本次技能威力+60" },
   { id: "反弹",       name: "反弹",       power: 0, cost: 4,   category: "status",   type: "萌",   icon: "assets/icons/moves/反弹.png",   note: "将自己的萌化转移给敌方" },
+  { id: "撒娇",       name: "撒娇",       power: 30, cost: 3,  category: "special",  type: "萌",   icon: "assets/icons/moves/撒娇.png",   note: "3连击，自己获得萌化：威力永久+20" },
+  { id: "击鼓传花",   name: "击鼓传花",   power: 0, cost: 3,   category: "status",   type: "萌",   icon: "assets/icons/moves/击鼓传花.png", note: "自己脱离，下个入场精灵继承自己增益" },
+  { id: "赤子之心",   name: "赤子之心",   power: 0, cost: 2,   category: "status",   type: "萌",   icon: "assets/icons/moves/赤子之心.png", note: "自己获得萌化：全技能能耗永久-3" },
   // 幽
   { id: "幻象",       name: "幻象",       power: 60, cost: 1,  category: "physical", type: "幽",   icon: "assets/icons/moves/幻象.png" },
   { id: "虚化",       name: "虚化",       power: 0, cost: 2,   category: "defense",  type: "幽",   icon: "assets/icons/moves/虚化.png",   note: "减伤80%，应对攻击：自己获得魔防+70%" },
