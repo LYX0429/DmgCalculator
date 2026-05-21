@@ -318,6 +318,7 @@
   { id: "撕咬",       name: "撕咬",       power: 30, cost: 3,  category: "physical", type: "恶",   icon: "assets/icons/moves/撕咬.png",   note: "3连击，若自己生命低于50%，本次技能连击数+2" },
   { id: "诋毁",       name: "诋毁",       power: 80, cost: 2,  category: "physical", type: "恶",   icon: "assets/icons/moves/诋毁.png" },
   { id: "黑手",       name: "黑手",       power: 45, cost: 3,  category: "special",  type: "恶",   icon: "assets/icons/moves/黑手.png",   note: "2连击" },
+  { id: "牵连",       name: "牵连",       power: 85, cost: 4,  category: "special",  type: "恶",   icon: "assets/icons/moves/牵连.png",   note: "敌方每有1只力竭精灵，本次技能威力+30" },
   { id: "跌落",       name: "跌落",       power: 120, cost: 3, category: "physical", type: "恶",   icon: "assets/icons/moves/跌落.png",   note: "自己获得物攻-50%，应对状态：改为获得物攻+50%" },
   { id: "魔爪",       name: "魔爪",       power: 30, cost: 0,  category: "physical", type: "恶",   icon: "assets/icons/moves/魔爪.png",   note: "自己回复1能量" },
   { id: "趁火打劫",   name: "趁火打劫",   power: 35, cost: 3,  category: "physical", type: "恶",   icon: "assets/icons/moves/趁火打劫.png", note: "2连击，若击败敌方，本技能连击数永久+2" },
