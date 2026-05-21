@@ -104,7 +104,7 @@ const MOVE_EFFECTS = {
   "当头棒喝": [{ name: "当头棒喝", apply: () => 100 }],
   "筛管奔流": [{ name: "生命>80%", apply: () => 75 }],
   "魔能爆": [{ type: "stepper", name: "当前能量", min: 0, max: 10, defaultValue: 10,
-    apply: (val) => [40, 70, 90, 110, 135, 155, 165, 180, 190, 200, 210][val] }],
+    apply: (val) => [45, 70, 90, 110, 135, 155, 165, 180, 190, 200, 210][val] }],
   "鸣沙陷阱": [{ name: "物防差", auto: true, apply: ({ basePower, atkStats, defStats }) => {
     const diff = atkStats.def - defStats.def;
     const total = diff < 0    ? 60
