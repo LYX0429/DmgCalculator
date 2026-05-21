@@ -306,6 +306,7 @@
   { id: "龙吟",       name: "龙吟",       power: 0, cost: 3,   category: "status",   type: "龙",   icon: "assets/icons/moves/龙吟.png",   note: "蓄力，自己获得双攻+100%和速度+60" },
   { id: "怨力打击",   name: "怨力打击",   power: 1, cost: 3,   category: "special",  type: "龙",   icon: "assets/icons/moves/怨力打击.png", note: "蓄力，若蓄力期间受到攻击，本技能威力变为敌方技能威力的3倍" },
   { id: "龙息环爆",   name: "龙息环爆",   power: 55, cost: 1,  category: "special",  type: "龙",   icon: "assets/icons/moves/龙息环爆.png", note: "应对状态：下次技能无需蓄力" },
+  { id: "绵里藏针",   name: "绵里藏针",   power: 50, cost: 2,  category: "special",  type: "龙",   icon: "assets/icons/moves/绵里藏针.png", note: "若敌方上回合没受到技能伤害，本技能威力永久+30" },
   // 恶
   { id: "恶能量",     name: "恶能量",     power: 60, cost: 1,  category: "physical", type: "恶",   icon: "assets/icons/moves/恶能量.png" },
   { id: "撕咬",       name: "撕咬",       power: 30, cost: 3,  category: "physical", type: "恶",   icon: "assets/icons/moves/撕咬.png",   note: "3连击，若自己生命低于50%，本次技能连击数+2" },
