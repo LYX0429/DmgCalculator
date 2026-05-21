@@ -125,6 +125,8 @@
   { id: "火爪",       name: "火爪",       power: 60, cost: 1,  category: "special",  type: "火",   icon: "assets/icons/moves/火爪.png" },
   { id: "炙热波动",   name: "炙热波动",   power: 55, cost: 3,  category: "special",  type: "火",   icon: "assets/icons/moves/炙热波动.png", note: "敌方获得4层灼烧，应对状态：本次技能威力和赋予灼烧翻倍" },
   { id: "淬火",       name: "淬火",       power: 0, cost: 4,   category: "defense",  type: "火",   icon: "assets/icons/moves/淬火.png",   note: "减伤80%，应对攻击：下次攻击技能威力翻倍" },
+  { id: "焚毁",       name: "焚毁",       power: 60, cost: 2,  category: "special",  type: "火",   icon: "assets/icons/moves/焚毁.png",   note: "驱散敌方所有印记" },
+  { id: "阳火增辉",   name: "阳火增辉",   power: 75, cost: 3,  category: "special",  type: "火",   icon: "assets/icons/moves/阳火增辉.png", note: "每次击败敌方，本技能威力永久翻倍" },
   // 水
   { id: "水弹",       name: "水弹",       power: 40, cost: 0,  category: "special",  type: "水",   icon: "assets/icons/moves/水弹.png" },
   { id: "潮涌",       name: "潮涌",       power: 80, cost: 2,  category: "physical", type: "水",   icon: "assets/icons/moves/潮涌.png" },
@@ -355,6 +357,8 @@
   { id: "预备势",     name: "预备势",     power: 0, cost: 1,   category: "status",   type: "武",   icon: "assets/icons/moves/预备势.png",  note: "自己获得物攻+80%，应对防御：额外使敌方获得物防-80%" },
   { id: "崩拳",       name: "崩拳",       power: 65, cost: 2,  category: "physical", type: "武",   icon: "assets/icons/moves/崩拳.png",   note: "应对状态：自己获得物攻+100%" },
   { id: "破绽",       name: "破绽",       power: 0, cost: 1,   category: "status",   type: "武",   icon: "assets/icons/moves/破绽.png",   note: "敌方获得双防-70%，应对防御：自己额外获得物攻+70%" },
+  { id: "散手",       name: "散手",       power: 35, cost: 3,  category: "physical", type: "武",   icon: "assets/icons/moves/散手.png",   note: "2连击，应对状态：本技能改为6连击" },
+  { id: "无影脚",     name: "无影脚",     power: 85, cost: 3,  category: "physical", type: "武",   icon: "assets/icons/moves/无影脚.png", note: "应对状态：本次技能威力变为2倍" },
   // 翼
   { id: "鹰爪",       name: "鹰爪",       power: 60, cost: 1,  category: "physical", type: "翼",   icon: "assets/icons/moves/鹰爪.png" },
   { id: "风矢",       name: "风矢",       power: 80, cost: 2,  category: "physical", type: "翼",   icon: "assets/icons/moves/风矢.png" },
