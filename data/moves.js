@@ -108,6 +108,7 @@
   { id: "怒火",       name: "怒火",       power: 0, cost: 1,   category: "status",   type: "火",   icon: "assets/icons/moves/怒火.png",   note: "自己获得双攻+120%和双防-40%" },
   { id: "火焰护盾",   name: "火焰护盾",   power: 0, cost: 2,   category: "defense",  type: "火",   icon: "assets/icons/moves/火焰护盾.png", note: "减伤70%，应对攻击：敌方获得6层灼烧" },
   { id: "火焰冲锋",   name: "火焰冲锋",   power: 60, cost: 1,  category: "physical", type: "火",   icon: "assets/icons/moves/火焰冲锋.png" },
+  { id: "双响炮",     name: "双响炮",     power: 25, cost: 1,  category: "physical", type: "火",   icon: "assets/icons/moves/双响炮.png",  note: "2连击" },
   { id: "炎打",       name: "炎打",       power: 95, cost: 2,  category: "special",  type: "火",   icon: "assets/icons/moves/炎打.png",   note: "自己获得物防-40%" },
   { id: "闪燃",       name: "闪燃",       power: 40, cost: 1,  category: "physical", type: "火",   icon: "assets/icons/moves/闪燃.png",   note: "应对状态：本次技能威力变为4倍" },
   { id: "炎枪",       name: "炎枪",       power: 100, cost: 3, category: "special",  type: "火",   icon: "assets/icons/moves/炎枪.png" },
@@ -308,6 +309,7 @@
   { id: "龙吟",       name: "龙吟",       power: 0, cost: 3,   category: "status",   type: "龙",   icon: "assets/icons/moves/龙吟.png",   note: "蓄力，自己获得双攻+100%和速度+60" },
   { id: "怨力打击",   name: "怨力打击",   power: 1, cost: 3,   category: "special",  type: "龙",   icon: "assets/icons/moves/怨力打击.png", note: "蓄力，若蓄力期间受到攻击，本技能威力变为敌方技能威力的3倍" },
   { id: "龙息环爆",   name: "龙息环爆",   power: 55, cost: 1,  category: "special",  type: "龙",   icon: "assets/icons/moves/龙息环爆.png", note: "应对状态：下次技能无需蓄力" },
+  { id: "龙爪",       name: "龙爪",       power: 120, cost: 4, category: "physical", type: "龙",   icon: "assets/icons/moves/龙爪.png" },
   { id: "绵里藏针",   name: "绵里藏针",   power: 50, cost: 2,  category: "special",  type: "龙",   icon: "assets/icons/moves/绵里藏针.png", note: "若敌方上回合没受到技能伤害，本技能威力永久+30" },
   // 恶
   { id: "恶能量",     name: "恶能量",     power: 60, cost: 1,  category: "physical", type: "恶",   icon: "assets/icons/moves/恶能量.png" },
@@ -459,6 +461,8 @@
   { id: "杠杆置换",   name: "杠杆置换",   power: 0, cost: 0,   category: "status",   type: "机械", icon: "assets/icons/moves/杠杆置换.png", note: "自己回复2能量，交换两侧技能位置" },
   { id: "能量守恒",   name: "能量守恒",   power: 0, cost: 2,   category: "defense",  type: "机械", icon: "assets/icons/moves/能量守恒.png", note: "减伤80%，应对攻击：两侧技能能耗永久-1" },
   { id: "钢铁洪流",   name: "钢铁洪流",   power: 70, cost: 3,  category: "physical", type: "机械", icon: "assets/icons/moves/钢铁洪流.png", note: "本技能位于1号位时威力+90，传动2" },
+  { id: "拆卸",       name: "拆卸",       power: 40, cost: 0,  category: "physical", type: "机械", icon: "assets/icons/moves/拆卸.png" },
+  { id: "传感器",     name: "传感器",     power: 20, cost: 1,  category: "physical", type: "机械", icon: "assets/icons/moves/传感器.png", note: "2连击，本技能位于1号或3号位时连击+1，传动1" },
   // 毒
   { id: "溃烂触碰",   name: "溃烂触碰",   power: 60, cost: 1,  category: "physical", type: "毒",   icon: "assets/icons/moves/溃烂触碰.png" },
   { id: "不可接触",   name: "不可接触",   power: 0, cost: 1,   category: "defense",  type: "毒",   icon: "assets/icons/moves/不可接触.png", note: "减伤50%，敌方每有1层中毒效果，本技能减伤+10%，应对攻击" },
