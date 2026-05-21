@@ -120,6 +120,8 @@
   { id: "除厄",       name: "除厄",       power: 60, cost: 2,  category: "special",  type: "火",   icon: "assets/icons/moves/除厄.png",   note: "驱散自己的减益" },
   { id: "烈焰风暴",   name: "烈焰风暴",   power: 75, cost: 4,  category: "special",  type: "火",   icon: "assets/icons/moves/烈焰风暴.png", note: "敌方获得6层灼烧" },
   { id: "燃尽",       name: "燃尽",       power: 155, cost: 4, category: "special",  type: "火",   icon: "assets/icons/moves/燃尽.png",   note: "敌方每失去5%生命，本次技能威力-5" },
+  { id: "热气",       name: "热气",       power: 40, cost: 0,  category: "special",  type: "火",   icon: "assets/icons/moves/热气.png" },
+  { id: "炎息",       name: "炎息",       power: 40, cost: 0,  category: "physical", type: "火",   icon: "assets/icons/moves/炎息.png" },
   { id: "吹火",       name: "吹火",       power: 50, cost: 1,  category: "physical", type: "火",   icon: "assets/icons/moves/吹火.png",   note: "每次使用后，本技能威力永久+20" },
   { id: "持续高温",   name: "持续高温",   power: 70, cost: 2,  category: "special",  type: "火",   icon: "assets/icons/moves/持续高温.png", note: "应对状态：下次攻击技能威力翻倍" },
   { id: "山火",       name: "山火",       power: 15, cost: 3,  category: "physical", type: "火",   icon: "assets/icons/moves/山火.png",   note: "每使用1次其他火系技能，本技能威力永久翻倍" },
