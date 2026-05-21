@@ -211,6 +211,8 @@
   { id: "超导加速",   name: "超导加速",   power: 70, cost: 2,  category: "special",  type: "电",   icon: "assets/icons/moves/超导加速.png", note: "自己获得速度+30" },
   { id: "电流",       name: "电流",       power: 40, cost: 0,  category: "special",  type: "电",   icon: "assets/icons/moves/电流.png" },
   { id: "增程电池",   name: "增程电池",   power: 0, cost: 2,   category: "status",   type: "电",   icon: "assets/icons/moves/增程电池.png", note: "自己获得1层蓄电印记" },
+  { id: "引雷",       name: "引雷",       power: 35, cost: 3,  category: "special",  type: "电",   icon: "assets/icons/moves/引雷.png",   note: "2连击，迸发：本次技能威力+20" },
+  { id: "加大功率",   name: "加大功率",   power: 0, cost: 4,   category: "status",   type: "电",   icon: "assets/icons/moves/加大功率.png", note: "自己脱离，替换入场的精灵回复8能量" },
   // 冰
   { id: "冰爪",       name: "冰爪",       power: 80, cost: 2,  category: "physical", type: "冰",   icon: "assets/icons/moves/冰爪.png" },
   { id: "冷风",       name: "冷风",       power: 60, cost: 1,  category: "special",  type: "冰",   icon: "assets/icons/moves/冷风.png",   note: "敌方获得魔防-50%" },
