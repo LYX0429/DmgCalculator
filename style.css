@@ -313,11 +313,14 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
 .iv-btn:not(.active):hover { background: #1a4a7a; color: #9ca3af; }
 
 /* 预设配方按钮栏 */
-.attacker-presets { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.6rem; }
+.attacker-presets { display: flex; flex-wrap: nowrap; gap: 0.3rem; margin-top: 0.6rem; }
 .preset-btn {
-  padding: 0.25rem 0.6rem;
+  flex: 1 1 auto;
+  text-align: center;
+  padding: 0.25rem 0;
   background: #0f3460; border: 1px solid #1a4a7a; border-radius: 4px;
   cursor: pointer; color: #9ca3af; font-size: 0.78rem;
+  white-space: nowrap;
   transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 .preset-btn:hover { background: #1a4a7a; color: #e0e0e0; }
