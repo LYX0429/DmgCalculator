@@ -306,6 +306,7 @@ const CREATURES = [
   {
     id: "lan-niao-chun-tian-de-yang-zi",
     no: "020",
+    bossId: "shuang-yi-ling-zhu",
     form: "regional",
     baseId: "lan-niao-ben-lai-de-yang-zi",
     name: "岚鸟（春天的样子）",
