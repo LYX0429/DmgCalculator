@@ -20,7 +20,15 @@ h2 { font-size: 1rem; color: #a8d8ff; margin-bottom: 0.8rem; }
 
 .panel { background: #16213e; border: 1px solid #0f3460; border-radius: 8px; padding: 1.2rem; }
 
-.battle-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: start; }
+.battle-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto 1fr;
+  gap: 1rem;
+  align-items: start;
+  margin-left: calc(-90px - 1rem);
+  width: calc(100% + 90px + 1rem);
+}
+.common-moves-panel { width: 90px; padding: 0.75rem 0.6rem; flex-shrink: 0; }
 
 /* 精灵搜索下拉 */
 .csearch-wrap { position: relative; }
@@ -327,7 +335,7 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
 .preset-btn.active { border-color: #a8d8ff; color: #a8d8ff; background: #0d2a50; }
 
 /* 常用技能快捷栏 */
-.common-moves-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.4rem; }
+.common-moves-grid { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.4rem; }
 .common-move-btn {
   display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
   padding: 0.4rem 0.5rem; width: 66px;
