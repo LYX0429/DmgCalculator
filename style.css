@@ -90,7 +90,17 @@ select, input[type="number"] {
 select:focus, input:focus { outline: 2px solid #a8d8ff; }
 
 .stat-grid { margin-top: 0.8rem; }
-.stat-label { font-size: 0.85rem; color: #a8d8ff; margin-bottom: 0.4rem; }
+.stat-label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #a8d8ff;
+  margin-bottom: 0.4rem;
+}
+.stat-label-name { font-size: 0.85rem; white-space: nowrap; position: absolute; left: 50%; transform: translateX(-50%); }
+.stat-label-types { display: flex; align-items: center; gap: 0.25rem; flex-shrink: 0; }
+.stat-label .boss-btn { margin-left: auto; flex-shrink: 0; }
 .stat-row {
   display: flex;
   justify-content: space-between;
@@ -152,7 +162,7 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
 
 /* type badges */
 .type-icon {
-  height: 22px;
+  height: 28px;
   width: auto;
   vertical-align: middle;
   margin-left: 4px;
@@ -175,9 +185,6 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
   position: relative;
 }
 .boss-btn {
-  position: absolute;
-  top: 0;
-  right: 0;
   width: 32px;
   height: 32px;
   padding: 0;
@@ -187,7 +194,6 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
   color: #9ca3af;
   font-size: 0.75rem;
   cursor: pointer;
-  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;

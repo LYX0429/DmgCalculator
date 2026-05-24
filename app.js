@@ -165,7 +165,7 @@ function renderStatGrid(side, creature) {
   const bossActive = side === 'attacker' ? attackerBossActive : defenderBossActive;
   const bossBtnHtml = bossForm ? `<button class="boss-btn${bossActive ? ' active' : ''}" data-side="${side}">首领</button>` : '';
   const imgHtml = creature.image
-    ? `<div class="creature-img-area">${bossBtnHtml}<div class="creature-img-wrap${group.length > 1 ? ' has-forms' : ''}">${arrowLeft}<img class="creature-img" src="${creature.image}" alt="${creature.name}">${arrowRight}</div></div>`
+    ? `<div class="creature-img-area"><div class="creature-img-wrap${group.length > 1 ? ' has-forms' : ''}">${arrowLeft}<img class="creature-img" src="${creature.image}" alt="${creature.name}">${arrowRight}</div></div>`
     : '';
   const natureName = (NATURES.find(n => n.boost === nature.boost && n.reduce === nature.reduce) || {}).name || '—';
   const boostLabel  = nature.boost  ? STAT_NAMES[nature.boost]  : '—';
@@ -184,7 +184,7 @@ function renderStatGrid(side, creature) {
     : '';
 
   container.innerHTML =
-    `<p class="stat-label">${creature.name}　${typeTagsHtml}</p>` +
+    `<div class="stat-label"><span class="stat-label-types">${typeTagsHtml}</span><span class="stat-label-name">${creature.name}</span>${bossBtnHtml}</div>` +
     imgHtml +
     abilityHtml +
     natureHtml +
