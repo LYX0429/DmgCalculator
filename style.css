@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "MIANFEIZITI";
+  src: url("assets/fonts/MIANFEIZITI.ttf") format("truetype");
+}
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -98,7 +103,16 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
   color: #a8d8ff;
   margin-bottom: 0.4rem;
 }
-.stat-label-name { font-size: 0.85rem; white-space: nowrap; position: absolute; left: 50%; transform: translateX(-50%); }
+.stat-label-name {
+  font-size: 1.1rem;
+  white-space: nowrap;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "MIANFEIZITI" !important;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
 .stat-label-types { display: flex; align-items: center; gap: 0.25rem; flex-shrink: 0; }
 .stat-label .boss-btn { margin-left: auto; flex-shrink: 0; }
 .stat-row {
