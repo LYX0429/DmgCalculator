@@ -503,7 +503,7 @@ function renderSavedCreatures() {
   const list = getSavedCreatures();
   const grid = document.getElementById('saved-creatures');
   grid.innerHTML = list.map((e, i) => `
-    <div class="saved-creature-card" data-idx="${i}">
+    <div class="saved-creature-card" data-idx="${i}" draggable="true">
       ${e.image ? `<img src="${e.image}" alt="${e.name}">` : ''}
       <span class="saved-creature-name">${e.name}</span>
       <div class="saved-creature-overlay" data-idx="${i}">
@@ -513,6 +513,35 @@ function renderSavedCreatures() {
       </div>
     </div>
   `).join('');
+
+  let dragSrcIdx = null;
+  grid.querySelectorAll('.saved-creature-card').forEach(card => {
+    card.addEventListener('dragstart', e => {
+      dragSrcIdx = +card.dataset.idx;
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    card.addEventListener('dragend', () => {
+      card.classList.remove('dragging');
+      grid.querySelectorAll('.saved-creature-card').forEach(c => c.classList.remove('drag-over'));
+    });
+    card.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      grid.querySelectorAll('.saved-creature-card').forEach(c => c.classList.remove('drag-over'));
+      card.classList.add('drag-over');
+    });
+    card.addEventListener('drop', e => {
+      e.preventDefault();
+      const dropIdx = +card.dataset.idx;
+      if (dragSrcIdx === null || dragSrcIdx === dropIdx) return;
+      const list = getSavedCreatures();
+      const [moved] = list.splice(dragSrcIdx, 1);
+      list.splice(dropIdx, 0, moved);
+      localStorage.setItem(SAVED_KEY, JSON.stringify(list));
+      renderSavedCreatures();
+    });
+  });
 
   grid.querySelectorAll('.saved-overlay-btn').forEach(btn => {
     btn.addEventListener('click', e => {

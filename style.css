@@ -63,7 +63,10 @@ h2 { font-size: 1rem; color: #a8d8ff; margin-bottom: 0.8rem; }
   padding: 0.3rem;
   transition: background 0.15s;
 }
-.saved-creature-card:hover { background: #1a4a7a; }
+.saved-creature-card:hover { background: rgba(26, 74, 122, 0.6); }
+.saved-creature-card.dragging { opacity: 0.4; cursor: grabbing; }
+.saved-creature-card.drag-over { outline: 2px solid #a8d8ff; background: rgba(26, 74, 122, 0.6); }
+.saved-creature-card { cursor: grab; }
 .saved-creature-card img {
   width: 72px;
   height: 72px;
