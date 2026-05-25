@@ -475,6 +475,120 @@ function onAddCommonMove(moveId) {
   populateMoves(creature);
 }
 
+const SAVED_KEY = 'roco-saved-creatures';
+
+function getSavedCreatures() {
+  try { return JSON.parse(localStorage.getItem(SAVED_KEY)) || []; }
+  catch { return []; }
+}
+
+function saveCurrentCreature() {
+  const creature = CREATURES[attackerFormIdx];
+  const entry = {
+    id:          creature.id,
+    name:        creature.name,
+    image:       creature.image || '',
+    ivs:         { ...attackerIVs },
+    nature:      { ...attackerNature },
+    commonMoves: [...(creature.commonMoves || [])],
+  };
+  entry.saveKey = Date.now();
+  const list = getSavedCreatures();
+  list.push(entry);
+  localStorage.setItem(SAVED_KEY, JSON.stringify(list));
+  renderSavedCreatures();
+}
+
+function renderSavedCreatures() {
+  const list = getSavedCreatures();
+  const grid = document.getElementById('saved-creatures');
+  grid.innerHTML = list.map((e, i) => `
+    <div class="saved-creature-card" data-idx="${i}">
+      ${e.image ? `<img src="${e.image}" alt="${e.name}">` : ''}
+      <span class="saved-creature-name">${e.name}</span>
+      <div class="saved-creature-overlay" data-idx="${i}">
+        <button class="saved-overlay-btn" data-action="attacker" data-idx="${i}">应用</button>
+        <button class="saved-overlay-btn" data-action="rename" data-idx="${i}">重命名</button>
+        <button class="saved-overlay-btn saved-overlay-btn--remove" data-action="remove" data-idx="${i}">移除精灵</button>
+      </div>
+    </div>
+  `).join('');
+
+  grid.querySelectorAll('.saved-overlay-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const idx = +btn.dataset.idx;
+      const list = getSavedCreatures();
+      const entry = list[idx];
+      // 清除其他 pinned（重命名按钮自己会重新 pin）
+      if (btn.dataset.action !== 'rename') {
+        document.querySelectorAll('.saved-creature-card.pinned').forEach(c => c.classList.remove('pinned'));
+      }
+      if (btn.dataset.action === 'remove') {
+        list.splice(idx, 1);
+        localStorage.setItem(SAVED_KEY, JSON.stringify(list));
+        renderSavedCreatures();
+      } else if (btn.dataset.action === 'rename') {
+        // 先清除所有其他 pinned
+        document.querySelectorAll('.saved-creature-card.pinned').forEach(c => c.classList.remove('pinned'));
+        const card = btn.closest('.saved-creature-card');
+        card.classList.add('pinned');
+        const overlay = btn.closest('.saved-creature-overlay');
+        overlay.innerHTML = `
+          <input class="saved-rename-input" type="text" value="${entry.name}" placeholder="新名称">
+          <button class="saved-overlay-btn saved-rename-confirm" data-idx="${idx}">确认</button>
+        `;
+        const input = overlay.querySelector('.saved-rename-input');
+        input.focus();
+        input.select();
+        const confirm = overlay.querySelector('.saved-rename-confirm');
+        const doRename = () => {
+          const newName = input.value.trim();
+          if (!newName) return;
+          list[idx].name = newName;
+          localStorage.setItem(SAVED_KEY, JSON.stringify(list));
+          renderSavedCreatures();
+        };
+        confirm.addEventListener('click', doRename);
+        input.addEventListener('keydown', e => { if (e.key === 'Enter') doRename(); });
+      } else {
+        applySavedCreature(entry, btn.dataset.action);
+      }
+    });
+  });
+}
+
+function applySavedCreature(entry, side) {
+  const creatureIdx = CREATURES.findIndex(c => c.id === entry.id);
+  if (creatureIdx < 0) return;
+  if (side === 'attacker') {
+    attackerFormIdx = creatureIdx;
+    attackerIVs = { ...entry.ivs };
+    attackerNature = { ...entry.nature };
+    CREATURES[creatureIdx].commonMoves = [...entry.commonMoves];
+    const creature = getActiveCreature('attacker');
+    loadCreatureDefaults('attacker', creature);
+    attackerIVs = { ...entry.ivs };
+    attackerNature = { ...entry.nature };
+    renderStatGrid('attacker', creature);
+    renderPresetButtons('attacker', creature);
+    populateMoves(creature);
+    searchCtrl.attacker?.syncDisplay();
+  } else {
+    defenderFormIdx = creatureIdx;
+    defenderIVs = { ...entry.ivs };
+    defenderNature = { ...entry.nature };
+    const creature = getActiveCreature('defender');
+    loadCreatureDefaults('defender', creature);
+    defenderIVs = { ...entry.ivs };
+    defenderNature = { ...entry.nature };
+    renderStatGrid('defender', creature);
+    renderPresetButtons('defender', creature);
+    searchCtrl.defender?.syncDisplay();
+  }
+  onCalculate();
+}
+
 function onEffectToggle(btn) {
   if (btn.id === 'ability-toggle') {
     abilityActive = !abilityActive;
@@ -767,6 +881,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const stepperBtn = e.target.closest('.stepper-btn');
     if (stepperBtn) onStepperClick(stepperBtn);
   });
+
+  document.getElementById('save-creature-btn').addEventListener('click', saveCurrentCreature);
+  renderSavedCreatures();
 
   onAttackerChange();
   onDefenderChange();
