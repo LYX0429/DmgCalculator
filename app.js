@@ -123,30 +123,30 @@ const MOVE_EFFECTS = {
   "鸣沙陷阱": [{ name: "物防差", auto: true, apply: ({ basePower, atkStats, defStats }) => {
     const diff = atkStats.def - defStats.def;
     const total = diff < 0    ? 60
-                : diff <= 14  ? 100
-                : diff <= 29  ? 130
-                : diff <= 44  ? 140
-                : diff <= 59  ? 150
-                : diff <= 74  ? 160
-                : diff <= 89  ? 170
-                : diff <= 104 ? 180
-                : diff <= 119 ? 190
-                : diff <= 134 ? 194
+                : diff <= 28  ? 100
+                : diff <= 58  ? 130
+                : diff <= 88  ? 140
+                : diff <= 118  ? 150
+                : diff <= 148  ? 160
+                : diff <= 178  ? 170
+                : diff <= 208 ? 180
+                : diff <= 238 ? 190
+                : diff <= 270 ? 194
                 : 200;
     return total - basePower;
   }}],
   "闪击": [{ name: "速度差", auto: true, apply: ({ basePower, atkStats, defStats }) => {
     const diff = atkStats.spd - defStats.spd;
     const total = diff < 0    ? 60
-                : diff <= 14  ? 100
-                : diff <= 29  ? 130
-                : diff <= 44  ? 140
-                : diff <= 59  ? 150
-                : diff <= 74  ? 160
-                : diff <= 89  ? 170
-                : diff <= 104 ? 180
-                : diff <= 119 ? 190
-                : diff <= 134 ? 194
+                : diff <= 28  ? 100
+                : diff <= 58  ? 130
+                : diff <= 88  ? 140
+                : diff <= 118  ? 150
+                : diff <= 148  ? 160
+                : diff <= 178  ? 170
+                : diff <= 208 ? 180
+                : diff <= 238 ? 190
+                : diff <= 270 ? 194
                 : 200;
     return total - basePower;
   }}],
