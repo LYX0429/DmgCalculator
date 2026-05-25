@@ -715,14 +715,39 @@ function saveCurrentEnemy() {
 function renderCommonEnemies() {
   const grid = document.getElementById('common-enemies');
   grid.innerHTML = currentCommonEnemies.map((e, i) => `
-    <div class="common-enemy-card" data-idx="${i}">
+    <div class="common-enemy-card" data-idx="${i}" draggable="true">
       <button class="common-enemy-remove" data-idx="${i}" title="删除">−</button>
       ${e.image ? `<img src="${e.image}" alt="${e.name}">` : ''}
       <span class="saved-creature-name">${e.name}</span>
     </div>
   `).join('');
 
+  let dragSrcIdx = null;
   grid.querySelectorAll('.common-enemy-card').forEach(card => {
+    card.addEventListener('dragstart', e => {
+      dragSrcIdx = +card.dataset.idx;
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    card.addEventListener('dragend', () => {
+      card.classList.remove('dragging');
+      grid.querySelectorAll('.common-enemy-card').forEach(c => c.classList.remove('drag-over'));
+    });
+    card.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      grid.querySelectorAll('.common-enemy-card').forEach(c => c.classList.remove('drag-over'));
+      card.classList.add('drag-over');
+    });
+    card.addEventListener('drop', e => {
+      e.preventDefault();
+      const dropIdx = +card.dataset.idx;
+      if (dragSrcIdx === null || dragSrcIdx === dropIdx) return;
+      const [moved] = currentCommonEnemies.splice(dragSrcIdx, 1);
+      currentCommonEnemies.splice(dropIdx, 0, moved);
+      renderCommonEnemies();
+    });
+
     card.addEventListener('click', e => {
       if (e.target.closest('.common-enemy-remove')) return;
       const idx = +card.dataset.idx;
