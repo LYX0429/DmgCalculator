@@ -518,7 +518,10 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
   opacity: 0;
   transition: opacity 0.15s;
 }
+.common-move-wrap { cursor: grab; }
 .common-move-wrap:hover .common-move-remove { opacity: 1; }
+.common-move-wrap.dragging { opacity: 0.4; cursor: grabbing; }
+.common-move-wrap.drag-over { outline: 2px solid #a8d8ff; border-radius: 6px; }
 .common-move-btn {
   display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
   padding: 0.4rem 0.5rem; width: 66px;

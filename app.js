@@ -386,11 +386,41 @@ function populateMoves(creature) {
     const m = MOVES.find(m => m.id === id);
     if (!m) return '';
     const iconHtml = m.icon ? `<img src="${m.icon}" alt="">` : '';
-    return `<div class="common-move-wrap">
+    return `<div class="common-move-wrap" draggable="true" data-id="${m.id}">
       <button class="common-move-btn" data-id="${m.id}">${iconHtml}<span>${m.name}</span></button>
       <button class="common-move-remove" data-id="${m.id}" title="移除">−</button>
     </div>`;
   }).join('');
+
+  let dragSrcId = null;
+  grid.querySelectorAll('.common-move-wrap').forEach(wrap => {
+    wrap.addEventListener('dragstart', e => {
+      dragSrcId = wrap.dataset.id;
+      wrap.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    wrap.addEventListener('dragend', () => {
+      wrap.classList.remove('dragging');
+      grid.querySelectorAll('.common-move-wrap').forEach(w => w.classList.remove('drag-over'));
+    });
+    wrap.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      grid.querySelectorAll('.common-move-wrap').forEach(w => w.classList.remove('drag-over'));
+      wrap.classList.add('drag-over');
+    });
+    wrap.addEventListener('drop', e => {
+      e.preventDefault();
+      const dropId = wrap.dataset.id;
+      if (!dragSrcId || dragSrcId === dropId) return;
+      const srcIdx  = currentCommonMoves.indexOf(dragSrcId);
+      const dropIdx = currentCommonMoves.indexOf(dropId);
+      currentCommonMoves.splice(srcIdx, 1);
+      currentCommonMoves.splice(dropIdx, 0, dragSrcId);
+      populateMoves(CREATURES[attackerFormIdx]);
+    });
+  });
+
   grid.querySelectorAll('.common-move-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       sel.value = btn.dataset.id;
