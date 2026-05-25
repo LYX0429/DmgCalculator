@@ -173,6 +173,21 @@ const MOVE_EFFECTS = {
   "天旋地转": [{ name: "迸发",           apply: () => 30  }],
   "色散":     [{ name: "混血精灵",       apply: ({ basePower }) => basePower * 0.5 }],
   "穿膛":     [{ name: "敌方能量≤2",     apply: ({ basePower }) => basePower * 4 }],  // ×5
+  "闪燃":     [{ name: "应对状态",       apply: ({ basePower }) => basePower * 3  }], // ×4
+  "炙热波动": [{ name: "应对状态",       apply: ({ basePower }) => basePower      }], // ×2
+  "滚雪球":   [{ name: "应对状态",       apply: ({ basePower }) => basePower      }], // ×2
+  "暗突袭":   [{ name: "应对状态",       apply: ({ basePower }) => basePower      }], // ×2
+  "回旋踢":   [{ name: "敌方换精灵",     apply: ({ basePower }) => basePower      }], // ×2
+  "扇风":     [{ name: "先手",           apply: ({ basePower }) => basePower * 0.5}], // +50%
+  "龙卷风":   [{ name: "应对状态",       apply: ({ basePower }) => basePower * 0.5}], // ×1.5
+  "虫击":     [{ name: "应对状态",       apply: ({ basePower }) => basePower      }], // ×2
+  "草虫冲击": [{ name: "敌方换精灵",     apply: () => 50 }],
+  "地陷":     [{ name: "应对状态",       apply: ({ basePower }) => basePower      }], // ×2
+  // 机械位置加成（视作条件威力加成）
+  "离子震荡": [{ name: "3号位",          apply: () => 40 }],
+  "械斗":     [{ name: "1号位",          apply: () => 60 }],
+  "磁暴":     [{ name: "1或3号位",       apply: () => 30 }],
+  "钢铁洪流": [{ name: "1号位",          apply: () => 90 }],
 
   // ── B. Stepper 类 ───────────────────────────────────────────────────────
   "坟场搏击": [{ type: "stepper", name: "敌方能量",   min: 0, max: 10,  defaultValue: 0,
@@ -191,6 +206,18 @@ const MOVE_EFFECTS = {
     apply: val => -2 * (100 - val) }],  // 每失去5%威力-10
   "冰锋横扫": [{ type: "stepper", name: "敌方总能耗", min: 0, max: 40,  defaultValue: 10,
     apply: val => val * 10 }],  // power=0，stepper直接提供威力
+  "逆袭":     [{ type: "stepper", name: "额外能耗",   min: 0, max: 10,  defaultValue: 0,
+    apply: val => val * 50 }],  // 能耗每+1，威力+50
+  "燃尽":     [{ type: "stepper", name: "敌方已损失HP%", min: 0, max: 100, defaultValue: 0,
+    apply: val => -val }],      // 每失去5%威力-5
+  "过曝":     [{ type: "stepper", name: "已使用其他系别数", min: 0, max: 17, defaultValue: 0,
+    apply: val => val * 30 }],  // 每系别永久+30
+  "绵里藏针": [{ type: "stepper", name: "已叠加回合", min: 0, max: 20,  defaultValue: 0,
+    apply: val => val * 20 }],  // 每回合未攻击+20
+  "齿轮扭矩": [{ type: "stepper", name: "已变化回合", min: 0, max: 20,  defaultValue: 0,
+    apply: val => val * 20 }],  // 每次位置变化+20
+  "涌泉":     [{ type: "stepper", name: "能耗已减少量", min: 0, max: 10, defaultValue: 0,
+    apply: val => val * 10 }],  // 能耗每-1，威力+10
 
   // ── D. 连击类 ───────────────────────────────────────────────────────────
   "乱打":     [{ type: "hits", value: 5 }],
@@ -211,15 +238,23 @@ const MOVE_EFFECTS = {
   "撒娇":     [{ type: "hits", value: 3 },
                { type: "stepper", name: "已叠加次数", min: 0, max: 20, defaultValue: 0,
                  apply: val => val * 20 }],
-  "引雷":     [{ type: "hits", value: 2 }, { name: "迸发", apply: () => 20 }],
-  "传感器":   [{ type: "hits", value: 2 }],
+  "引雷":       [{ type: "hits", value: 2 }, { name: "迸发", apply: () => 20 }],
+  "传感器":     [{ type: "hits", value: 2 }],
+  "易燃物质":   [{ type: "hits", value: 2 }],
+  "闪击折返":   [{ type: "hits", value: 2 }],
+  "双响炮":     [{ type: "hits", value: 2 }],
+  "刺藤":       [{ type: "hits", value: 2 }],
+  "连续毒针":   [{ type: "hits", value: 2 }],
+  "针状物":     [{ type: "hits", value: 3 }],
   // 条件连击
   "追打":   [{ type: "toggle_hits", name: "应对状态", base: 1, toggled: 3 }],
   "反击拳": [{ type: "toggle_hits", name: "后手攻击", base: 2, toggled: 3 }],
   "散手":   [{ type: "toggle_hits", name: "应对状态", base: 2, toggled: 6 }],
   "撕咬":   [{ type: "toggle_hits", name: "生命<50%", base: 3, toggled: 5 }],
   "埋伏":   [{ type: "toggle_hits", name: "敌方换精灵", base: 3, toggled: 6 }],
-  "灵光":   [{ type: "toggle_hits", name: "敌方换精灵", base: 3, toggled: 6 }],
+  "灵光":       [{ type: "toggle_hits", name: "敌方换精灵", base: 3, toggled: 6 }],
+  "疾风刺":     [{ type: "toggle_hits", name: "先手",     base: 1, toggled: 3 }],
+  "连续爪击":   [{ type: "toggle_hits", name: "应对状态", base: 2, toggled: 4 }],
   // 步进器连击
   "孢子爆散": [{ type: "stepper_hits", name: "当前连击数", min: 1, max: 15, defaultValue: 1,
     apply: val => val }],
@@ -229,6 +264,8 @@ const MOVE_EFFECTS = {
     apply: val => val }],
   "趁火打劫": [{ type: "stepper_hits", name: "连击数", min: 2, max: 12, defaultValue: 2,
     apply: val => val }],
+  "多维击打": [{ type: "stepper_hits", name: "星陨印记数", min: 0, max: 20, defaultValue: 0,
+    apply: val => 1 + val }],
 
   // ── E. 永久累积类 ────────────────────────────────────────────────────────
   "水波术":   [{ type: "stepper", name: "已叠加回合",     min: 0, max: 20, defaultValue: 0, apply: val => val * 20 }],
