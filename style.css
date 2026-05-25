@@ -351,6 +351,7 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
   border-bottom: 1px solid #0f3460;
 }
 .stat-row--interactive .stat-name  { flex: 1; font-size: 0.88rem; }
+.stat-row--interactive .stat-base  { color: #4a6a9a; font-size: 0.8rem; min-width: 2rem; text-align: right; }
 .stat-row--interactive .stat-value { font-weight: 600; color: #e0e0e0; font-size: 0.88rem; min-width: 2.8rem; text-align: right; }
 
 .nature-btns { display: flex; gap: 2px; flex-shrink: 0; }

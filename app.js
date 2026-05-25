@@ -216,6 +216,7 @@ function renderStatGrid(side, creature) {
             <button class="nature-btn nature-btn--minus ${isReduce ? 'active' : ''}" data-side="${side}" data-stat="${id}" data-type="reduce">－</button>
           </div>
           <span class="stat-name ${modClass}">${icon}${STAT_NAMES[id]}</span>
+          <span class="stat-base">${creature.baseStats[id]}</span>
           <span class="stat-value ${modClass}">${stats[id]}</span>
           <button class="iv-btn ${hasIV ? 'active' : ''}" data-side="${side}" data-stat="${id}">个</button>
         </div>`;
