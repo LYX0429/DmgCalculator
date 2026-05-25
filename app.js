@@ -299,7 +299,7 @@ function onBossToggle(side) {
   else defenderBossActive = !defenderBossActive;
   const creature = getActiveCreature(side);
   renderStatGrid(side, creature);
-  if (side === 'attacker') { abilityActive = false; populateMoves(creature); }
+  if (side === 'attacker') { abilityActive = false; populateMoves(creature); renderCommonEnemies(); }
   onCalculate();
 }
 
@@ -316,7 +316,7 @@ function onFormArrow(side, dir) {
   loadCreatureDefaults(side, nextCreature);
   renderStatGrid(side, nextCreature);
   renderPresetButtons(side, nextCreature);
-  if (side === 'attacker') { abilityActive = false; populateMoves(nextCreature); }
+  if (side === 'attacker') { abilityActive = false; populateMoves(nextCreature); renderCommonEnemies(); }
   searchCtrl[side]?.syncDisplay();
   onCalculate();
 }
@@ -331,6 +331,7 @@ function onAttackerChange() {
   renderStatGrid('attacker', creature);
   renderPresetButtons('attacker', creature);
   populateMoves(creature);
+  renderCommonEnemies();
   searchCtrl.attacker?.syncDisplay();
   onCalculate();
 }
@@ -484,13 +485,15 @@ function getSavedCreatures() {
 
 function saveCurrentCreature() {
   const creature = CREATURES[attackerFormIdx];
+  const allEnemies = getCommonEnemies();
   const entry = {
-    id:          creature.id,
-    name:        creature.name,
-    image:       creature.image || '',
-    ivs:         { ...attackerIVs },
-    nature:      { ...attackerNature },
-    commonMoves: [...(creature.commonMoves || [])],
+    id:            creature.id,
+    name:          creature.name,
+    image:         creature.image || '',
+    ivs:           { ...attackerIVs },
+    nature:        { ...attackerNature },
+    commonMoves:   [...(creature.commonMoves || [])],
+    commonEnemies: [...(allEnemies[creature.id] || [])],
   };
   entry.saveKey = Date.now();
   const list = getSavedCreatures();
@@ -587,6 +590,80 @@ function renderSavedCreatures() {
   });
 }
 
+const ENEMIES_KEY = 'roco-common-enemies';
+
+function getCommonEnemies() {
+  try { return JSON.parse(localStorage.getItem(ENEMIES_KEY)) || {}; }
+  catch { return {}; }
+}
+
+function saveCurrentEnemy() {
+  const attackerId = CREATURES[attackerFormIdx].id;
+  const defender   = getActiveCreature('defender');
+  const entry = {
+    saveKey:    Date.now(),
+    id:         defender.id,
+    name:       defender.name,
+    image:      defender.image || '',
+    ivs:        { ...defenderIVs },
+    nature:     { ...defenderNature },
+  };
+  const all = getCommonEnemies();
+  if (!all[attackerId]) all[attackerId] = [];
+  all[attackerId].push(entry);
+  localStorage.setItem(ENEMIES_KEY, JSON.stringify(all));
+  renderCommonEnemies();
+}
+
+function renderCommonEnemies() {
+  const attackerId = CREATURES[attackerFormIdx].id;
+  const all  = getCommonEnemies();
+  const list = all[attackerId] || [];
+  const grid = document.getElementById('common-enemies');
+  grid.innerHTML = list.map((e, i) => `
+    <div class="common-enemy-card" data-idx="${i}">
+      <button class="common-enemy-remove" data-idx="${i}" title="删除">−</button>
+      ${e.image ? `<img src="${e.image}" alt="${e.name}">` : ''}
+      <span class="saved-creature-name">${e.name}</span>
+    </div>
+  `).join('');
+
+  grid.querySelectorAll('.common-enemy-card').forEach(card => {
+    card.addEventListener('click', e => {
+      if (e.target.closest('.common-enemy-remove')) return;
+      const idx = +card.dataset.idx;
+      const all = getCommonEnemies();
+      const attackerId = CREATURES[attackerFormIdx].id;
+      const entry = (all[attackerId] || [])[idx];
+      if (!entry) return;
+      const creatureIdx = CREATURES.findIndex(c => c.id === entry.id);
+      if (creatureIdx < 0) return;
+      defenderFormIdx = creatureIdx;
+      loadCreatureDefaults('defender', CREATURES[creatureIdx]);
+      defenderIVs    = { ...entry.ivs };
+      defenderNature = { ...entry.nature };
+      const creature = getActiveCreature('defender');
+      renderStatGrid('defender', creature);
+      renderPresetButtons('defender', creature);
+      searchCtrl.defender?.syncDisplay();
+      onCalculate();
+    });
+  });
+
+  grid.querySelectorAll('.common-enemy-remove').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const idx = +btn.dataset.idx;
+      const all = getCommonEnemies();
+      const attackerId = CREATURES[attackerFormIdx].id;
+      if (!all[attackerId]) return;
+      all[attackerId].splice(idx, 1);
+      localStorage.setItem(ENEMIES_KEY, JSON.stringify(all));
+      renderCommonEnemies();
+    });
+  });
+}
+
 function applySavedCreature(entry, side) {
   const creatureIdx = CREATURES.findIndex(c => c.id === entry.id);
   if (creatureIdx < 0) return;
@@ -595,6 +672,10 @@ function applySavedCreature(entry, side) {
     attackerIVs = { ...entry.ivs };
     attackerNature = { ...entry.nature };
     CREATURES[creatureIdx].commonMoves = [...entry.commonMoves];
+    // 还原常见敌人
+    const allEnemies = getCommonEnemies();
+    allEnemies[entry.id] = [...(entry.commonEnemies || [])];
+    localStorage.setItem(ENEMIES_KEY, JSON.stringify(allEnemies));
     const creature = getActiveCreature('attacker');
     loadCreatureDefaults('attacker', creature);
     attackerIVs = { ...entry.ivs };
@@ -602,6 +683,7 @@ function applySavedCreature(entry, side) {
     renderStatGrid('attacker', creature);
     renderPresetButtons('attacker', creature);
     populateMoves(creature);
+    renderCommonEnemies();
     searchCtrl.attacker?.syncDisplay();
   } else {
     defenderFormIdx = creatureIdx;
@@ -860,6 +942,7 @@ function onSwap() {
   renderStatGrid('defender', newDefender);
   renderPresetButtons('defender', newDefender);
   populateMoves(newAttacker);
+  renderCommonEnemies();
   searchCtrl.attacker?.syncDisplay();
   searchCtrl.defender?.syncDisplay();
 }
@@ -912,6 +995,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('save-creature-btn').addEventListener('click', saveCurrentCreature);
+  document.getElementById('save-enemy-btn').addEventListener('click', saveCurrentEnemy);
   renderSavedCreatures();
 
   onAttackerChange();
