@@ -29,7 +29,8 @@ h2 { font-size: 1rem; color: #a8d8ff; margin-bottom: 0.8rem; }
   width: calc(100% + 90px + 1rem + 600px + 1rem);
 }
 .common-moves-panel { width: 90px; padding: 0.75rem 0.6rem; flex-shrink: 0; }
-.battle-row .move-panel { width: 600px; }
+.move-col { width: 600px; display: flex; flex-direction: column; gap: 1rem; }
+.move-col .power-panel { margin: 0; }
 
 /* 精灵搜索下拉 */
 .csearch-wrap { position: relative; }

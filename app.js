@@ -521,7 +521,6 @@ function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, st
   const chain  = powerGroup + multGroup;
   const result = `<span class="pw-result">= 显示威力 <b>${displayPower}</b></span>`;
 
-  document.getElementById('power-panel').hidden = false;
   document.getElementById('power-breakdown').innerHTML = chain + result;
 }
 
