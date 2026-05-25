@@ -479,6 +479,8 @@
   { id: "铁疾藜", name: "铁疾藜", power: 85, cost: 3, category: "special", type: "机械", icon: "assets/icons/moves/铁疾藜.png", note: "应对状态：本次伤害翻倍" },
   { id: "排气", name: "排气", power: 0, cost: 2, category: "status", type: "机械", icon: "assets/icons/moves/排气.png", note: "敌方获得全技能威力-20，若自己受到抵抗伤害，敌方额外获得全技能威力-20，使用后重置" },
   { id: "微型斥候", name: "微型斥候", power: 75, cost: 3, category: "special", type: "机械", icon: "assets/icons/moves/微型斥候.png", note: "自己每受到一次抵抗伤害，本技能威力永久+20" },
+  { id: "减压阀", name: "减压阀", power: 0, cost: 1, category: "status", type: "机械", icon: "assets/icons/moves/减压阀.png", note: "主动：本技能被动永久额外+20威力，被动：两侧技能威力+10，传动1" },
+  { id: "相位移动", name: "相位移动", power: 0, cost: 1, category: "defense", type: "机械", icon: "assets/icons/moves/相位移动.png", note: "减伤50%，本技能位于1号位或3号位时，额外减伤40%，应对攻击，传动1" },
   // 毒
   { id: "溃烂触碰",   name: "溃烂触碰",   power: 60, cost: 1,  category: "physical", type: "毒",   icon: "assets/icons/moves/溃烂触碰.png" },
   { id: "不可接触",   name: "不可接触",   power: 0, cost: 1,   category: "defense",  type: "毒",   icon: "assets/icons/moves/不可接触.png", note: "减伤50%，敌方每有1层中毒效果，本技能减伤+10%，应对攻击" },
