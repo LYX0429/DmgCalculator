@@ -733,6 +733,85 @@ function renderSavedCreatures() {
   });
 }
 
+/**
+ * 核心伤害计算，所有场景共用。
+ * @param {object} attacker  - 含 ivs/nature 的攻方精灵对象
+ * @param {object} defCreature - 守方精灵数据（来自 CREATURES）
+ * @param {object} defIvs    - 守方个体值
+ * @param {object} defNature - 守方性格
+ * @param {object} move      - 技能对象
+ * @param {number} extraPower
+ * @param {number} atkBuff   - 已除以10的小数（0.1 = 10%）
+ * @param {number} defBuff
+ * @returns {{ dmg, pct, defStats, atkStats, totalExtra,
+ *             activeEffectDetails, calcAtkBuff, calcDefBuff,
+ *             typeMult, stabMult, atkStat, abilityMult }}
+ */
+function computeDamage({ attacker, defCreature, defIvs, defNature, move, extraPower, atkBuff, defBuff }) {
+  const atkStats  = calcAllStats(attacker);
+  const defStats  = calcAllStats({ ...defCreature, ivs: defIvs || {}, nature: defNature || { boost: null, reduce: null } });
+  const defStatId = move.category === 'physical' ? 'def' : 'spdef';
+
+  let abilityCtx = {
+    atkBuff, defBuff,
+    typeMult:    calcTypeMultiplier(move.type, defCreature.types),
+    stabMult:    calcStabMultiplier(move.type, attacker.types),
+    atkStat:     move.category === 'physical' ? atkStats.atk : atkStats.spatk,
+    defStat:     defStats[defStatId],
+    abilityMult: 1,
+    atkStats, defStats, move,
+  };
+  (CREATURE_ABILITY_EFFECTS[attacker.name] || []).forEach(e => {
+    if (e.auto || abilityActive) abilityCtx = { ...abilityCtx, ...e.apply(abilityCtx) };
+  });
+
+  const effectCtx = { basePower: move.power, atkStats, defStats };
+  const activeEffectDetails = getMoveEffects(move.name)
+    .filter(e => e.type === 'stepper' || activeMoveEffects[e.name])
+    .map(e => {
+      if (e.type === 'stepper') {
+        const val = moveStepperValues[e.name] ?? e.defaultValue;
+        return { name: e.name, bonus: e.apply(val), stepperVal: val };
+      }
+      return { name: e.name, bonus: Math.round(e.apply(effectCtx)) };
+    });
+  const effectBonus = activeEffectDetails.reduce((s, e) => s + e.bonus, 0);
+  const totalExtra  = extraPower + effectBonus;
+
+  const { atkBuff: calcAtkBuff, defBuff: calcDefBuff, typeMult, stabMult, atkStat, abilityMult } = abilityCtx;
+  const dmg = calcDamage(atkStat, defStats[defStatId], move.power, totalExtra, calcAtkBuff, calcDefBuff, typeMult, stabMult, abilityMult);
+  const pct = defStats.hp > 0 ? (dmg / defStats.hp * 100).toFixed(1) : '∞';
+
+  return { dmg, pct, defStats, atkStats, totalExtra, activeEffectDetails, calcAtkBuff, calcDefBuff, typeMult, stabMult, atkStat, abilityMult };
+}
+
+function calcEnemyDamage(enemyEntry) {
+  const move = MOVES.find(m => m.id === document.getElementById('move-select').value);
+  if (!move) return null;
+  const defCreature = CREATURES.find(c => c.id === enemyEntry.id);
+  if (!defCreature) return null;
+  const attacker   = { ...getActiveCreature('attacker'), ivs: attackerIVs, nature: attackerNature };
+  const extraPower = parseFloat(document.getElementById('extra-power').value) || 0;
+  const atkBuff    = (parseFloat(document.getElementById('atk-buff').value) || 0) / 10;
+  const defBuff    = (parseFloat(document.getElementById('def-buff').value) || 0) / 10;
+  const { dmg, pct } = computeDamage({ attacker, defCreature, defIvs: enemyEntry.ivs, defNature: enemyEntry.nature, move, extraPower, atkBuff, defBuff });
+  return { dmg, pct };
+}
+
+function updateEnemyDamageDisplay() {
+  document.querySelectorAll('.common-enemy-card').forEach(card => {
+    const entry = currentCommonEnemies[+card.dataset.idx];
+    if (!entry) return;
+    const result = calcEnemyDamage(entry);
+    const barFill = card.querySelector('.enemy-bar-fill');
+    const dmgText = card.querySelector('.enemy-dmg-value');
+    if (!barFill || !dmgText) return;
+    if (!result) { dmgText.textContent = '—'; barFill.style.width = '0%'; return; }
+    barFill.style.width = Math.min(parseFloat(result.pct), 100) + '%';
+    dmgText.innerHTML = `${result.dmg} <span class="bar-pct">(${result.pct}%)</span>`;
+  });
+}
+
 function saveCurrentEnemy() {
   const defender = getActiveCreature('defender');
   const entry = {
@@ -754,6 +833,8 @@ function renderCommonEnemies() {
       <button class="common-enemy-remove" data-idx="${i}" title="删除">−</button>
       ${e.image ? `<img src="${e.image}" alt="${e.name}">` : ''}
       <span class="saved-creature-name">${e.name}</span>
+      <div class="enemy-bar-track"><div class="enemy-bar-fill" style="width:0%"></div></div>
+      <div class="enemy-dmg-value">—</div>
     </div>
   `).join('');
 
@@ -810,6 +891,8 @@ function renderCommonEnemies() {
       renderCommonEnemies();
     });
   });
+
+  updateEnemyDamageDisplay();
 }
 
 function applySavedCreature(entry, side) {
@@ -924,8 +1007,7 @@ function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, st
 }
 
 function onCalculate() {
-  const creature   = getActiveCreature('attacker');
-  const attacker   = { ...creature, ivs: attackerIVs, nature: attackerNature };
+  const attacker   = { ...getActiveCreature('attacker'), ivs: attackerIVs, nature: attackerNature };
   const enemy      = getActiveCreature('defender');
   const move       = MOVES.find(m => m.id === document.getElementById('move-select').value);
   const extraPower = parseFloat(document.getElementById('extra-power').value) || 0;
@@ -933,53 +1015,17 @@ function onCalculate() {
   const defBuff    = (parseFloat(document.getElementById('def-buff').value) || 0) / 10;
   if (!move) return;
 
-  const atkStats  = calcAllStats(attacker);
-  const defStatId = move.category === 'physical' ? 'def' : 'spdef';
+  const { dmg: currentDmg, pct: currentPct, defStats, totalExtra,
+          activeEffectDetails, calcAtkBuff, calcDefBuff, typeMult, stabMult, abilityMult }
+    = computeDamage({ attacker, defCreature: enemy, defIvs: defenderIVs, defNature: defenderNature, move, extraPower, atkBuff, defBuff });
 
-  // 当前敌方配置结算
-  const defStats = calcAllStats({ ...enemy, ivs: defenderIVs, nature: defenderNature });
-
-  // 应用特性效果（若激活）
-  let abilityCtx = {
-    atkBuff, defBuff,
-    typeMult: calcTypeMultiplier(move.type, enemy.types),
-    stabMult: calcStabMultiplier(move.type, attacker.types),
-    atkStat:  move.category === 'physical' ? atkStats.atk : atkStats.spatk,
-    defStat:  defStats[defStatId],
-    abilityMult: 1,
-    atkStats, defStats, move,
-  };
-  const abilityEffects = CREATURE_ABILITY_EFFECTS[creature.name] || [];
-  abilityEffects.forEach(e => {
-    if (e.auto || abilityActive) {
-      abilityCtx = { ...abilityCtx, ...e.apply(abilityCtx) };
-    }
-  });
-  const { atkBuff: calcAtkBuff, defBuff: calcDefBuff, typeMult, stabMult, atkStat, abilityMult } = abilityCtx;
-
-  // 累加激活的特效威力加成
-  const effectCtx = { basePower: move.power, atkStats, defStats };
-  const activeEffectDetails = getMoveEffects(move.name)
-    .filter(e => e.type === 'stepper' || activeMoveEffects[e.name])
-    .map(e => {
-      if (e.type === 'stepper') {
-        const val = moveStepperValues[e.name] ?? e.defaultValue;
-        return { name: e.name, bonus: e.apply(val), stepperVal: val };
-      }
-      return { name: e.name, bonus: Math.round(e.apply(effectCtx)) };
-    });
-  const effectBonus = activeEffectDetails.reduce((s, e) => s + e.bonus, 0);
-  const totalExtra  = extraPower + effectBonus;
   renderPowerBreakdown(move, extraPower, activeEffectDetails, calcAtkBuff, stabMult, typeMult, abilityMult);
 
-  const currentDmg = calcDamage(atkStat, defStats[defStatId], move.power, totalExtra, calcAtkBuff, calcDefBuff, typeMult, stabMult, abilityMult);
-  const currentPct = defStats.hp > 0 ? (currentDmg / defStats.hp * 100).toFixed(1) : '∞';
-
-  // 9种假设区间
   const scenarios = runCalculation({ attacker, enemy, move, extraPower: totalExtra, atkBuff: calcAtkBuff, defBuff: calcDefBuff, abilityMult });
 
   renderResultBars({ dmg: currentDmg, pct: currentPct }, scenarios);
   document.getElementById('result-panel').hidden = false;
+  updateEnemyDamageDisplay();
 }
 
 function renderResultBars(current, scenarios) {
