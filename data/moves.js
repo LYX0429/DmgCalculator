@@ -431,6 +431,8 @@
   { id: "背袭",       name: "背袭",       power: 40, cost: 2,  category: "special",  type: "幽",   icon: "assets/icons/moves/背袭.png",   note: "若敌方能量等于0，造成20倍伤害" },
   { id: "惊吓盒子",   name: "惊吓盒子",   power: 80, cost: 3,  category: "physical", type: "幽",   icon: "assets/icons/moves/惊吓盒子.png", note: "应对状态：使敌方失去6能量" },
   { id: "鬼火",       name: "鬼火",       power: 30, cost: 0,  category: "special",  type: "幽",   icon: "assets/icons/moves/鬼火.png",   note: "自己回复1能量" },
+  { id: "撞鬼", name: "撞鬼", power: 120, cost: 4, category: "physical", type: "幽", icon: "assets/icons/moves/撞鬼.png" },
+  { id: "入梦", name: "入梦", power: 0, cost: 1, category: "status", type: "幽", icon: "assets/icons/moves/入梦.png", note: "敌方下回合回复的能量-5，冷却2回合" },
   // 虫
   { id: "噬心",       name: "噬心",       power: 60, cost: 1,  category: "physical", type: "虫",   icon: "assets/icons/moves/噬心.png" },
   { id: "尾后针",     name: "尾后针",     power: 80, cost: 2,  category: "physical", type: "虫",   icon: "assets/icons/moves/尾后针.png" },
