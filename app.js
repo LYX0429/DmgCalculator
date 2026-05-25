@@ -331,6 +331,7 @@ function onFormArrow(side, dir) {
     abilityActive = false;
     applyAttackerCreature(nextCreature);
     renderAttackerDefaultBtns();
+    renderSavedCreatures();
     populateMoves(nextCreature);
     renderCommonEnemies();
   } else {
@@ -353,6 +354,7 @@ function onAttackerChange() {
   renderStatGrid('attacker', creature);
   renderPresetButtons('attacker', creature);
   renderAttackerDefaultBtns();
+  renderSavedCreatures();
   populateMoves(creature);
   renderCommonEnemies();
   searchCtrl.attacker?.syncDisplay();
@@ -765,6 +767,8 @@ function applySavedCreature(entry, side) {
     const creature = getActiveCreature('attacker');
     renderStatGrid('attacker', creature);
     renderPresetButtons('attacker', creature);
+    renderAttackerDefaultBtns();
+    renderSavedCreatures();
     populateMoves(creature);
     renderCommonEnemies();
     searchCtrl.attacker?.syncDisplay();
@@ -1030,6 +1034,7 @@ function onSwap() {
   populateMoves(newAttacker);
   renderCommonEnemies();
   renderAttackerDefaultBtns();
+  renderSavedCreatures();
   searchCtrl.attacker?.syncDisplay();
   searchCtrl.defender?.syncDisplay();
 }
