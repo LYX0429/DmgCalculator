@@ -359,11 +359,24 @@ function populateMoves(creature) {
     const m = MOVES.find(m => m.id === id);
     if (!m) return '';
     const iconHtml = m.icon ? `<img src="${m.icon}" alt="">` : '';
-    return `<button class="common-move-btn" data-id="${m.id}">${iconHtml}<span>${m.name}</span></button>`;
+    return `<div class="common-move-wrap">
+      <button class="common-move-btn" data-id="${m.id}">${iconHtml}<span>${m.name}</span></button>
+      <button class="common-move-remove" data-id="${m.id}" title="移除">−</button>
+    </div>`;
   }).join('');
   grid.querySelectorAll('.common-move-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       sel.value = btn.dataset.id;
+      onMoveChange();
+    });
+  });
+  grid.querySelectorAll('.common-move-remove').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const id = btn.dataset.id;
+      const creature = CREATURES[attackerFormIdx];
+      creature.commonMoves = (creature.commonMoves || []).filter(m => m !== id);
+      populateMoves(creature);
       onMoveChange();
     });
   });
