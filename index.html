@@ -45,17 +45,16 @@
         <div id="defender-stats" class="stat-grid"></div>
         <div id="defender-presets" class="attacker-presets"></div>
       </section>
+      <section class="panel move-panel">
+        <div id="move-info-bar" class="move-info-bar"></div>
+        <label class="move-select-label">技能<select id="move-select"></select></label>
+        <div class="param-row">
+          <label>额外威力加成<input id="extra-power" type="number" value="0" min="0"></label>
+          <label>我方攻击 Buff<input id="atk-buff" type="number" value="0" step="1"></label>
+          <label>敌方防守 Buff<input id="def-buff" type="number" value="0" step="1"></label>
+        </div>
+      </section>
     </div>
-
-    <section class="panel move-panel">
-      <div id="move-info-bar" class="move-info-bar"></div>
-      <label class="move-select-label">技能<select id="move-select"></select></label>
-      <div class="param-row">
-        <label>额外威力加成<input id="extra-power" type="number" value="0" min="0"></label>
-        <label>我方攻击 Buff（0.5 = +50%）<input id="atk-buff" type="number" value="0" step="0.1"></label>
-        <label>敌方防守 Buff（0.3 = +30%）<input id="def-buff" type="number" value="0" step="0.1"></label>
-      </div>
-    </section>
 
     <section class="panel power-panel" id="power-panel" hidden>
       <div id="power-breakdown" class="power-breakdown"></div>

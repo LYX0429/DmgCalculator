@@ -531,8 +531,8 @@ function onCalculate() {
   const enemy      = getActiveCreature('defender');
   const move       = MOVES.find(m => m.id === document.getElementById('move-select').value);
   const extraPower = parseFloat(document.getElementById('extra-power').value) || 0;
-  const atkBuff    = parseFloat(document.getElementById('atk-buff').value)    || 0;
-  const defBuff    = parseFloat(document.getElementById('def-buff').value)    || 0;
+  const atkBuff    = (parseFloat(document.getElementById('atk-buff').value) || 0) / 10;
+  const defBuff    = (parseFloat(document.getElementById('def-buff').value) || 0) / 10;
   if (!move) return;
 
   const atkStats  = calcAllStats(attacker);
