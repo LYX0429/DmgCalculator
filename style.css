@@ -32,8 +32,28 @@ h2 { font-size: 1rem; color: #a8d8ff; margin-bottom: 0.8rem; }
 
 .panel-header { display: flex; align-items: center; margin-bottom: 0.8rem; }
 .panel-header h2 { margin-bottom: 0; }
-.save-creature-btn {
+.lock-enemy-btn {
   margin-left: auto;
+  margin-right: 0.4rem;
+  padding: 0.2rem 0.6rem;
+  background: #0f3460;
+  border: 1px solid #1a4a7a;
+  border-radius: 4px;
+  color: #9ca3af;
+  font-size: 0.78rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.lock-enemy-btn:hover { background: #1a4a7a; color: #e0e0e0; }
+.lock-enemy-btn.active {
+  background: #5a2d00;
+  border-color: #c07830;
+  color: #ffcc88;
+}
+.lock-enemy-btn.active:hover { background: #7a3e00; }
+.save-creature-btn {
+  margin-left: 0;
   padding: 0.2rem 0.6rem;
   background: #0f3460;
   border: 1px solid #1a4a7a;

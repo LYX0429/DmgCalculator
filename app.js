@@ -76,6 +76,7 @@ let currentCommonMoves    = [];
 let currentCommonEnemies  = [];
 let defenderCommonMoves   = [];
 let defenderCommonEnemies = [];
+let enemyLocked = false;
 
 function nextSaveId() {
   const n = (parseInt(localStorage.getItem('roco-save-counter') || '0')) + 1;
@@ -582,11 +583,11 @@ function applyAttackerCreature(creature) {
     attackerIVs          = { ...def.ivs };
     attackerNature       = { ...def.nature };
     currentCommonMoves   = [...(def.commonMoves   || [])];
-    currentCommonEnemies = [...(def.commonEnemies || [])];
+    if (!enemyLocked) currentCommonEnemies = [...(def.commonEnemies || [])];
   } else {
     loadCreatureDefaults('attacker', creature);
     currentCommonMoves   = [...(creature.commonMoves || [])];
-    currentCommonEnemies = [];
+    if (!enemyLocked) currentCommonEnemies = [];
   }
 }
 
@@ -907,7 +908,7 @@ function applySavedCreature(entry, side) {
     attackerNature     = { ...entry.nature };
     // 会话级状态从存档恢复，不写回 CREATURES
     currentCommonMoves   = [...(entry.commonMoves   || [])];
-    currentCommonEnemies = [...(entry.commonEnemies || [])];
+    if (!enemyLocked) currentCommonEnemies = [...(entry.commonEnemies || [])];
     abilityActive = false;
     const creature = getActiveCreature('attacker');
     renderStatGrid('attacker', creature);
@@ -1140,7 +1141,7 @@ function onSwap() {
   const newDefender = getActiveCreature('defender');
   // 常用技能和常见敌人随精灵一起交换
   [currentCommonMoves,   defenderCommonMoves  ] = [defenderCommonMoves,   currentCommonMoves  ];
-  [currentCommonEnemies, defenderCommonEnemies] = [defenderCommonEnemies, currentCommonEnemies];
+  if (!enemyLocked) [currentCommonEnemies, defenderCommonEnemies] = [defenderCommonEnemies, currentCommonEnemies];
   renderStatGrid('attacker', newAttacker);
   renderPresetButtons('attacker', newAttacker);
   renderStatGrid('defender', newDefender);
@@ -1202,6 +1203,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('save-creature-btn').addEventListener('click', saveCurrentCreature);
   document.getElementById('save-enemy-btn').addEventListener('click', saveCurrentEnemy);
+  document.getElementById('lock-enemy-btn').addEventListener('click', () => {
+    enemyLocked = !enemyLocked;
+    const btn = document.getElementById('lock-enemy-btn');
+    btn.classList.toggle('active', enemyLocked);
+    btn.textContent = enemyLocked ? '🔒 已锁定' : '锁定敌方阵容';
+  });
   renderSavedCreatures();
 
   onAttackerChange();
