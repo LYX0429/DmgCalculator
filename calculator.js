@@ -74,7 +74,7 @@ function calcEnemyScenarios(enemy, defStatId) {
 }
 
 function runCalculation(params) {
-  const { attacker, enemy, move, extraPower, atkBuff, defBuff, abilityMult = 1, totalHits = 1 } = params;
+  const { attacker, enemy, move, extraPower, atkBuff, defBuff, abilityMult = 1, defAbilityMult = 1, totalHits = 1 } = params;
   const atkStats  = calcAllStats(attacker);
   const atkStat   = move.category === 'physical' ? atkStats.atk : atkStats.spatk;
   const defStatId = move.category === 'physical' ? 'def' : 'spdef';
@@ -82,7 +82,7 @@ function runCalculation(params) {
   const stabMult  = calcStabMultiplier(move.type, attacker.types);
 
   return calcEnemyScenarios(enemy, defStatId).map(s => {
-    const dmg = calcDamage(atkStat, s.def, move.power, extraPower, atkBuff, defBuff, typeMult, stabMult, abilityMult) * totalHits;
+    const dmg = calcDamage(atkStat, s.def, move.power, extraPower, atkBuff, defBuff, typeMult, stabMult, abilityMult) * totalHits * defAbilityMult;
     const pct = s.hp > 0 ? (dmg / s.hp * 100).toFixed(1) : '∞';
     return { ...s, dmg, pct };
   });

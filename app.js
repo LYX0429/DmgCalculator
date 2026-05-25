@@ -59,8 +59,11 @@ let activeMoveEffects = {};
 // 技能步进器状态：{ effectName: number }
 let moveStepperValues = {};
 
-// 特性 toggle 状态（切换我方精灵时重置）
-let abilityActive = false;
+// 特性状态（切换精灵时重置，切换技能时保留）
+let attackerAbilityActive   = {};  // { effectName: boolean }
+let attackerAbilitySteppers = {};  // { effectName: number }
+let defenderAbilityActive   = {};  // { effectName: boolean }
+let defenderAbilitySteppers = {};  // { effectName: number }
 
 // 当前显示的形态索引（CREATURES 数组下标，可被箭头切换）
 let attackerFormIdx = 0;
@@ -102,13 +105,111 @@ function getFormGroup(creature) {
 }
 
 // 各精灵特性效果定义
-// apply(ctx) → 返回覆盖计算参数的对象，ctx 包含 { atkBuff, defBuff, typeMult, stabMult, atkStats, defStats, move }
-// 可覆盖任意字段：atkBuff / defBuff / typeMult / stabMult / atkStat / defStat
+// apply(ctx, val?) → 返回覆盖计算参数的对象
+// ctx 字段：atkBuff, defBuff, typeMult, stabMult, atkStat, defStat, abilityMult,
+//           abilityExtraPower, defAbilityMult, atkStats, defStats, move
+// side: "defender" → 由防方特性逻辑处理；默认为攻方
+// type: "stepper"  → 步进器输入，val 为当前值
+// auto: true       → 条件自动判断，无需用户激活
 const CREATURE_ABILITY_EFFECTS = {
-  "音速犬": [{ name: "专注力", apply: ({ atkBuff }) => ({ atkBuff: atkBuff + 1.0 }) }],
-  "岚鸟（本来的样子）": [{ name: "顺风", auto: true, apply: ({ atkStats, defStats, abilityMult }) => atkStats.spd > defStats.spd ? { abilityMult: abilityMult * 1.5 } : {} }],
-  "岚鸟（春天的样子）": [{ name: "顺风", auto: true, apply: ({ atkStats, defStats, abilityMult }) => atkStats.spd > defStats.spd ? { abilityMult: abilityMult * 1.5 } : {} }],
+  // ── A. Auto（速度条件）──────────────────────────────────────────────────
+  "岚鸟（本来的样子）": [{ name: "顺风", auto: true,
+    apply: (ctx) => ctx.atkStats.spd > ctx.defStats.spd ? { abilityMult: ctx.abilityMult * 1.5 } : {} }],
+  "岚鸟（春天的样子）": [{ name: "顺风", auto: true,
+    apply: (ctx) => ctx.atkStats.spd > ctx.defStats.spd ? { abilityMult: ctx.abilityMult * 1.5 } : {} }],
+  "岚鸟（夏天的样子）": [{ name: "顺风", auto: true,
+    apply: (ctx) => ctx.atkStats.spd > ctx.defStats.spd ? { abilityMult: ctx.abilityMult * 1.5 } : {} }],
+  "岚鸟（秋天的样子）": [{ name: "顺风", auto: true,
+    apply: (ctx) => ctx.atkStats.spd > ctx.defStats.spd ? { abilityMult: ctx.abilityMult * 1.5 } : {} }],
+  "霜翼领主": [{ name: "破空", auto: true,
+    apply: (ctx) => ctx.atkStats.spd > ctx.defStats.spd ? { abilityMult: ctx.abilityMult * 1.75 } : {} }],
+
+  // ── A. Auto（技能系别条件）──────────────────────────────────────────────
+  "白金独角兽": [{ name: "目空", auto: true,
+    apply: (ctx) => ctx.move.type !== '光' ? { abilityMult: ctx.abilityMult * 1.25 } : {} }],
+  "彩虹独角兽": [{ name: "夺目", auto: true,
+    apply: (ctx) => ctx.move.type !== '光' ? { abilityMult: ctx.abilityMult * 1.25 } : {} }],
+  "混乱鱿彩":   [{ name: "涂鸦", auto: true,
+    apply: (ctx) => ctx.move.type !== '幽' && ctx.move.type !== '恶' ? { abilityMult: ctx.abilityMult * 1.5 } : {} }],
+  "记忆石":     [{ name: "不移", auto: true,
+    apply: (ctx) => !ctx.move.note ? { abilityMult: ctx.abilityMult * 1.3 } : {} }],
+
+  // ── A. Auto（技能能耗条件）──────────────────────────────────────────────
+  "鸭吉吉（蓬松的样子）": [{ name: "挺起胸脯", auto: true,
+    apply: (ctx) => ctx.move.cost === 1 ? { abilityMult: ctx.abilityMult * 1.5 } : {} }],
+  "鸭吉吉国王": [{ name: "国王的威严", auto: true,
+    apply: (ctx) => ctx.move.cost === 1 ? { abilityMult: ctx.abilityMult * 1.5 } : {} }],
+  "蒲公英娃娃": [{ name: "勇敢", auto: true,
+    apply: (ctx) => ctx.move.cost > 3 ? { abilityMult: ctx.abilityMult * 1.4 } : {} }],
+
+  // ── B. Toggle（手动激活）────────────────────────────────────────────────
+  "音速犬":     [{ name: "专注力",    apply: (ctx) => ({ atkBuff: ctx.atkBuff + 1.0 }) }],
+  "炽心勇狮":   [{ name: "圣火骑士",  apply: (ctx) => ({ abilityMult: ctx.abilityMult * 2 }) }],
+  "古卷执政官": [{ name: "图书守卫者",apply: (ctx) => ({ atkBuff: ctx.atkBuff + 0.5 }) }],
+  "绒仙子":     [{ name: "绒粉星光",  apply: (ctx) => ({ abilityMult: ctx.abilityMult * 2 }) }],  // 非同系血脉
+  "疾光千兽":   [{ name: "月光审判",  apply: (ctx) => ({ abilityMult: ctx.abilityMult * 2 }) }],  // 敌为首领血脉
+  "雅丹鬃":     [{ name: "天通地明",  apply: (ctx) => ({ abilityMult: ctx.abilityMult * 2 }) }],  // 敌为污染血脉
+
+  // ── C. Stepper（攻方）───────────────────────────────────────────────────
+  "风暴战犬":   [{ type: "stepper", name: "行动次数",    min: 0, max: 5,  defaultValue: 0,
+    apply: (ctx, val) => ({ atkBuff: ctx.atkBuff + Math.max(0, 1.0 - 0.2 * val) }) }],
+  "恶魔狼":     [{ type: "stepper", name: "力竭精灵数",  min: 0, max: 5,  defaultValue: 0,
+    apply: (ctx, val) => ({ atkBuff: ctx.atkBuff + 0.3 * val }) }],
+  "恶魔狼王":   [{ type: "stepper", name: "力竭精灵数",  min: 0, max: 10, defaultValue: 0,
+    apply: (ctx, val) => ({ atkBuff: ctx.atkBuff + 0.3 * val }) }],
+  "乌拉塔（极昼的样子）": [{ type: "stepper", name: "已击败次数", min: 0, max: 5, defaultValue: 0,
+    apply: (ctx, val) => ({ atkBuff: ctx.atkBuff + 0.5 * val }) }],
+  "乌拉塔（极夜的样子）": [{ type: "stepper", name: "已击败次数", min: 0, max: 5, defaultValue: 0,
+    apply: (ctx, val) => ({ atkBuff: ctx.atkBuff + 0.5 * val }) }],
+  "爵士鹿":     [{ type: "stepper", name: "入场次数",    min: 0, max: 10, defaultValue: 0,
+    apply: (ctx, val) => ({ atkBuff: ctx.atkBuff + 0.3 * val }) }],
+  "波普鹿":     [{ type: "stepper", name: "入场次数",    min: 0, max: 10, defaultValue: 0,
+    apply: (ctx, val) => ({ atkBuff: ctx.atkBuff + 0.4 * val }) }],
+  "绅士鸡":     [{ type: "stepper", name: "应对次数",    min: 0, max: 10, defaultValue: 0,
+    apply: (ctx, val) => ({ atkBuff: ctx.atkBuff + 0.3 * val }) }],
+  "武者鸡":     [{ type: "stepper", name: "应对次数",    min: 0, max: 10, defaultValue: 0,
+    apply: (ctx, val) => ({ abilityExtraPower: (ctx.abilityExtraPower || 0) + 30 * val }) }],
+  "仪式巨像":   [{ type: "stepper", name: "星陨印记数",  min: 0, max: 20, defaultValue: 0,
+    apply: (ctx, val) => ctx.move.type === '地' ? { abilityMult: ctx.abilityMult * (1 + 0.2 * val) } : {} }],
+  "祭礼巨像":   [{ type: "stepper", name: "星陨印记数",  min: 0, max: 20, defaultValue: 0,
+    apply: (ctx, val) => ({ abilityMult: ctx.abilityMult * (1 + 0.2 * val) }) }],
+  "画间沉铁兽": [{ type: "stepper", name: "敌方增益层数",min: 0, max: 20, defaultValue: 0,
+    apply: (ctx, val) => ({ abilityMult: ctx.abilityMult * (1 + 0.1 * val) }) }],
+  "冰钻布鲁斯": [{ type: "stepper", name: "敌方总能耗",  min: 0, max: 40, defaultValue: 0,
+    apply: (ctx, val) => ({ abilityMult: ctx.abilityMult * (1 + 0.1 * val) }) }],
+  "窃光蚊":     [{ type: "stepper", name: "敌方系别数",  min: 0, max: 18, defaultValue: 0,
+    apply: (ctx, val) => ({ abilityExtraPower: (ctx.abilityExtraPower || 0) + 10 * val }) }],
+
+  // ── D. 防方特性（side: "defender"）──────────────────────────────────────
+  "卷胡巨獭":   [{ side: "defender", name: "保守派",
+    apply: (ctx) => ({ defBuff: ctx.defBuff + 0.8 }) }],
+  "秩序鱿墨":   [{ side: "defender", name: "绝对秩序",
+    apply: (ctx) => ({ defAbilityMult: (ctx.defAbilityMult || 1) * 0.5 }) }],
+  "蹦床松鼠":   [{ side: "defender", type: "stepper", name: "当前能量", min: 0, max: 10, defaultValue: 5,
+    apply: (ctx, val) => ({ defBuff: ctx.defBuff + 0.1 * val }) }],
 };
+
+function getCreatureAbilityEffects(creatureName) {
+  return CREATURE_ABILITY_EFFECTS[creatureName] || [];
+}
+
+// 切换精灵时初始化对应侧特性状态
+function initAbilityState(side, creature) {
+  const effects = getCreatureAbilityEffects(creature.name);
+  if (side === 'attacker') {
+    attackerAbilityActive   = {};
+    attackerAbilitySteppers = {};
+    effects.filter(e => !e.side || e.side === 'attacker').forEach(e => {
+      if (e.type === 'stepper') attackerAbilitySteppers[e.name] = e.defaultValue;
+    });
+  } else {
+    defenderAbilityActive   = {};
+    defenderAbilitySteppers = {};
+    effects.filter(e => e.side === 'defender').forEach(e => {
+      if (e.type === 'stepper') defenderAbilitySteppers[e.name] = e.defaultValue;
+    });
+  }
+}
 
 // 各技能的特效定义
 // type 规范：
@@ -320,6 +421,36 @@ function renderStatGrid(side, creature) {
   const reduceLabel = nature.reduce ? STAT_NAMES[nature.reduce] : '—';
   const natureHtml = `<p class="nature-label"><span class="nature-name">${natureName}</span><span class="nature-detail">+${boostLabel} / -${reduceLabel}</span></p>`;
 
+  // 特性控件（保留在精灵面板中，切换技能时状态不重置）
+  const abilityEffects = getCreatureAbilityEffects(creature.name);
+  const sideEffects = abilityEffects.filter(e =>
+    side === 'attacker' ? (!e.side || e.side === 'attacker') : e.side === 'defender'
+  );
+  const manualAbilityEffects  = sideEffects.filter(e => !e.auto && e.type !== 'stepper');
+  const stepperAbilityEffects = sideEffects.filter(e => e.type === 'stepper');
+
+  let abilityControlsHtml = '';
+  if (manualAbilityEffects.length || stepperAbilityEffects.length) {
+    const activeMap  = side === 'attacker' ? attackerAbilityActive   : defenderAbilityActive;
+    const stepperMap = side === 'attacker' ? attackerAbilitySteppers : defenderAbilitySteppers;
+
+    const togglesHtml = manualAbilityEffects.map(e =>
+      `<button class="effect-toggle effect-toggle--ability${activeMap[e.name] ? ' active' : ''}" data-side="${side}" data-ability-effect="${e.name}">${e.name}</button>`
+    ).join('');
+
+    const steppersHtml = stepperAbilityEffects.map(e => {
+      const val = stepperMap[e.name] ?? e.defaultValue;
+      return `<div class="energy-stepper">
+        <span class="stepper-label">${e.name}</span>
+        <button class="stepper-btn ability-stepper-btn" data-side="${side}" data-ability-stepper="${e.name}" data-dir="-1">−</button>
+        <span class="stepper-val" id="ability-stepper-val-${side}-${e.name}">${val}</span>
+        <button class="stepper-btn ability-stepper-btn" data-side="${side}" data-ability-stepper="${e.name}" data-dir="1">+</button>
+      </div>`;
+    }).join('');
+
+    abilityControlsHtml = `<div class="move-effect-toggles ability-controls">${steppersHtml}${togglesHtml}</div>`;
+  }
+
   const ab = creature.ability;
   const abilityHtml = ab
     ? `<div class="ability-block">
@@ -328,6 +459,7 @@ function renderStatGrid(side, creature) {
           <span class="ability-name">${ab.name}</span>
           <span class="ability-desc">${ab.desc}</span>
         </div>
+        ${abilityControlsHtml}
        </div>`
     : '';
 
@@ -447,8 +579,9 @@ function onBossToggle(side) {
   if (side === 'attacker') attackerBossActive = !attackerBossActive;
   else defenderBossActive = !defenderBossActive;
   const creature = getActiveCreature(side);
+  initAbilityState(side, creature);
   renderStatGrid(side, creature);
-  if (side === 'attacker') { abilityActive = false; populateMoves(creature); renderCommonEnemies(); }
+  if (side === 'attacker') { populateMoves(creature); renderCommonEnemies(); }
   onCalculate();
 }
 
@@ -464,13 +597,14 @@ function onFormArrow(side, dir) {
   const nextCreature = CREATURES[nextIdx];
   loadCreatureDefaults(side, nextCreature);
   if (side === 'attacker') {
-    abilityActive = false;
+    initAbilityState('attacker', nextCreature);
     applyAttackerCreature(nextCreature);
     renderAttackerDefaultBtns();
     renderSavedCreatures();
     populateMoves(nextCreature);
     renderCommonEnemies();
   } else {
+    initAbilityState('defender', nextCreature);
     defenderCommonMoves   = [...(nextCreature.commonMoves || [])];
     defenderCommonEnemies = [];
   }
@@ -485,7 +619,7 @@ function onAttackerChange() {
   attackerFormIdx = idx;
   attackerBossActive = false;
   const creature = CREATURES[idx];
-  abilityActive = false;
+  initAbilityState('attacker', creature);
   applyAttackerCreature(creature);
   renderStatGrid('attacker', creature);
   renderPresetButtons('attacker', creature);
@@ -505,6 +639,7 @@ function onDefenderChange() {
   defenderCommonMoves   = [...(creature.commonMoves || [])];
   defenderCommonEnemies = [];
   loadCreatureDefaults('defender', creature);
+  initAbilityState('defender', creature);
   renderStatGrid('defender', creature);
   renderPresetButtons('defender', creature);
   searchCtrl.defender?.syncDisplay();
@@ -621,12 +756,6 @@ function onMoveChange() {
   const catLabel  = move.category === 'physical' ? '物理' : '魔法';
   const manualEffects  = effects.filter(e => !e.auto && e.type !== 'stepper' && e.type !== 'stepper_hits' && e.type !== 'hits');
   const stepperEffects = effects.filter(e => e.type === 'stepper' || e.type === 'stepper_hits');
-  const creature = CREATURES[document.getElementById('attacker-select').value];
-  const abilityEffects = CREATURE_ABILITY_EFFECTS[getActiveCreature('attacker').name];
-  const hasManualAbility = abilityEffects?.some(e => !e.auto);
-  const abilityBtnHtml = hasManualAbility
-    ? `<button class="effect-toggle effect-toggle--ability${abilityActive ? ' active' : ''}" id="ability-toggle">${getActiveCreature('attacker').ability?.name ?? '特性'}</button>`
-    : '';
   const stepperHtml = stepperEffects.map(e => {
     const val = moveStepperValues[e.name] ?? e.defaultValue;
     return `<div class="energy-stepper">
@@ -638,7 +767,7 @@ function onMoveChange() {
   }).join('');
   const allToggleBtns = manualEffects.map(e =>
     `<button class="effect-toggle" data-effect="${e.name}">${e.name}</button>`
-  ).join('') + abilityBtnHtml;
+  ).join('');
   const togglesContent = stepperHtml + allToggleBtns;
   const togglesHtml = togglesContent
     ? `<div class="move-effect-toggles">${togglesContent}</div>`
@@ -891,16 +1020,37 @@ function computeDamage({ attacker, defCreature, defIvs, defNature, move, extraPo
 
   let abilityCtx = {
     atkBuff, defBuff,
-    typeMult:    calcTypeMultiplier(move.type, defCreature.types),
-    stabMult:    calcStabMultiplier(move.type, attacker.types),
-    atkStat:     move.category === 'physical' ? atkStats.atk : atkStats.spatk,
-    defStat:     defStats[defStatId],
-    abilityMult: 1,
+    typeMult:         calcTypeMultiplier(move.type, defCreature.types),
+    stabMult:         calcStabMultiplier(move.type, attacker.types),
+    atkStat:          move.category === 'physical' ? atkStats.atk : atkStats.spatk,
+    defStat:          defStats[defStatId],
+    abilityMult:      1,
+    abilityExtraPower: 0,
+    defAbilityMult:   1,
     atkStats, defStats, move,
   };
-  (CREATURE_ABILITY_EFFECTS[attacker.name] || []).forEach(e => {
-    if (e.auto || abilityActive) abilityCtx = { ...abilityCtx, ...e.apply(abilityCtx) };
-  });
+
+  // 攻方特性
+  getCreatureAbilityEffects(attacker.name)
+    .filter(e => !e.side || e.side === 'attacker')
+    .forEach(e => {
+      const active = e.auto || (e.type === 'stepper') || attackerAbilityActive[e.name];
+      if (active) {
+        const val = e.type === 'stepper' ? (attackerAbilitySteppers[e.name] ?? e.defaultValue) : undefined;
+        abilityCtx = { ...abilityCtx, ...e.apply(abilityCtx, val) };
+      }
+    });
+
+  // 防方特性
+  getCreatureAbilityEffects(defCreature.name)
+    .filter(e => e.side === 'defender')
+    .forEach(e => {
+      const active = e.auto || (e.type === 'stepper') || defenderAbilityActive[e.name];
+      if (active) {
+        const val = e.type === 'stepper' ? (defenderAbilitySteppers[e.name] ?? e.defaultValue) : undefined;
+        abilityCtx = { ...abilityCtx, ...e.apply(abilityCtx, val) };
+      }
+    });
 
   const effectCtx = { basePower: move.power, atkStats, defStats };
 
@@ -924,13 +1074,13 @@ function computeDamage({ attacker, defCreature, defIvs, defNature, move, extraPo
       return { name: e.name, bonus: Math.round(e.apply(effectCtx)) };
     });
   const effectBonus = activeEffectDetails.reduce((s, e) => s + e.bonus, 0);
-  const totalExtra  = extraPower + effectBonus;
+  const totalExtra  = extraPower + effectBonus + abilityCtx.abilityExtraPower;
 
-  const { atkBuff: calcAtkBuff, defBuff: calcDefBuff, typeMult, stabMult, atkStat, abilityMult } = abilityCtx;
-  const dmg = calcDamage(atkStat, defStats[defStatId], move.power, totalExtra, calcAtkBuff, calcDefBuff, typeMult, stabMult, abilityMult) * totalHits;
+  const { atkBuff: calcAtkBuff, defBuff: calcDefBuff, typeMult, stabMult, atkStat, abilityMult, defAbilityMult } = abilityCtx;
+  const dmg = calcDamage(atkStat, defStats[defStatId], move.power, totalExtra, calcAtkBuff, calcDefBuff, typeMult, stabMult, abilityMult) * totalHits * defAbilityMult;
   const pct = defStats.hp > 0 ? (dmg / defStats.hp * 100).toFixed(1) : '∞';
 
-  return { dmg, pct, defStats, atkStats, totalExtra, activeEffectDetails, calcAtkBuff, calcDefBuff, typeMult, stabMult, atkStat, abilityMult, totalHits };
+  return { dmg, pct, defStats, atkStats, totalExtra, activeEffectDetails, calcAtkBuff, calcDefBuff, typeMult, stabMult, atkStat, abilityMult, defAbilityMult, totalHits };
 }
 
 function calcEnemyDamage(enemyEntry) {
@@ -1056,8 +1206,8 @@ function applySavedCreature(entry, side) {
     // 会话级状态从存档恢复，不写回 CREATURES
     currentCommonMoves   = [...(entry.commonMoves   || [])];
     if (!enemyLocked) currentCommonEnemies = [...(entry.commonEnemies || [])];
-    abilityActive = false;
     const creature = getActiveCreature('attacker');
+    initAbilityState('attacker', creature);
     renderStatGrid('attacker', creature);
     renderPresetButtons('attacker', creature);
     renderAttackerDefaultBtns();
@@ -1081,12 +1231,6 @@ function applySavedCreature(entry, side) {
 }
 
 function onEffectToggle(btn) {
-  if (btn.id === 'ability-toggle') {
-    abilityActive = !abilityActive;
-    btn.classList.toggle('active', abilityActive);
-    onCalculate();
-    return;
-  }
   const name = btn.dataset.effect;
   activeMoveEffects[name] = !activeMoveEffects[name];
   btn.classList.toggle('active', activeMoveEffects[name]);
@@ -1105,10 +1249,33 @@ function onStepperClick(btn) {
   onCalculate();
 }
 
-function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, stabMult, typeMult, abilityMult = 1, totalHits = 1) {
+function onAbilityToggle(btn) {
+  const side = btn.dataset.side;
+  const name = btn.dataset.abilityEffect;
+  const activeMap = side === 'attacker' ? attackerAbilityActive : defenderAbilityActive;
+  activeMap[name] = !activeMap[name];
+  btn.classList.toggle('active', activeMap[name]);
+  onCalculate();
+}
+
+function onAbilityStepper(btn) {
+  const side = btn.dataset.side;
+  const name = btn.dataset.abilityStepper;
+  const creature = getActiveCreature(side);
+  const effect = getCreatureAbilityEffects(creature.name).find(e => e.name === name);
+  if (!effect) return;
+  const stepperMap = side === 'attacker' ? attackerAbilitySteppers : defenderAbilitySteppers;
+  const current = stepperMap[name] ?? effect.defaultValue;
+  stepperMap[name] = Math.max(effect.min, Math.min(effect.max, current + +btn.dataset.dir));
+  const valEl = document.getElementById(`ability-stepper-val-${side}-${name}`);
+  if (valEl) valEl.textContent = stepperMap[name];
+  onCalculate();
+}
+
+function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, stabMult, typeMult, abilityMult = 1, totalHits = 1, abilityExtraPower = 0, defAbilityMult = 1) {
   const effectBonus  = activeEffectDetails.reduce((s, e) => s + e.bonus, 0);
-  const rawPower     = move.power + extraPower + effectBonus;
-  const displayPower = Math.round(rawPower * (1 + atkBuff) * stabMult * typeMult * abilityMult);
+  const rawPower     = move.power + extraPower + effectBonus + abilityExtraPower;
+  const displayPower = Math.round(rawPower * (1 + atkBuff) * stabMult * typeMult * abilityMult * defAbilityMult);
 
   const powerItems = [];
   const multItems  = [];
@@ -1130,6 +1297,8 @@ function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, st
 
   if (extraPower !== 0)
     powerItems.push(`<span class="pw-chip pw-chip--bonus">额外加成 <b>+${extraPower}</b></span>`);
+  if (abilityExtraPower !== 0)
+    powerItems.push(`<span class="pw-chip pw-chip--stab">特性威力 <b>+${abilityExtraPower}</b></span>`);
 
   if (atkBuff !== 0) {
     const sign = atkBuff > 0 ? '+' : '';
@@ -1143,6 +1312,8 @@ function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, st
     multItems.push(`<span class="pw-chip pw-chip--resist">属性抵抗 <b>×${typeMult}</b></span>`);
   if (abilityMult !== 1)
     multItems.push(`<span class="pw-chip pw-chip--stab">特性 <b>×${abilityMult}</b></span>`);
+  if (defAbilityMult !== 1)
+    multItems.push(`<span class="pw-chip pw-chip--resist">敌方特性 <b>×${defAbilityMult}</b></span>`);
   if (totalHits > 1)
     multItems.push(`<span class="pw-chip pw-chip--stab">连击 <b>×${totalHits}</b></span>`);
 
@@ -1170,12 +1341,13 @@ function onCalculate() {
   if (!move) return;
 
   const { dmg: currentDmg, pct: currentPct, defStats, totalExtra,
-          activeEffectDetails, calcAtkBuff, calcDefBuff, typeMult, stabMult, abilityMult, totalHits }
+          activeEffectDetails, calcAtkBuff, calcDefBuff, typeMult, stabMult, abilityMult, defAbilityMult, totalHits }
     = computeDamage({ attacker, defCreature: enemy, defIvs: defenderIVs, defNature: defenderNature, move, extraPower, atkBuff, defBuff });
 
-  renderPowerBreakdown(move, extraPower, activeEffectDetails, calcAtkBuff, stabMult, typeMult, abilityMult, totalHits);
+  const abilityExtraPower = totalExtra - extraPower - activeEffectDetails.reduce((s, e) => s + e.bonus, 0);
+  renderPowerBreakdown(move, extraPower, activeEffectDetails, calcAtkBuff, stabMult, typeMult, abilityMult, totalHits, abilityExtraPower, defAbilityMult);
 
-  const scenarios = runCalculation({ attacker, enemy, move, extraPower: totalExtra, atkBuff: calcAtkBuff, defBuff: calcDefBuff, abilityMult, totalHits });
+  const scenarios = runCalculation({ attacker, enemy, move, extraPower: totalExtra, atkBuff: calcAtkBuff, defBuff: calcDefBuff, abilityMult, defAbilityMult, totalHits });
 
   renderResultBars({ dmg: currentDmg, pct: currentPct }, scenarios);
   document.getElementById('result-panel').hidden = false;
@@ -1283,8 +1455,9 @@ function onSwap() {
   [attackerNature, defenderNature] = [defenderNature, attackerNature];
   [attackerIVs, defenderIVs] = [defenderIVs, attackerIVs];
 
-  // reset ability and move effects
-  abilityActive = false;
+  // swap ability states (travel with creature), reset move effects
+  [attackerAbilityActive,   defenderAbilityActive  ] = [defenderAbilityActive,   attackerAbilityActive  ];
+  [attackerAbilitySteppers, defenderAbilitySteppers] = [defenderAbilitySteppers, attackerAbilitySteppers];
   activeMoveEffects = {};
   moveStepperValues = {};
 
@@ -1328,13 +1501,17 @@ document.addEventListener('DOMContentLoaded', () => {
   searchCtrl.attacker = setupCreatureSearch('attacker');
   searchCtrl.defender = setupCreatureSearch('defender');
 
-  // 形态切换箭头 + 首领按钮（事件委托到两个 stat 容器）
+  // 形态切换箭头 + 首领按钮 + 特性控件（事件委托到两个 stat 容器）
   ['attacker-stats', 'defender-stats'].forEach(id => {
     document.getElementById(id).addEventListener('click', e => {
       const formBtn = e.target.closest('.form-arrow');
       if (formBtn) { onFormArrow(formBtn.dataset.side, +formBtn.dataset.dir); return; }
       const bossBtn = e.target.closest('.boss-btn');
-      if (bossBtn) onBossToggle(bossBtn.dataset.side);
+      if (bossBtn) { onBossToggle(bossBtn.dataset.side); return; }
+      const abilityToggle = e.target.closest('[data-ability-effect]');
+      if (abilityToggle) { onAbilityToggle(abilityToggle); return; }
+      const abilityStepper = e.target.closest('[data-ability-stepper]');
+      if (abilityStepper) onAbilityStepper(abilityStepper);
     });
   });
   document.getElementById('swap-btn').addEventListener('click', onSwap);

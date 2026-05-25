@@ -493,6 +493,12 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
   flex-direction: column;
   gap: 0.15rem;
   min-width: 0;
+  flex: 1;
+}
+.ability-controls {
+  margin-left: auto;
+  flex-shrink: 0;
+  align-self: center;
 }
 .ability-name {
   font-size: 0.82rem;
