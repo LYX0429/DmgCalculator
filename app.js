@@ -70,9 +70,12 @@ let defenderFormIdx = 0;
 let attackerBossActive = false;
 let defenderBossActive = false;
 
-// 会话级常用技能 / 常见敌人（切换我方精灵时重置，不写回 CREATURES）
-let currentCommonMoves   = [];
-let currentCommonEnemies = [];
+// 会话级常用技能 / 常见敌人（切换精灵时重置，不写回 CREATURES）
+// attacker 侧：实际渲染显示；defender 侧：仅在 swap 时携带数据
+let currentCommonMoves    = [];
+let currentCommonEnemies  = [];
+let defenderCommonMoves   = [];
+let defenderCommonEnemies = [];
 
 function nextSaveId() {
   const n = (parseInt(localStorage.getItem('roco-save-counter') || '0')) + 1;
@@ -330,6 +333,9 @@ function onFormArrow(side, dir) {
     currentCommonEnemies = [];
     populateMoves(nextCreature);
     renderCommonEnemies();
+  } else {
+    defenderCommonMoves   = [...(nextCreature.commonMoves || [])];
+    defenderCommonEnemies = [];
   }
   renderStatGrid(side, nextCreature);
   renderPresetButtons(side, nextCreature);
@@ -359,6 +365,8 @@ function onDefenderChange() {
   defenderFormIdx = idx;
   defenderBossActive = false;
   const creature = CREATURES[idx];
+  defenderCommonMoves   = [...(creature.commonMoves || [])];
+  defenderCommonEnemies = [];
   loadCreatureDefaults('defender', creature);
   renderStatGrid('defender', creature);
   renderPresetButtons('defender', creature);
@@ -676,10 +684,12 @@ function applySavedCreature(entry, side) {
     renderCommonEnemies();
     searchCtrl.attacker?.syncDisplay();
   } else {
-    defenderFormIdx    = creatureIdx;
-    defenderBossActive = false;
-    defenderIVs        = { ...entry.ivs };
-    defenderNature     = { ...entry.nature };
+    defenderFormIdx       = creatureIdx;
+    defenderBossActive    = false;
+    defenderIVs           = { ...entry.ivs };
+    defenderNature        = { ...entry.nature };
+    defenderCommonMoves   = [...(entry.commonMoves   || [])];
+    defenderCommonEnemies = [...(entry.commonEnemies || [])];
     const creature = getActiveCreature('defender');
     renderStatGrid('defender', creature);
     renderPresetButtons('defender', creature);
@@ -925,9 +935,9 @@ function onSwap() {
 
   const newAttacker = getActiveCreature('attacker');
   const newDefender = getActiveCreature('defender');
-  // 交换后按新我方精灵重置会话级状态
-  currentCommonMoves   = [...(CREATURES[attackerFormIdx].commonMoves || [])];
-  currentCommonEnemies = [];
+  // 常用技能和常见敌人随精灵一起交换
+  [currentCommonMoves,   defenderCommonMoves  ] = [defenderCommonMoves,   currentCommonMoves  ];
+  [currentCommonEnemies, defenderCommonEnemies] = [defenderCommonEnemies, currentCommonEnemies];
   renderStatGrid('attacker', newAttacker);
   renderPresetButtons('attacker', newAttacker);
   renderStatGrid('defender', newDefender);
