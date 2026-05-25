@@ -78,6 +78,7 @@
   { id: "天旋地转",   name: "天旋地转",   power: 60, cost: 3,  category: "physical", type: "普通", icon: "assets/icons/moves/天旋地转.png", note: "先手+1，迸发：本次技能威力+30" },
   { id: "埋伏",       name: "埋伏",       power: 30, cost: 4,  category: "special",  type: "普通", icon: "assets/icons/moves/埋伏.png",   note: "3连击，若敌方本回合更换精灵，本次技能连击数+3" },
   { id: "迫近攻击",   name: "迫近攻击",   power: 90, cost: 3,  category: "physical", type: "普通", icon: "assets/icons/moves/迫近攻击.png", note: "每次使用后，本技能威力永久+45" },
+  { id: "同频",       name: "同频",       power: 125, cost: 3, category: "special",  type: "普通", icon: "assets/icons/moves/同频.png",   note: "巧变：魔攻技能" },
   // 光
   { id: "闪光",       name: "闪光",       power: 60, cost: 1,  category: "special",  type: "光",   icon: "assets/icons/moves/闪光.png" },
   { id: "光球",       name: "光球",       power: 80, cost: 2,  category: "special",  type: "光",   icon: "assets/icons/moves/光球.png" },
@@ -157,6 +158,7 @@
   { id: "落雨",       name: "落雨",       power: 0, cost: 5,   category: "status",   type: "水",   icon: "assets/icons/moves/落雨.png",   note: "将天气改为雨天，持续8回合。天气「雨天」：双方水系技能威力+75%" },
   { id: "盐水浴",     name: "盐水浴",     power: 0, cost: 2,   category: "status",   type: "水",   icon: "assets/icons/moves/盐水浴.png", note: "自己获得全技能能耗-2，应对防御：改为技能能耗-3" },
   { id: "水波术",     name: "水波术",     power: 90, cost: 6,  category: "special",  type: "水",   icon: "assets/icons/moves/水波术.png", note: "回合结束时，本技能威力永久+20" },
+  { id: "清洗", name: "清洗", power: 0, cost: 0, category: "status", type: "水", icon: "assets/icons/moves/清洗.png", note: "驱散自己的减益，自己每有1层减益，本技能能耗-1，巧变：水系攻击技能" },
   // 草
   { id: "棘突",       name: "棘突",       power: 100, cost: 3, category: "special",  type: "草",   icon: "assets/icons/moves/棘突.png" },
   { id: "花香",       name: "花香",       power: 60, cost: 1,  category: "special",  type: "草",   icon: "assets/icons/moves/花香.png" },
@@ -407,6 +409,7 @@
   { id: "月光合奏",   name: "月光合奏",   power: 30, cost: 3,  category: "physical", type: "萌",   icon: "assets/icons/moves/月光合奏.png", note: "1连击，双方携带的所有精灵每有1层萌化，本次技能连击数+1" },
   { id: "击鼓传花",   name: "击鼓传花",   power: 0, cost: 3,   category: "status",   type: "萌",   icon: "assets/icons/moves/击鼓传花.png", note: "自己脱离，下个入场精灵继承自己增益" },
   { id: "赤子之心",   name: "赤子之心",   power: 0, cost: 2,   category: "status",   type: "萌",   icon: "assets/icons/moves/赤子之心.png", note: "自己获得萌化：全技能能耗永久-3" },
+  { id: "加油", name: "加油", power: 0, cost: 2, category: "status", type: "萌", icon: "assets/icons/moves/加油.png", note: "自己获得1层萌芽印记" },
   // 幽
   { id: "幻象",       name: "幻象",       power: 60, cost: 1,  category: "physical", type: "幽",   icon: "assets/icons/moves/幻象.png" },
   { id: "虚化",       name: "虚化",       power: 0, cost: 2,   category: "defense",  type: "幽",   icon: "assets/icons/moves/虚化.png",   note: "减伤80%，应对攻击：自己获得魔防+70%" },
@@ -466,6 +469,9 @@
   { id: "钢铁洪流",   name: "钢铁洪流",   power: 70, cost: 3,  category: "physical", type: "机械", icon: "assets/icons/moves/钢铁洪流.png", note: "本技能位于1号位时威力+90，传动2" },
   { id: "拆卸",       name: "拆卸",       power: 40, cost: 0,  category: "physical", type: "机械", icon: "assets/icons/moves/拆卸.png" },
   { id: "传感器",     name: "传感器",     power: 20, cost: 1,  category: "physical", type: "机械", icon: "assets/icons/moves/传感器.png", note: "2连击，本技能位于1号或3号位时连击+1，传动1" },
+  { id: "铁疾藜", name: "铁疾藜", power: 85, cost: 3, category: "special", type: "机械", icon: "assets/icons/moves/铁疾藜.png", note: "应对状态：本次伤害翻倍" },
+  { id: "排气", name: "排气", power: 0, cost: 2, category: "status", type: "机械", icon: "assets/icons/moves/排气.png", note: "敌方获得全技能威力-20，若自己受到抵抗伤害，敌方额外获得全技能威力-20，使用后重置" },
+  { id: "微型斥候", name: "微型斥候", power: 75, cost: 3, category: "special", type: "机械", icon: "assets/icons/moves/微型斥候.png", note: "自己每受到一次抵抗伤害，本技能威力永久+20" },
   // 毒
   { id: "溃烂触碰",   name: "溃烂触碰",   power: 60, cost: 1,  category: "physical", type: "毒",   icon: "assets/icons/moves/溃烂触碰.png" },
   { id: "不可接触",   name: "不可接触",   power: 0, cost: 1,   category: "defense",  type: "毒",   icon: "assets/icons/moves/不可接触.png", note: "减伤50%，敌方每有1层中毒效果，本技能减伤+10%，应对攻击" },
