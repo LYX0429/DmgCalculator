@@ -70,6 +70,16 @@ let defenderFormIdx = 0;
 let attackerBossActive = false;
 let defenderBossActive = false;
 
+// 会话级常用技能 / 常见敌人（切换我方精灵时重置，不写回 CREATURES）
+let currentCommonMoves   = [];
+let currentCommonEnemies = [];
+
+function nextSaveId() {
+  const n = (parseInt(localStorage.getItem('roco-save-counter') || '0')) + 1;
+  localStorage.setItem('roco-save-counter', String(n));
+  return n;
+}
+
 function getActiveCreature(side) {
   const base = CREATURES[side === 'attacker' ? attackerFormIdx : defenderFormIdx];
   const bossActive = side === 'attacker' ? attackerBossActive : defenderBossActive;
@@ -314,9 +324,15 @@ function onFormArrow(side, dir) {
   else defenderFormIdx = nextIdx;
   const nextCreature = CREATURES[nextIdx];
   loadCreatureDefaults(side, nextCreature);
+  if (side === 'attacker') {
+    abilityActive = false;
+    currentCommonMoves   = [...(nextCreature.commonMoves || [])];
+    currentCommonEnemies = [];
+    populateMoves(nextCreature);
+    renderCommonEnemies();
+  }
   renderStatGrid(side, nextCreature);
   renderPresetButtons(side, nextCreature);
-  if (side === 'attacker') { abilityActive = false; populateMoves(nextCreature); renderCommonEnemies(); }
   searchCtrl[side]?.syncDisplay();
   onCalculate();
 }
@@ -327,6 +343,8 @@ function onAttackerChange() {
   attackerBossActive = false;
   const creature = CREATURES[idx];
   abilityActive = false;
+  currentCommonMoves   = [...(creature.commonMoves || [])];
+  currentCommonEnemies = [];
   loadCreatureDefaults('attacker', creature);
   renderStatGrid('attacker', creature);
   renderPresetButtons('attacker', creature);
@@ -352,11 +370,10 @@ const TYPE_ORDER = ['普通','光','火','水','草','电','冰','地','幻','�
 
 function populateMoves(creature) {
   const sel = document.getElementById('move-select');
-  const commonIds = creature.commonMoves || [];
 
-  // 常用技能快捷栏
+  // 常用技能快捷栏（读会话级状态）
   const grid = document.getElementById('common-moves');
-  grid.innerHTML = commonIds.map(id => {
+  grid.innerHTML = currentCommonMoves.map(id => {
     const m = MOVES.find(m => m.id === id);
     if (!m) return '';
     const iconHtml = m.icon ? `<img src="${m.icon}" alt="">` : '';
@@ -375,9 +392,8 @@ function populateMoves(creature) {
     btn.addEventListener('click', e => {
       e.stopPropagation();
       const id = btn.dataset.id;
-      const creature = CREATURES[attackerFormIdx];
-      creature.commonMoves = (creature.commonMoves || []).filter(m => m !== id);
-      populateMoves(creature);
+      currentCommonMoves = currentCommonMoves.filter(m => m !== id);
+      populateMoves(CREATURES[attackerFormIdx]);
       onMoveChange();
     });
   });
@@ -448,8 +464,7 @@ function onMoveChange() {
     : '';
 
   const attacker = getActiveCreature('attacker');
-  const commonIds = CREATURES[attackerFormIdx].commonMoves || [];
-  const alreadyCommon = commonIds.includes(move.id);
+  const alreadyCommon = currentCommonMoves.includes(move.id);
   const addBtnHtml = alreadyCommon ? '' : `<button class="add-common-btn" id="add-common-btn" data-move-id="${move.id}">添加到常用技能</button>`;
 
   document.getElementById('move-info-bar').innerHTML = `
@@ -469,11 +484,10 @@ function onMoveChange() {
 }
 
 function onAddCommonMove(moveId) {
-  const creature = CREATURES[attackerFormIdx];
-  if (!creature.commonMoves) creature.commonMoves = [];
-  if (creature.commonMoves.includes(moveId)) return;
-  creature.commonMoves.push(moveId);
-  populateMoves(creature);
+  if (currentCommonMoves.includes(moveId)) return;
+  currentCommonMoves.push(moveId);
+  populateMoves(CREATURES[attackerFormIdx]);
+  onMoveChange();  // 刷新"添加"按钮可见性
 }
 
 const SAVED_KEY = 'roco-saved-creatures';
@@ -485,17 +499,16 @@ function getSavedCreatures() {
 
 function saveCurrentCreature() {
   const creature = CREATURES[attackerFormIdx];
-  const allEnemies = getCommonEnemies();
   const entry = {
+    saveKey:       nextSaveId(),
     id:            creature.id,
     name:          creature.name,
     image:         creature.image || '',
     ivs:           { ...attackerIVs },
     nature:        { ...attackerNature },
-    commonMoves:   [...(creature.commonMoves || [])],
-    commonEnemies: [...(allEnemies[creature.id] || [])],
+    commonMoves:   [...currentCommonMoves],
+    commonEnemies: [...currentCommonEnemies],
   };
-  entry.saveKey = Date.now();
   const list = getSavedCreatures();
   list.push(entry);
   localStorage.setItem(SAVED_KEY, JSON.stringify(list));
@@ -590,37 +603,23 @@ function renderSavedCreatures() {
   });
 }
 
-const ENEMIES_KEY = 'roco-common-enemies';
-
-function getCommonEnemies() {
-  try { return JSON.parse(localStorage.getItem(ENEMIES_KEY)) || {}; }
-  catch { return {}; }
-}
-
 function saveCurrentEnemy() {
-  const attackerId = CREATURES[attackerFormIdx].id;
-  const defender   = getActiveCreature('defender');
+  const defender = getActiveCreature('defender');
   const entry = {
-    saveKey:    Date.now(),
-    id:         defender.id,
-    name:       defender.name,
-    image:      defender.image || '',
-    ivs:        { ...defenderIVs },
-    nature:     { ...defenderNature },
+    saveKey: nextSaveId(),
+    id:      defender.id,
+    name:    defender.name,
+    image:   defender.image || '',
+    ivs:     { ...defenderIVs },
+    nature:  { ...defenderNature },
   };
-  const all = getCommonEnemies();
-  if (!all[attackerId]) all[attackerId] = [];
-  all[attackerId].push(entry);
-  localStorage.setItem(ENEMIES_KEY, JSON.stringify(all));
+  currentCommonEnemies.push(entry);
   renderCommonEnemies();
 }
 
 function renderCommonEnemies() {
-  const attackerId = CREATURES[attackerFormIdx].id;
-  const all  = getCommonEnemies();
-  const list = all[attackerId] || [];
   const grid = document.getElementById('common-enemies');
-  grid.innerHTML = list.map((e, i) => `
+  grid.innerHTML = currentCommonEnemies.map((e, i) => `
     <div class="common-enemy-card" data-idx="${i}">
       <button class="common-enemy-remove" data-idx="${i}" title="删除">−</button>
       ${e.image ? `<img src="${e.image}" alt="${e.name}">` : ''}
@@ -632,9 +631,7 @@ function renderCommonEnemies() {
     card.addEventListener('click', e => {
       if (e.target.closest('.common-enemy-remove')) return;
       const idx = +card.dataset.idx;
-      const all = getCommonEnemies();
-      const attackerId = CREATURES[attackerFormIdx].id;
-      const entry = (all[attackerId] || [])[idx];
+      const entry = currentCommonEnemies[idx];
       if (!entry) return;
       const creatureIdx = CREATURES.findIndex(c => c.id === entry.id);
       if (creatureIdx < 0) return;
@@ -654,11 +651,7 @@ function renderCommonEnemies() {
     btn.addEventListener('click', e => {
       e.stopPropagation();
       const idx = +btn.dataset.idx;
-      const all = getCommonEnemies();
-      const attackerId = CREATURES[attackerFormIdx].id;
-      if (!all[attackerId]) return;
-      all[attackerId].splice(idx, 1);
-      localStorage.setItem(ENEMIES_KEY, JSON.stringify(all));
+      currentCommonEnemies.splice(idx, 1);
       renderCommonEnemies();
     });
   });
@@ -668,31 +661,26 @@ function applySavedCreature(entry, side) {
   const creatureIdx = CREATURES.findIndex(c => c.id === entry.id);
   if (creatureIdx < 0) return;
   if (side === 'attacker') {
-    attackerFormIdx = creatureIdx;
-    attackerIVs = { ...entry.ivs };
-    attackerNature = { ...entry.nature };
-    CREATURES[creatureIdx].commonMoves = [...entry.commonMoves];
-    // 还原常见敌人
-    const allEnemies = getCommonEnemies();
-    allEnemies[entry.id] = [...(entry.commonEnemies || [])];
-    localStorage.setItem(ENEMIES_KEY, JSON.stringify(allEnemies));
+    attackerFormIdx    = creatureIdx;
+    attackerBossActive = false;
+    attackerIVs        = { ...entry.ivs };
+    attackerNature     = { ...entry.nature };
+    // 会话级状态从存档恢复，不写回 CREATURES
+    currentCommonMoves   = [...(entry.commonMoves   || [])];
+    currentCommonEnemies = [...(entry.commonEnemies || [])];
+    abilityActive = false;
     const creature = getActiveCreature('attacker');
-    loadCreatureDefaults('attacker', creature);
-    attackerIVs = { ...entry.ivs };
-    attackerNature = { ...entry.nature };
     renderStatGrid('attacker', creature);
     renderPresetButtons('attacker', creature);
     populateMoves(creature);
     renderCommonEnemies();
     searchCtrl.attacker?.syncDisplay();
   } else {
-    defenderFormIdx = creatureIdx;
-    defenderIVs = { ...entry.ivs };
-    defenderNature = { ...entry.nature };
+    defenderFormIdx    = creatureIdx;
+    defenderBossActive = false;
+    defenderIVs        = { ...entry.ivs };
+    defenderNature     = { ...entry.nature };
     const creature = getActiveCreature('defender');
-    loadCreatureDefaults('defender', creature);
-    defenderIVs = { ...entry.ivs };
-    defenderNature = { ...entry.nature };
     renderStatGrid('defender', creature);
     renderPresetButtons('defender', creature);
     searchCtrl.defender?.syncDisplay();
@@ -937,6 +925,9 @@ function onSwap() {
 
   const newAttacker = getActiveCreature('attacker');
   const newDefender = getActiveCreature('defender');
+  // 交换后按新我方精灵重置会话级状态
+  currentCommonMoves   = [...(CREATURES[attackerFormIdx].commonMoves || [])];
+  currentCommonEnemies = [];
   renderStatGrid('attacker', newAttacker);
   renderPresetButtons('attacker', newAttacker);
   renderStatGrid('defender', newDefender);
