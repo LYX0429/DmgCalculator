@@ -433,6 +433,11 @@ function onMoveChange() {
     ? `<div class="move-effect-toggles">${togglesContent}</div>`
     : '';
 
+  const attacker = getActiveCreature('attacker');
+  const commonIds = CREATURES[attackerFormIdx].commonMoves || [];
+  const alreadyCommon = commonIds.includes(move.id);
+  const addBtnHtml = alreadyCommon ? '' : `<button class="add-common-btn" id="add-common-btn" data-move-id="${move.id}">添加到常用技能</button>`;
+
   document.getElementById('move-info-bar').innerHTML = `
     ${iconHtml}
     <div class="move-info-text">
@@ -440,12 +445,21 @@ function onMoveChange() {
       <span class="move-info-stats">威力 ${move.power} · ${catLabel} · ${move.type}属性</span>
       ${noteHtml}
     </div>
-    ${togglesHtml}`;
+    ${togglesHtml}
+    ${addBtnHtml}`;
 
   // 同步高亮常用技能栏
   document.querySelectorAll('.common-move-btn').forEach(b =>
     b.classList.toggle('active', b.dataset.id === move.id));
   onCalculate();
+}
+
+function onAddCommonMove(moveId) {
+  const creature = CREATURES[attackerFormIdx];
+  if (!creature.commonMoves) creature.commonMoves = [];
+  if (creature.commonMoves.includes(moveId)) return;
+  creature.commonMoves.push(moveId);
+  populateMoves(creature);
 }
 
 function onEffectToggle(btn) {
@@ -733,6 +747,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 特效 toggle / stepper 事件委托（按钮由 onMoveChange 动态注入）
   document.getElementById('move-info-bar').addEventListener('click', e => {
+    const addBtn = e.target.closest('.add-common-btn');
+    if (addBtn) { onAddCommonMove(addBtn.dataset.moveId); return; }
     const toggleBtn = e.target.closest('.effect-toggle');
     if (toggleBtn) { onEffectToggle(toggleBtn); return; }
     const stepperBtn = e.target.closest('.stepper-btn');

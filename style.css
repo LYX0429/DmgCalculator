@@ -351,6 +351,21 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
 .common-move-btn.active { border-color: #a8d8ff; color: #a8d8ff; background: #0d2a50; }
 
 /* 技能信息栏（下拉框上方）*/
+.add-common-btn {
+  margin-left: auto;
+  flex-shrink: 0;
+  padding: 0.25rem 0.6rem;
+  background: #0f3460;
+  border: 1px solid #1a4a7a;
+  border-radius: 4px;
+  color: #9ca3af;
+  font-size: 0.78rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+.add-common-btn:hover { background: #1a4a7a; color: #e0e0e0; }
+
 .move-info-bar {
   display: flex; align-items: center; gap: 0.7rem;
   padding: 0 0 0.6rem; margin-bottom: 0.5rem;
