@@ -49,27 +49,26 @@ h2 { font-size: 1rem; color: #a8d8ff; margin-bottom: 0.8rem; }
 .saved-creatures-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.8rem;
+  gap: 0.4rem;
 }
 .saved-creature-card {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.3rem;
-  cursor: pointer;
-  width: 80px;
+  gap: 0.2rem;
+  cursor: grab;
+  width: 72px;
   border-radius: 6px;
-  padding: 0.3rem;
+  padding: 0.25rem;
   transition: background 0.15s;
 }
 .saved-creature-card:hover { background: rgba(26, 74, 122, 0.6); }
 .saved-creature-card.dragging { opacity: 0.4; cursor: grabbing; }
 .saved-creature-card.drag-over { outline: 2px solid #a8d8ff; background: rgba(26, 74, 122, 0.6); }
-.saved-creature-card { cursor: grab; }
 .saved-creature-card img {
-  width: 72px;
-  height: 72px;
+  width: 62px;
+  height: 62px;
   object-fit: contain;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
 }
