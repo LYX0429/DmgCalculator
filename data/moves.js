@@ -132,6 +132,7 @@
   { id: "淬火",       name: "淬火",       power: 0, cost: 2,   category: "defense",  type: "火",   icon: "assets/icons/moves/淬火.png",   note: "减伤80%，应对攻击：下次攻击技能威力翻倍" },
   { id: "焚毁",       name: "焚毁",       power: 40, cost: 2,  category: "special",  type: "火",   icon: "assets/icons/moves/焚毁.png",   note: "驱散敌方所有印记，每驱散1层，获得物攻+20%" },
   { id: "阳火增辉",   name: "阳火增辉",   power: 75, cost: 3,  category: "special",  type: "火",   icon: "assets/icons/moves/阳火增辉.png", note: "每次击败敌方，本技能威力永久翻倍" },
+  { id: "焚尽", name: "焚尽", power: 0, cost: 1, category: "status", type: "火", icon: "assets/icons/moves/焚尽.png", note: "驱散自己所有印记，每驱散1层，获得物攻+50%，巧变：火系攻击技能" },
   // 水
   { id: "水弹",       name: "水弹",       power: 40, cost: 0,  category: "special",  type: "水",   icon: "assets/icons/moves/水弹.png" },
   { id: "潮涌",       name: "潮涌",       power: 80, cost: 2,  category: "physical", type: "水",   icon: "assets/icons/moves/潮涌.png" },
@@ -321,6 +322,7 @@
   { id: "龙息环爆",   name: "龙息环爆",   power: 55, cost: 1,  category: "special",  type: "龙",   icon: "assets/icons/moves/龙息环爆.png", note: "应对状态：下次技能无需蓄力" },
   { id: "龙爪",       name: "龙爪",       power: 120, cost: 4, category: "physical", type: "龙",   icon: "assets/icons/moves/龙爪.png" },
   { id: "绵里藏针",   name: "绵里藏针",   power: 60, cost: 2,  category: "special",  type: "龙",   icon: "assets/icons/moves/绵里藏针.png", note: "若自己上回合未攻击敌方并造成伤害，本技能威力每回合永久+20" },
+  { id: "守护咒", name: "守护咒", power: 0, cost: 1, category: "defense", type: "龙", icon: "assets/icons/moves/守护咒.png", note: "减伤90%，应对攻击，巧变：龙系状态技能" },
   // 恶
   { id: "恶能量",     name: "恶能量",     power: 60, cost: 1,  category: "physical", type: "恶",   icon: "assets/icons/moves/恶能量.png" },
   { id: "撕咬",       name: "撕咬",       power: 30, cost: 3,  category: "physical", type: "恶",   icon: "assets/icons/moves/撕咬.png",   note: "3连击，若自己生命低于50%，本次技能连击数+2" },
