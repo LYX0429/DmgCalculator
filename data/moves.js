@@ -301,6 +301,8 @@
   { id: "空间压迫",   name: "空间压迫",   power: 70, cost: 3,  category: "physical", type: "幻",   icon: "assets/icons/moves/空间压迫.png", note: "敌方获得1层星陨印记" },
   { id: "星链",       name: "星链",       power: 0, cost: 3,   category: "status",   type: "幻",   icon: "assets/icons/moves/星链.png",   note: "2连击，每次连击使敌方获得1层星陨印记" },
   { id: "错乱",       name: "错乱",       power: 65, cost: 2,  category: "special",  type: "幻",   icon: "assets/icons/moves/错乱.png",   note: "应对状态：敌方获得3层星陨印记" },
+  { id: "叠加态", name: "叠加态", power: 0, cost: 1, category: "status", type: "幻", icon: "assets/icons/moves/叠加态.png", note: "自己获得随机16层属性增益，巧变：幻系攻击技能" },
+  { id: "天体吸积", name: "天体吸积", power: 20, cost: 4, category: "physical", type: "幻", icon: "assets/icons/moves/天体吸积.png", note: "敌方每有1层印记，本次攻击威力+20" },
   // 龙
   { id: "升龙咆哮",   name: "升龙咆哮",   power: 200, cost: 3, category: "special",  type: "龙",   icon: "assets/icons/moves/升龙咆哮.png", note: "蓄力" },
   { id: "龙吼",       name: "龙吼",       power: 60, cost: 1,  category: "physical", type: "龙",   icon: "assets/icons/moves/龙吼.png" },
