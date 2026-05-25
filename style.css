@@ -82,6 +82,23 @@ h2 { font-size: 1rem; color: #a8d8ff; margin-bottom: 0.8rem; }
   transition: background 0.15s;
 }
 .saved-creature-card:hover { background: rgba(26, 74, 122, 0.6); }
+.saved-creature-remove {
+  position: absolute;
+  top: -4px; left: -4px;
+  width: 16px; height: 16px;
+  padding: 0;
+  background: #7f1d1d;
+  border: 1px solid #f87171;
+  border-radius: 50%;
+  color: #f87171;
+  font-size: 0.75rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 10;
+}
+.saved-creature-card:hover .saved-creature-remove { opacity: 1; }
 .saved-creature-card.dragging { opacity: 0.4; cursor: grabbing; }
 .saved-creature-card.drag-over { outline: 2px solid #a8d8ff; background: rgba(26, 74, 122, 0.6); }
 .saved-creature-card img {

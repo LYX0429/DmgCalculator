@@ -584,12 +584,12 @@ function renderSavedCreatures() {
   const grid = document.getElementById('saved-creatures');
   grid.innerHTML = list.map((e, i) => `
     <div class="saved-creature-card" data-idx="${i}" draggable="true">
+      <button class="saved-creature-remove" data-idx="${i}" title="移除">−</button>
       ${e.image ? `<img src="${e.image}" alt="${e.name}">` : ''}
       <span class="saved-creature-name">${e.name}</span>
       <div class="saved-creature-overlay" data-idx="${i}">
         <button class="saved-overlay-btn" data-action="attacker" data-idx="${i}">应用</button>
         <button class="saved-overlay-btn" data-action="rename" data-idx="${i}">重命名</button>
-        <button class="saved-overlay-btn saved-overlay-btn--remove" data-action="remove" data-idx="${i}">移除精灵</button>
       </div>
     </div>
   `).join('');
@@ -623,6 +623,18 @@ function renderSavedCreatures() {
     });
   });
 
+  grid.querySelectorAll('.saved-creature-remove').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      document.querySelectorAll('.saved-creature-card.pinned').forEach(c => c.classList.remove('pinned'));
+      const idx = +btn.dataset.idx;
+      const list = getSavedCreatures();
+      list.splice(idx, 1);
+      localStorage.setItem(SAVED_KEY, JSON.stringify(list));
+      renderSavedCreatures();
+    });
+  });
+
   grid.querySelectorAll('.saved-overlay-btn').forEach(btn => {
     btn.addEventListener('click', e => {
       e.stopPropagation();
@@ -633,11 +645,7 @@ function renderSavedCreatures() {
       if (btn.dataset.action !== 'rename') {
         document.querySelectorAll('.saved-creature-card.pinned').forEach(c => c.classList.remove('pinned'));
       }
-      if (btn.dataset.action === 'remove') {
-        list.splice(idx, 1);
-        localStorage.setItem(SAVED_KEY, JSON.stringify(list));
-        renderSavedCreatures();
-      } else if (btn.dataset.action === 'rename') {
+      if (btn.dataset.action === 'rename') {
         // 先清除所有其他 pinned
         document.querySelectorAll('.saved-creature-card.pinned').forEach(c => c.classList.remove('pinned'));
         const card = btn.closest('.saved-creature-card');
