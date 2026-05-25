@@ -428,6 +428,11 @@ function populateMoves(creature) {
     sel.appendChild(grp);
   }
 
+  // 默认选常用技能第一个（存在且在下拉列表中），否则选下拉第一项
+  const firstCommon = currentCommonMoves.find(id => sel.querySelector(`option[value="${id}"]`));
+  if (firstCommon) sel.value = firstCommon;
+  else if (sel.options.length) sel.value = sel.options[0].value;
+
   onMoveChange();
 }
 
