@@ -1272,10 +1272,10 @@ function onAbilityStepper(btn) {
   onCalculate();
 }
 
-function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, stabMult, typeMult, abilityMult = 1, totalHits = 1, abilityExtraPower = 0, defAbilityMult = 1) {
+function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, defBuff, stabMult, typeMult, abilityMult = 1, totalHits = 1, abilityExtraPower = 0, defAbilityMult = 1) {
   const effectBonus  = activeEffectDetails.reduce((s, e) => s + e.bonus, 0);
   const rawPower     = move.power + extraPower + effectBonus + abilityExtraPower;
-  const displayPower = Math.round(rawPower * (1 + atkBuff) * stabMult * typeMult * abilityMult * defAbilityMult);
+  const displayPower = Math.round(rawPower * (1 + atkBuff) / (1 + defBuff) * stabMult * typeMult * abilityMult * defAbilityMult);
 
   const powerItems = [];
   const multItems  = [];
@@ -1303,6 +1303,10 @@ function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, st
   if (atkBuff !== 0) {
     const sign = atkBuff > 0 ? '+' : '';
     multItems.push(`<span class="pw-chip pw-chip--buff">攻击${sign}${Math.round(atkBuff * 100)}% <b>×${(1 + atkBuff).toFixed(2)}</b></span>`);
+  }
+  if (defBuff !== 0) {
+    const sign = defBuff > 0 ? '+' : '';
+    multItems.push(`<span class="pw-chip pw-chip--resist">防御${sign}${Math.round(defBuff * 100)}% <b>÷${(1 + defBuff).toFixed(2)}</b></span>`);
   }
   if (stabMult > 1)
     multItems.push(`<span class="pw-chip pw-chip--stab">本系加成 <b>×${stabMult}</b></span>`);
@@ -1345,7 +1349,7 @@ function onCalculate() {
     = computeDamage({ attacker, defCreature: enemy, defIvs: defenderIVs, defNature: defenderNature, move, extraPower, atkBuff, defBuff });
 
   const abilityExtraPower = totalExtra - extraPower - activeEffectDetails.reduce((s, e) => s + e.bonus, 0);
-  renderPowerBreakdown(move, extraPower, activeEffectDetails, calcAtkBuff, stabMult, typeMult, abilityMult, totalHits, abilityExtraPower, defAbilityMult);
+  renderPowerBreakdown(move, extraPower, activeEffectDetails, calcAtkBuff, calcDefBuff, stabMult, typeMult, abilityMult, totalHits, abilityExtraPower, defAbilityMult);
 
   const scenarios = runCalculation({ attacker, enemy, move, extraPower: totalExtra, atkBuff: calcAtkBuff, defBuff: calcDefBuff, abilityMult, defAbilityMult, totalHits });
 
