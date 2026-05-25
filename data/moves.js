@@ -495,4 +495,6 @@
   { id: "落井下毒",   name: "落井下毒",   power: 0, cost: 6,   category: "status",   type: "毒",   icon: "assets/icons/moves/落井下毒.png", note: "使敌方精灵减益的层数翻倍" },
   { id: "毒孢子",     name: "毒孢子",     power: 0, cost: 3,   category: "status",   type: "毒",   icon: "assets/icons/moves/毒孢子.png", note: "敌方获得5层中毒" },
   { id: "毒泡泡",     name: "毒泡泡",     power: 40, cost: 0,  category: "special",  type: "毒",   icon: "assets/icons/moves/毒泡泡.png" },
+  { id: "毒肽", name: "毒肽", power: 0, cost: 2, category: "defense", type: "毒", icon: "assets/icons/moves/毒肽.png", note: "减伤70%，巧变：毒系状态技能，应对攻击" },
+  { id: "重金属粉尘", name: "重金属粉尘", power: 0, cost: 1, category: "status", type: "毒", icon: "assets/icons/moves/重金属粉尘.png", note: "携带的攻击技能获得附加中毒3，应对防御：改为获得附加中毒6" },
 ];
