@@ -114,6 +114,7 @@ const CREATURE_ABILITY_EFFECTS = {
 // apply({ basePower, atkStats, defStats }) → 额外威力加值
 const MOVE_EFFECTS = {
   "电弧": [{ name: "迸发",   apply: () => 40 }],
+  "超级糖果": [{ name: "萌化", apply: () => 60 }],
   "偷袭": [{ name: "应对状态", apply: ({ basePower }) => basePower * 2 }],
   "当头棒喝": [{ name: "当头棒喝", apply: () => 100 }],
   "筛管奔流": [{ name: "生命>80%", apply: () => 75 }],
