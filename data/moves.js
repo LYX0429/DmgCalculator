@@ -250,6 +250,8 @@
   { id: "冰锥",       name: "冰锥",       power: 40, cost: 0,  category: "physical", type: "冰",   icon: "assets/icons/moves/冰锥.png" },
   { id: "冰蛋壳",     name: "冰蛋壳",     power: 0, cost: 3,   category: "defense",  type: "冰",   icon: "assets/icons/moves/冰蛋壳.png", note: "减伤70%，应对攻击：敌方获得2层减速印记" },
   { id: "冰冻光线",   name: "冰冻光线",   power: 90, cost: 7,  category: "special",  type: "冰",   icon: "assets/icons/moves/冰冻光线.png", note: "敌方获得全技能能耗+2" },
+  { id: "冰封", name: "冰封", power: 95, cost: 4, category: "physical", type: "冰", icon: "assets/icons/moves/冰封.png", note: "敌方每有1层冻结，自己回复1能量" },
+  { id: "寒潮", name: "寒潮", power: 95, cost: 3, category: "special", type: "冰", icon: "assets/icons/moves/寒潮.png", note: "敌方获得1层冻结，应对状态：额外获得4层冻结，巧变：冻结相关技能" },
   // 地
   { id: "热砂",       name: "热砂",       power: 80, cost: 2,  category: "special",  type: "地",   icon: "assets/icons/moves/热砂.png" },
   { id: "扬沙",       name: "扬沙",       power: 60, cost: 1,  category: "physical", type: "地",   icon: "assets/icons/moves/扬沙.png" },
