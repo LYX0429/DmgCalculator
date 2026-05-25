@@ -343,6 +343,9 @@
   { id: "迫害",       name: "迫害",       power: 40, cost: 0,  category: "physical", type: "恶",   icon: "assets/icons/moves/迫害.png" },
   { id: "栽赃",       name: "栽赃",       power: 150, cost: 6, category: "special",  type: "恶",   icon: "assets/icons/moves/栽赃.png" },
   { id: "灾厄",       name: "灾厄",       power: 60, cost: 1,  category: "physical", type: "恶",   icon: "assets/icons/moves/灾厄.png",   note: "对自己造成物伤，应对状态：改为对敌方造成180威力物伤" },
+  { id: "杂耍", name: "杂耍", power: 115, cost: 3, category: "special", type: "恶", icon: "assets/icons/moves/杂耍.png", note: "巧变：吸血相关技能" },
+  { id: "骗局", name: "骗局", power: 110, cost: 4, category: "special", type: "恶", icon: "assets/icons/moves/骗局.png", note: "能量不足时，消耗5%生命代替1能量" },
+  { id: "假冒", name: "假冒", power: 0, cost: 2, category: "status", type: "恶", icon: "assets/icons/moves/假冒.png", note: "自己的生命比例变为与敌方生命比例相同，巧变：恶系攻击技能" },
   // 武
   { id: "缠丝劲",     name: "缠丝劲",     power: 25, cost: 1,  category: "physical", type: "武",   icon: "assets/icons/moves/缠丝劲.png", note: "2连击" },
   { id: "反击拳",     name: "反击拳",     power: 25, cost: 2,  category: "physical", type: "武",   icon: "assets/icons/moves/反击拳.png", note: "2连击，若后手攻击，改为3连击" },
