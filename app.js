@@ -807,7 +807,9 @@ function updateEnemyDamageDisplay() {
     const dmgText = card.querySelector('.enemy-dmg-value');
     if (!barFill || !dmgText) return;
     if (!result) { dmgText.textContent = '—'; barFill.style.width = '0%'; return; }
-    barFill.style.width = Math.min(parseFloat(result.pct), 100) + '%';
+    const rawPct = parseFloat(result.pct);
+    barFill.style.width = Math.min(rawPct, 100) + '%';
+    barFill.className = 'enemy-bar-fill ' + barColorClass(rawPct);
     dmgText.innerHTML = `${result.dmg} <span class="bar-pct">(${result.pct}%)</span>`;
   });
 }
@@ -817,7 +819,7 @@ function saveCurrentEnemy() {
   const entry = {
     saveKey: nextSaveId(),
     id:      defender.id,
-    name:    defender.name,
+    name:    defender.name.replace(/（[^）]*）$/, ''),
     image:   defender.image || '',
     ivs:     { ...defenderIVs },
     nature:  { ...defenderNature },
@@ -1028,12 +1030,18 @@ function onCalculate() {
   updateEnemyDamageDisplay();
 }
 
+function barColorClass(pct) {
+  const n = parseFloat(pct);
+  return n >= 100 ? 'bar--red' : n >= 50 ? 'bar--yellow' : '';
+}
+
 function renderResultBars(current, scenarios) {
-  const currentPct = Math.min(parseFloat(current.pct), 100);
+  const currentRaw = parseFloat(current.pct);
+  const currentPct = Math.min(currentRaw, 100);
   document.getElementById('result-current').innerHTML = `
     <div class="bar-row bar-row--current">
       <div class="bar-label">当前配置</div>
-      <div class="bar-track"><div class="bar-fill bar-fill--current" style="width:${currentPct}%"></div></div>
+      <div class="bar-track"><div class="bar-fill bar-fill--current ${barColorClass(currentRaw)}" style="width:${currentPct}%"></div></div>
       <div class="bar-value">${current.dmg} <span class="bar-pct">(${current.pct}%)</span></div>
     </div>`;
 
@@ -1042,7 +1050,7 @@ function renderResultBars(current, scenarios) {
     return `
       <div class="bar-row ${r.isAbsolute ? 'bar-row--absolute' : ''}">
         <div class="bar-label">${r.label}</div>
-        <div class="bar-track"><div class="bar-fill" style="width:${barPct}%"></div></div>
+        <div class="bar-track"><div class="bar-fill ${barColorClass(r.pct)}" style="width:${barPct}%"></div></div>
         <div class="bar-value">${r.dmg} <span class="bar-pct">(${r.pct}%)</span></div>
       </div>`;
   }).join('');

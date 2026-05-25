@@ -182,7 +182,7 @@ h2 { font-size: 1rem; color: #a8d8ff; margin-bottom: 0.8rem; }
   height: 100%;
   background: #3b82f6;
   border-radius: 2px;
-  transition: width 0.2s;
+  transition: width 0.2s, background 0.2s;
 }
 .enemy-dmg-value {
   font-size: 0.65rem;
@@ -192,6 +192,8 @@ h2 { font-size: 1rem; color: #a8d8ff; margin-bottom: 0.8rem; }
   white-space: nowrap;
 }
 .enemy-dmg-value .bar-pct { color: #6b7280; }
+.enemy-bar-fill.bar--yellow { background: #eab308; }
+.enemy-bar-fill.bar--red    { background: #ef4444; }
 
 .common-enemy-card { cursor: grab; }
 .common-enemy-card:hover { background: rgba(26, 74, 122, 0.6); }
@@ -706,11 +708,12 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
 .bar-track { background: #0f3460; border-radius: 4px; height: 12px; overflow: hidden; }
 .bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #e94560, #ff6b6b);
+  background: linear-gradient(90deg, #2563eb, #60a5fa);
   border-radius: 4px;
   transition: width 0.4s ease;
 }
-.bar-row--absolute .bar-fill { background: linear-gradient(90deg, #f7c948, #ffe080); }
+.bar-fill.bar--yellow, .bar-fill--current.bar--yellow { background: linear-gradient(90deg, #ca8a04, #eab308); }
+.bar-fill.bar--red,    .bar-fill--current.bar--red    { background: linear-gradient(90deg, #b91c1c, #ef4444); }
 
 .bar-value { font-size: 0.9rem; font-weight: 600; text-align: right; }
 .bar-pct { color: #ffd700; font-size: 0.82rem; }
