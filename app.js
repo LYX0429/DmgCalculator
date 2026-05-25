@@ -329,8 +329,8 @@ function onFormArrow(side, dir) {
   loadCreatureDefaults(side, nextCreature);
   if (side === 'attacker') {
     abilityActive = false;
-    currentCommonMoves   = [...(nextCreature.commonMoves || [])];
-    currentCommonEnemies = [];
+    applyAttackerCreature(nextCreature);
+    renderAttackerDefaultBtns();
     populateMoves(nextCreature);
     renderCommonEnemies();
   } else {
@@ -349,11 +349,10 @@ function onAttackerChange() {
   attackerBossActive = false;
   const creature = CREATURES[idx];
   abilityActive = false;
-  currentCommonMoves   = [...(creature.commonMoves || [])];
-  currentCommonEnemies = [];
-  loadCreatureDefaults('attacker', creature);
+  applyAttackerCreature(creature);
   renderStatGrid('attacker', creature);
   renderPresetButtons('attacker', creature);
+  renderAttackerDefaultBtns();
   populateMoves(creature);
   renderCommonEnemies();
   searchCtrl.attacker?.syncDisplay();
@@ -498,6 +497,63 @@ function onAddCommonMove(moveId) {
   onMoveChange();  // 刷新"添加"按钮可见性
 }
 
+// ── 精灵默认配置覆盖（按图鉴编号 no 存储）──────────────────────────────
+const DEFAULTS_KEY = 'roco-creature-defaults';
+
+function getCreatureDefault(no) {
+  try { return (JSON.parse(localStorage.getItem(DEFAULTS_KEY)) || {})[no] || null; }
+  catch { return null; }
+}
+
+function saveCreatureDefault() {
+  const creature = CREATURES[attackerFormIdx];
+  const all = JSON.parse(localStorage.getItem(DEFAULTS_KEY) || '{}');
+  all[creature.no] = {
+    ivs:          { ...attackerIVs },
+    nature:       { ...attackerNature },
+    commonMoves:  [...currentCommonMoves],
+    commonEnemies: [...currentCommonEnemies],
+  };
+  localStorage.setItem(DEFAULTS_KEY, JSON.stringify(all));
+  renderAttackerDefaultBtns();
+}
+
+function resetCreatureDefault() {
+  const creature = CREATURES[attackerFormIdx];
+  const all = JSON.parse(localStorage.getItem(DEFAULTS_KEY) || '{}');
+  delete all[creature.no];
+  localStorage.setItem(DEFAULTS_KEY, JSON.stringify(all));
+  renderAttackerDefaultBtns();
+}
+
+function renderAttackerDefaultBtns() {
+  const creature   = CREATURES[attackerFormIdx];
+  const hasDefault = !!getCreatureDefault(creature.no);
+  const container  = document.getElementById('attacker-default-btns');
+  if (!container) return;
+  container.innerHTML =
+    `<button class="default-save-btn">保存为默认</button>` +
+    (hasDefault ? `<button class="default-reset-btn">重置默认</button>` : '');
+  container.querySelector('.default-save-btn').addEventListener('click', saveCreatureDefault);
+  if (hasDefault) container.querySelector('.default-reset-btn').addEventListener('click', resetCreatureDefault);
+}
+
+// 加载精灵时优先应用已保存的默认覆盖
+function applyAttackerCreature(creature) {
+  const def = getCreatureDefault(creature.no);
+  if (def) {
+    attackerIVs          = { ...def.ivs };
+    attackerNature       = { ...def.nature };
+    currentCommonMoves   = [...(def.commonMoves   || [])];
+    currentCommonEnemies = [...(def.commonEnemies || [])];
+  } else {
+    loadCreatureDefaults('attacker', creature);
+    currentCommonMoves   = [...(creature.commonMoves || [])];
+    currentCommonEnemies = [];
+  }
+}
+
+// ── 已保存精灵 ────────────────────────────────────────────────────────
 const SAVED_KEY = 'roco-saved-creatures';
 
 function getSavedCreatures() {
@@ -944,6 +1000,7 @@ function onSwap() {
   renderPresetButtons('defender', newDefender);
   populateMoves(newAttacker);
   renderCommonEnemies();
+  renderAttackerDefaultBtns();
   searchCtrl.attacker?.syncDisplay();
   searchCtrl.defender?.syncDisplay();
 }

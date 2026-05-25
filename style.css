@@ -46,6 +46,24 @@ h2 { font-size: 1rem; color: #a8d8ff; margin-bottom: 0.8rem; }
 }
 .save-creature-btn:hover { background: #1a4a7a; color: #e0e0e0; }
 
+.attacker-default-btns { display: flex; gap: 0.35rem; margin-left: auto; }
+.default-save-btn, .default-reset-btn {
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+.default-save-btn {
+  background: #0f3460; border: 1px solid #1a4a7a; color: #a8d8ff;
+}
+.default-save-btn:hover { background: #1a4a7a; color: #e0e0e0; }
+.default-reset-btn {
+  background: #3b0a0a; border: 1px solid #f87171; color: #f87171;
+}
+.default-reset-btn:hover { background: #7f1d1d; color: #fca5a5; }
+
 .saved-creatures-grid {
   display: flex;
   flex-wrap: wrap;
