@@ -582,7 +582,13 @@ function saveCurrentCreature() {
 function renderSavedCreatures() {
   const list = getSavedCreatures();
   const grid = document.getElementById('saved-creatures');
-  grid.innerHTML = list.map((e, i) => `
+  const currentAttackerId = CREATURES[attackerFormIdx].id;
+  grid.innerHTML = list.map((e, i) => {
+    const isSame = e.id === currentAttackerId;
+    const overwriteBtn = isSame
+      ? `<button class="saved-overlay-btn saved-overlay-btn--overwrite" data-action="overwrite" data-idx="${i}">覆盖</button>`
+      : '';
+    return `
     <div class="saved-creature-card" data-idx="${i}" draggable="true">
       <button class="saved-creature-remove" data-idx="${i}" title="移除">−</button>
       ${e.image ? `<img src="${e.image}" alt="${e.name}">` : ''}
@@ -590,9 +596,10 @@ function renderSavedCreatures() {
       <div class="saved-creature-overlay" data-idx="${i}">
         <button class="saved-overlay-btn" data-action="attacker" data-idx="${i}">应用</button>
         <button class="saved-overlay-btn" data-action="rename" data-idx="${i}">重命名</button>
+        ${overwriteBtn}
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 
   let dragSrcIdx = null;
   grid.querySelectorAll('.saved-creature-card').forEach(card => {
@@ -668,6 +675,20 @@ function renderSavedCreatures() {
         };
         confirm.addEventListener('click', doRename);
         input.addEventListener('keydown', e => { if (e.key === 'Enter') doRename(); });
+      } else if (btn.dataset.action === 'overwrite') {
+        // 用当前我方数据覆盖该存档位，保留名称和位置
+        const creature = CREATURES[attackerFormIdx];
+        list[idx] = {
+          ...list[idx],
+          id:           creature.id,
+          image:        creature.image || '',
+          ivs:          { ...attackerIVs },
+          nature:       { ...attackerNature },
+          commonMoves:  [...currentCommonMoves],
+          commonEnemies: [...currentCommonEnemies],
+        };
+        localStorage.setItem(SAVED_KEY, JSON.stringify(list));
+        renderSavedCreatures();
       } else {
         applySavedCreature(entry, btn.dataset.action);
       }

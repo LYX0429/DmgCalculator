@@ -141,6 +141,8 @@ h2 { font-size: 1rem; color: #a8d8ff; margin-bottom: 0.8rem; }
 .saved-overlay-btn:hover { background: #1a4a7a; }
 .saved-overlay-btn--remove { background: #7f1d1d; border-color: #f87171; color: #f87171; }
 .saved-overlay-btn--remove:hover { background: #991b1b; }
+.saved-overlay-btn--overwrite { background: #713f12; border-color: #fbbf24; color: #fbbf24; }
+.saved-overlay-btn--overwrite:hover { background: #92400e; }
 .saved-rename-input {
   width: 100%;
   padding: 0.2rem 0.3rem;
