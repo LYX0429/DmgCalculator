@@ -95,6 +95,7 @@
   { id: "天光",       name: "天光",       power: 95, cost: 3,  category: "special",  type: "光",   icon: "assets/icons/moves/天光.png",  note: "系别随天气变化" },
   { id: "脉冲光线",   name: "脉冲光线",   power: 40, cost: 0,  category: "special",  type: "光",   icon: "assets/icons/moves/脉冲光线.png" },
   { id: "镜像反射",   name: "镜像反射",   power: 0, cost: 1,   category: "defense",  type: "光",   icon: "assets/icons/moves/镜像反射.png", note: "减伤70%，应对攻击：本技能变为被应对的技能" },
+  { id: "色散", name: "色散", power: 80, cost: 3, category: "special", type: "光", icon: "assets/icons/moves/色散.png", note: "对混血精灵造成伤害+50%" },
   // 火
   { id: "流火",       name: "流火",       power: 15, cost: 1,  category: "special",  type: "火",   icon: "assets/icons/moves/流火.png",   note: "3连击" },
   { id: "火焰箭",     name: "火焰箭",     power: 80, cost: 2,  category: "physical", type: "火",   icon: "assets/icons/moves/火焰箭.png" },
@@ -218,6 +219,7 @@
   { id: "增程电池",   name: "增程电池",   power: 0, cost: 2,   category: "status",   type: "电",   icon: "assets/icons/moves/增程电池.png", note: "自己获得1层蓄电印记" },
   { id: "引雷",       name: "引雷",       power: 35, cost: 3,  category: "special",  type: "电",   icon: "assets/icons/moves/引雷.png",   note: "2连击，迸发：本次技能威力+20" },
   { id: "加大功率",   name: "加大功率",   power: 0, cost: 4,   category: "status",   type: "电",   icon: "assets/icons/moves/加大功率.png", note: "自己脱离，替换入场的精灵回复8能量" },
+  { id: "踏雷", name: "踏雷", power: 0, cost: 2, category: "status", type: "电", icon: "assets/icons/moves/踏雷.png", note: "自己回合结束时返场，携带的攻击技能下回合获得1个已触发过的迸发效果，应对防御：改为获得所有触发过的迸发效果" },
   // 冰
   { id: "冰爪",       name: "冰爪",       power: 80, cost: 2,  category: "physical", type: "冰",   icon: "assets/icons/moves/冰爪.png" },
   { id: "冷风",       name: "冷风",       power: 60, cost: 1,  category: "special",  type: "冰",   icon: "assets/icons/moves/冷风.png",   note: "敌方获得魔防-50%" },
