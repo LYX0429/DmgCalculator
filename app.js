@@ -110,10 +110,17 @@ const CREATURE_ABILITY_EFFECTS = {
   "岚鸟（春天的样子）": [{ name: "顺风", auto: true, apply: ({ atkStats, defStats, abilityMult }) => atkStats.spd > defStats.spd ? { abilityMult: abilityMult * 1.5 } : {} }],
 };
 
-// 各技能的特效 toggle 定义
-// apply({ basePower, atkStats, defStats }) → 额外威力加值
+// 各技能的特效定义
+// type 规范：
+//   (无 type)       — toggle，手动激活，apply({basePower,atkStats,defStats}) → 额外威力加值
+//   auto: true      — 自动生效的 toggle
+//   type:"stepper"  — 步进器，apply(val) → 额外威力加值
+//   type:"hits"     — 固定连击数，value: N（始终生效，无需状态）
+//   type:"toggle_hits" — 条件连击，base/toggled，由 activeMoveEffects 控制
+//   type:"stepper_hits" — 步进器控制连击数，apply(val) → hitCount
 const MOVE_EFFECTS = {
-  "电弧": [{ name: "迸发",   apply: () => 40 }],
+  // ── 已实现 ──────────────────────────────────────────────────────────────
+  "电弧": [{ name: "迸发", apply: () => 40 }],
   "超级糖果": [{ name: "萌化", apply: () => 60 }],
   "偷袭": [{ name: "应对状态", apply: ({ basePower }) => basePower * 2 }],
   "当头棒喝": [{ name: "当头棒喝", apply: () => 100 }],
@@ -126,9 +133,9 @@ const MOVE_EFFECTS = {
                 : diff <= 28  ? 100
                 : diff <= 58  ? 130
                 : diff <= 88  ? 140
-                : diff <= 118  ? 150
-                : diff <= 148  ? 160
-                : diff <= 178  ? 170
+                : diff <= 118 ? 150
+                : diff <= 148 ? 160
+                : diff <= 178 ? 170
                 : diff <= 208 ? 180
                 : diff <= 238 ? 190
                 : diff <= 270 ? 194
@@ -141,15 +148,104 @@ const MOVE_EFFECTS = {
                 : diff <= 28  ? 100
                 : diff <= 58  ? 130
                 : diff <= 88  ? 140
-                : diff <= 118  ? 150
-                : diff <= 148  ? 160
-                : diff <= 178  ? 170
+                : diff <= 118 ? 150
+                : diff <= 148 ? 160
+                : diff <= 178 ? 170
                 : diff <= 208 ? 180
                 : diff <= 238 ? 190
                 : diff <= 270 ? 194
                 : 200;
     return total - basePower;
   }}],
+
+  // ── A. Toggle 类 ────────────────────────────────────────────────────────
+  "突袭":     [{ name: "应对状态",     apply: ({ basePower }) => basePower * 2  }], // ×3
+  "爆冲":     [{ name: "应对状态",     apply: ({ basePower }) => basePower * 4  }], // ×5
+  "无影脚":   [{ name: "应对状态",     apply: ({ basePower }) => basePower      }], // ×2
+  "技巧打击": [{ name: "应对状态",     apply: ({ basePower }) => basePower * 9  }], // ×10
+  "铁疾藜":   [{ name: "应对状态",     apply: ({ basePower }) => basePower      }], // ×2
+  "背袭":     [{ name: "敌方能量=0",   apply: ({ basePower }) => basePower * 19 }], // ×20
+  "破罐破摔": [{ name: "有减益",         apply: () => 60  }],
+  "触底强击": [{ name: "能量耗尽",       apply: () => 120 }],
+  "见招拆招": [{ name: "上回合用状态技", apply: () => 55  }],
+  "气势一击": [{ name: "上回合应对成功", apply: () => 180 }],
+  "极寒领域": [{ name: "敌方有冻结",     apply: () => 60  }],
+  "天旋地转": [{ name: "迸发",           apply: () => 30  }],
+  "色散":     [{ name: "混血精灵",       apply: ({ basePower }) => basePower * 0.5 }],
+  "穿膛":     [{ name: "敌方能量≤2",     apply: ({ basePower }) => basePower * 4 }],  // ×5
+
+  // ── B. Stepper 类 ───────────────────────────────────────────────────────
+  "坟场搏击": [{ type: "stepper", name: "敌方能量",   min: 0, max: 10,  defaultValue: 0,
+    apply: val => -18 * val }],    // 180×(1-0.1×energy)
+  "碎冰冰":   [{ type: "stepper", name: "冻结层数",   min: 0, max: 20,  defaultValue: 0,
+    apply: val => val * 20 }],
+  "天体吸积": [{ type: "stepper", name: "印记层数",   min: 0, max: 20,  defaultValue: 0,
+    apply: val => val * 20 }],
+  "鸩毒":     [{ type: "stepper", name: "中毒层数",   min: 0, max: 20,  defaultValue: 0,
+    apply: val => val * 10 }],
+  "牵连":     [{ type: "stepper", name: "力竭精灵数", min: 0, max: 5,   defaultValue: 0,
+    apply: val => val * 30 }],
+  "垂死反击": [{ type: "stepper", name: "已损失HP%",  min: 0, max: 100, defaultValue: 0,
+    apply: val => val }],    // 每失去5%生命+5；stepper值=已损失%
+  "彗星":     [{ type: "stepper", name: "当前HP%",    min: 0, max: 100, defaultValue: 100,
+    apply: val => -2 * (100 - val) }],  // 每失去5%威力-10
+  "冰锋横扫": [{ type: "stepper", name: "敌方总能耗", min: 0, max: 40,  defaultValue: 10,
+    apply: val => val * 10 }],  // power=0，stepper直接提供威力
+
+  // ── D. 连击类 ───────────────────────────────────────────────────────────
+  "乱打":     [{ type: "hits", value: 5 }],
+  "旋转突击": [{ type: "hits", value: 3 }],
+  "能量炮":   [{ type: "hits", value: 2 }],
+  "种皮爆裂": [{ type: "hits", value: 2 }],
+  "水花四溅": [{ type: "hits", value: 4 }],
+  "光之矛":   [{ type: "hits", value: 3 }],
+  "流火":     [{ type: "hits", value: 3 }],
+  "打雪仗":   [{ type: "hits", value: 2 }],
+  "午夜噪音": [{ type: "hits", value: 5 }],
+  "虫刺":     [{ type: "hits", value: 3 }],
+  "缠丝劲":   [{ type: "hits", value: 2 }],
+  "啄击":     [{ type: "hits", value: 2 }],
+  "黑手":     [{ type: "hits", value: 2 }],
+  "叠势":     [{ type: "hits", value: 2 }],
+  "虫群过境": [{ type: "hits", value: 2 }],
+  "撒娇":     [{ type: "hits", value: 3 },
+               { type: "stepper", name: "已叠加次数", min: 0, max: 20, defaultValue: 0,
+                 apply: val => val * 20 }],
+  "引雷":     [{ type: "hits", value: 2 }, { name: "迸发", apply: () => 20 }],
+  "传感器":   [{ type: "hits", value: 2 }],
+  // 条件连击
+  "追打":   [{ type: "toggle_hits", name: "应对状态", base: 1, toggled: 3 }],
+  "反击拳": [{ type: "toggle_hits", name: "后手攻击", base: 2, toggled: 3 }],
+  "散手":   [{ type: "toggle_hits", name: "应对状态", base: 2, toggled: 6 }],
+  "撕咬":   [{ type: "toggle_hits", name: "生命<50%", base: 3, toggled: 5 }],
+  "埋伏":   [{ type: "toggle_hits", name: "敌方换精灵", base: 3, toggled: 6 }],
+  "灵光":   [{ type: "toggle_hits", name: "敌方换精灵", base: 3, toggled: 6 }],
+  // 步进器连击
+  "孢子爆散": [{ type: "stepper_hits", name: "当前连击数", min: 1, max: 15, defaultValue: 1,
+    apply: val => val }],
+  "月光合奏": [{ type: "stepper_hits", name: "萌化层数", min: 0, max: 20, defaultValue: 0,
+    apply: val => 1 + val }],
+  "虫鸣":     [{ type: "stepper_hits", name: "队伍虫鸣数", min: 1, max: 4, defaultValue: 1,
+    apply: val => val }],
+  "趁火打劫": [{ type: "stepper_hits", name: "连击数", min: 2, max: 12, defaultValue: 2,
+    apply: val => val }],
+
+  // ── E. 永久累积类 ────────────────────────────────────────────────────────
+  "水波术":   [{ type: "stepper", name: "已叠加回合",     min: 0, max: 20, defaultValue: 0, apply: val => val * 20 }],
+  "迫近攻击": [{ type: "stepper", name: "已叠加次数",     min: 0, max: 10, defaultValue: 0, apply: val => val * 45 }],
+  "能量刃":   [{ type: "stepper", name: "已叠加次数",     min: 0, max: 10, defaultValue: 0, apply: val => val * 90 }],
+  "吹火":     [{ type: "stepper", name: "已叠加次数",     min: 0, max: 20, defaultValue: 0, apply: val => val * 20 }],
+  "落雷":     [{ type: "stepper", name: "入场次数",       min: 0, max: 10, defaultValue: 0, apply: val => val * 40 }],
+  "微型斥候": [{ type: "stepper", name: "抵抗次数",       min: 0, max: 10, defaultValue: 0, apply: val => val * 20 }],
+  "光能聚集": [{ type: "stepper", name: "其他草系次数",   min: 0, max: 10, defaultValue: 0, apply: val => val * 60 }],
+  "山火":     [{ type: "stepper", name: "其他火系次数",   min: 0, max: 6,  defaultValue: 0,
+    apply: val => 15 * (Math.pow(2, val) - 1) }],  // 每次使用后威力翻倍
+
+  // ── F. 击败后永久提升类 ─────────────────────────────────────────────────
+  "流星火雨": [{ type: "stepper", name: "已击败次数", min: 0, max: 10, defaultValue: 0,
+    apply: val => val * 75 }],
+  "阳火增辉": [{ type: "stepper", name: "已击败次数", min: 0, max: 10, defaultValue: 0,
+    apply: val => 75 * (Math.pow(2, val) - 1) }],  // 每次击败后威力翻倍
 };
 
 function getMoveEffects(moveName) {
@@ -478,15 +574,16 @@ function onMoveChange() {
   activeMoveEffects = {};
   moveStepperValues = {};
   effects.forEach(e => {
-    if (e.type === 'stepper') moveStepperValues[e.name] = e.defaultValue;
-    else activeMoveEffects[e.name] = !!e.auto;
+    if (e.type === 'stepper' || e.type === 'stepper_hits') moveStepperValues[e.name] = e.defaultValue;
+    else if (e.type !== 'hits') activeMoveEffects[e.name] = !!e.auto;
+    // type:'hits' 固定连击，无需状态
   });
 
   const iconHtml = move.icon ? `<img class="move-info-icon" src="${move.icon}" alt="">` : '';
   const noteHtml = move.note ? `<span class="move-note">${move.note}</span>` : '';
   const catLabel  = move.category === 'physical' ? '物理' : '魔法';
-  const manualEffects  = effects.filter(e => !e.auto && e.type !== 'stepper');
-  const stepperEffects = effects.filter(e => e.type === 'stepper');
+  const manualEffects  = effects.filter(e => !e.auto && e.type !== 'stepper' && e.type !== 'stepper_hits' && e.type !== 'hits');
+  const stepperEffects = effects.filter(e => e.type === 'stepper' || e.type === 'stepper_hits');
   const creature = CREATURES[document.getElementById('attacker-select').value];
   const abilityEffects = CREATURE_ABILITY_EFFECTS[getActiveCreature('attacker').name];
   const hasManualAbility = abilityEffects?.some(e => !e.auto);
@@ -769,8 +866,19 @@ function computeDamage({ attacker, defCreature, defIvs, defNature, move, extraPo
   });
 
   const effectCtx = { basePower: move.power, atkStats, defStats };
+
+  // 计算连击数
+  let totalHits = 1;
+  getMoveEffects(move.name).forEach(e => {
+    if (e.type === 'hits') totalHits = e.value;
+    else if (e.type === 'toggle_hits') totalHits = activeMoveEffects[e.name] ? e.toggled : e.base;
+    else if (e.type === 'stepper_hits') totalHits = e.apply(moveStepperValues[e.name] ?? e.defaultValue);
+  });
+
+  // 只收集威力加成效果（排除 hits 类型）
   const activeEffectDetails = getMoveEffects(move.name)
-    .filter(e => e.type === 'stepper' || activeMoveEffects[e.name])
+    .filter(e => e.type !== 'hits' && e.type !== 'toggle_hits' && e.type !== 'stepper_hits' &&
+                 (e.type === 'stepper' || activeMoveEffects[e.name]))
     .map(e => {
       if (e.type === 'stepper') {
         const val = moveStepperValues[e.name] ?? e.defaultValue;
@@ -782,10 +890,10 @@ function computeDamage({ attacker, defCreature, defIvs, defNature, move, extraPo
   const totalExtra  = extraPower + effectBonus;
 
   const { atkBuff: calcAtkBuff, defBuff: calcDefBuff, typeMult, stabMult, atkStat, abilityMult } = abilityCtx;
-  const dmg = calcDamage(atkStat, defStats[defStatId], move.power, totalExtra, calcAtkBuff, calcDefBuff, typeMult, stabMult, abilityMult);
+  const dmg = calcDamage(atkStat, defStats[defStatId], move.power, totalExtra, calcAtkBuff, calcDefBuff, typeMult, stabMult, abilityMult) * totalHits;
   const pct = defStats.hp > 0 ? (dmg / defStats.hp * 100).toFixed(1) : '∞';
 
-  return { dmg, pct, defStats, atkStats, totalExtra, activeEffectDetails, calcAtkBuff, calcDefBuff, typeMult, stabMult, atkStat, abilityMult };
+  return { dmg, pct, defStats, atkStats, totalExtra, activeEffectDetails, calcAtkBuff, calcDefBuff, typeMult, stabMult, atkStat, abilityMult, totalHits };
 }
 
 function calcEnemyDamage(enemyEntry) {
@@ -960,7 +1068,7 @@ function onStepperClick(btn) {
   onCalculate();
 }
 
-function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, stabMult, typeMult, abilityMult = 1) {
+function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, stabMult, typeMult, abilityMult = 1, totalHits = 1) {
   const effectBonus  = activeEffectDetails.reduce((s, e) => s + e.bonus, 0);
   const rawPower     = move.power + extraPower + effectBonus;
   const displayPower = Math.round(rawPower * (1 + atkBuff) * stabMult * typeMult * abilityMult);
@@ -998,6 +1106,8 @@ function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, st
     multItems.push(`<span class="pw-chip pw-chip--resist">属性抵抗 <b>×${typeMult}</b></span>`);
   if (abilityMult !== 1)
     multItems.push(`<span class="pw-chip pw-chip--stab">特性 <b>×${abilityMult}</b></span>`);
+  if (totalHits > 1)
+    multItems.push(`<span class="pw-chip pw-chip--stab">连击 <b>×${totalHits}</b></span>`);
 
   const powerGroup = '<span class="pw-paren">(</span>'
     + powerItems.join('<span class="pw-sep">+</span>')
@@ -1006,7 +1116,9 @@ function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, st
     ? '<span class="pw-sep">×</span>' + multItems.join('<span class="pw-sep">×</span>')
     : '';
   const chain  = powerGroup + multGroup;
-  const result = `<span class="pw-result">= 显示威力 <b>${displayPower}</b></span>`;
+  const result = totalHits > 1
+    ? `<span class="pw-result">= 单次 <b>${displayPower}</b> ×${totalHits}连击 = <b>${displayPower * totalHits}</b></span>`
+    : `<span class="pw-result">= 显示威力 <b>${displayPower}</b></span>`;
 
   document.getElementById('power-breakdown').innerHTML = chain + result;
 }
@@ -1021,12 +1133,12 @@ function onCalculate() {
   if (!move) return;
 
   const { dmg: currentDmg, pct: currentPct, defStats, totalExtra,
-          activeEffectDetails, calcAtkBuff, calcDefBuff, typeMult, stabMult, abilityMult }
+          activeEffectDetails, calcAtkBuff, calcDefBuff, typeMult, stabMult, abilityMult, totalHits }
     = computeDamage({ attacker, defCreature: enemy, defIvs: defenderIVs, defNature: defenderNature, move, extraPower, atkBuff, defBuff });
 
-  renderPowerBreakdown(move, extraPower, activeEffectDetails, calcAtkBuff, stabMult, typeMult, abilityMult);
+  renderPowerBreakdown(move, extraPower, activeEffectDetails, calcAtkBuff, stabMult, typeMult, abilityMult, totalHits);
 
-  const scenarios = runCalculation({ attacker, enemy, move, extraPower: totalExtra, atkBuff: calcAtkBuff, defBuff: calcDefBuff, abilityMult });
+  const scenarios = runCalculation({ attacker, enemy, move, extraPower: totalExtra, atkBuff: calcAtkBuff, defBuff: calcDefBuff, abilityMult, totalHits });
 
   renderResultBars({ dmg: currentDmg, pct: currentPct }, scenarios);
   document.getElementById('result-panel').hidden = false;
