@@ -281,37 +281,6 @@ const ABILITY_BUFF_DEFS = {
     perStack: { atkPct: 0.15, spatkPct: 0.15, defPct: 0.15, spdefPct: 0.15, spdPct: 0.15 },
   }],
 
-  // 原文：每应对1次，水系和武系技能威力+20%（威力% → abilityMultPct）
-  "海豹船长": [{
-    name: "身经百练",
-    effectKey: "应对次数",
-    icon: "assets/icons/buffs/身经百练.png",
-    type: "stepper",
-    maxStacks: 10,
-    defaultStacks: 0,
-    perStack: { abilityMultPct: 0.2 },
-  }],
-
-  // 原文：每使用1次状态技能，毒系和萌系技能威力+10
-  "寒音蛇（本来的样子）": [{
-    name: "拨浪鼓",
-    effectKey: "状态技能次数",
-    icon: "assets/icons/buffs/拨浪鼓.png",
-    type: "stepper",
-    maxStacks: 20,
-    defaultStacks: 0,
-    perStack: { powerFlat: 10 },
-  }],
-  "寒音蛇（本命年的样子）": [{
-    name: "拨浪鼓",
-    effectKey: "状态技能次数",
-    icon: "assets/icons/buffs/拨浪鼓.png",
-    type: "stepper",
-    maxStacks: 20,
-    defaultStacks: 0,
-    perStack: { powerFlat: 10 },
-  }],
-
   // 原文：每使用1次火系技能，全技能威力+10
   "烈火守护": [{
     name: "蒸汽膨胀",
@@ -321,17 +290,6 @@ const ABILITY_BUFF_DEFS = {
     maxStacks: 20,
     defaultStacks: 0,
     perStack: { powerFlat: 10 },
-  }],
-
-  // 原文：每使用1次防御技能，机械系和地面系技能威力+10%（威力% → abilityMultPct）
-  "波多西": [{
-    name: "定向精炼",
-    effectKey: "防御技能次数",
-    icon: "assets/icons/buffs/定向精炼.png",
-    type: "stepper",
-    maxStacks: 20,
-    defaultStacks: 0,
-    perStack: { abilityMultPct: 0.1 },
   }],
 
   // 原文：每次敌方聚能或换人，获得魔攻+20%
