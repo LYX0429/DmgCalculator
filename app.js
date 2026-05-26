@@ -152,7 +152,20 @@ const CREATURE_ABILITY_EFFECTS = {
   "疾光千兽":   [{ name: "月光审判",  apply: (ctx) => ({ abilityMult: ctx.abilityMult * 2 }) }],  // 敌为首领血脉
   "雅丹鬃":     [{ name: "天通地明",  apply: (ctx) => ({ abilityMult: ctx.abilityMult * 2 }) }],  // 敌为污染血脉
 
+  // ── A. Auto（技能名称条件）──────────────────────────────────────────────
+  "风滚暮虫（枯叶的样子）": [{ name: "共鸣", auto: true,
+    apply: (ctx) => ctx.move.name === '虫鸣' ? { abilityExtraPower: ctx.abilityExtraPower + 20 } : {} }],
+  "风滚暮虫（金黄的样子）": [{ name: "共鸣", auto: true,
+    apply: (ctx) => ctx.move.name === '虫鸣' ? { abilityExtraPower: ctx.abilityExtraPower + 20 } : {} }],
+
   // ── C. Stepper（攻方）───────────────────────────────────────────────────
+  // 水翼飞升：每使用1次水系技能，全技能能耗-1，能耗为0的技能威力+30%
+  // val = 累积减费层数；val >= move.cost 时该技能已被减至0费
+  "神谕鲨": [{ type: "stepper", name: "水系技能使用数", min: 0, max: 6, defaultValue: 0,
+    apply: (ctx, val) => val >= ctx.move.cost ? { abilityMult: ctx.abilityMult * 1.3 } : {} }],
+  // 冻土：每携带1个冰系技能，地系技能威力+10%
+  "獠牙猪": [{ type: "stepper", name: "携带冰系技能数", min: 0, max: 6, defaultValue: 0,
+    apply: (ctx, val) => ctx.move.type === '地' ? { abilityMult: ctx.abilityMult * (1 + 0.1 * val) } : {} }],
   "仪式巨像":   [{ type: "stepper", name: "星陨印记数",  min: 0, max: 20, defaultValue: 0,
     apply: (ctx, val) => ctx.move.type === '地' ? { abilityMult: ctx.abilityMult * (1 + 0.2 * val) } : {} }],
   "祭礼巨像":   [{ type: "stepper", name: "星陨印记数",  min: 0, max: 20, defaultValue: 0,
@@ -193,7 +206,8 @@ function getCreatureBuffEffects(side, creatureName) {
   const defs   = getCreatureBuffDefs(side, creatureName);
   const stacks = side === 'attacker' ? attackerBuffStacks : defenderBuffStacks;
   const acc = { atkPct: 0, spatkPct: 0, defPct: 0, spdefPct: 0, spdPct: 0,
-                atkFlat: 0, spatkFlat: 0, defFlat: 0, spdefFlat: 0, spdFlat: 0, powerFlat: 0 };
+                atkFlat: 0, spatkFlat: 0, defFlat: 0, spdefFlat: 0, spdFlat: 0, powerFlat: 0,
+                abilityMultPct: 0 };
   const details = [];
   for (const def of defs) {
     const s = stacks[def.effectKey] ?? 0;
@@ -450,6 +464,7 @@ function describeBuffEffects(def, stacks) {
   fmtFlat(fx.defFlat,   '物防');
   fmtFlat(fx.spdefFlat, '魔防');
   fmtFlat(fx.powerFlat, '技能威力');
+  fmtPct(fx.abilityMultPct, '技能威力倍率');
   return parts.join(' ') + `（当前${stacks}层）`;
 }
 
@@ -1176,6 +1191,13 @@ function computeDamage({ attacker, defCreature, defIvs, defNature, move, extraPo
       }
     });
 
+  // 单独记录 CREATURE_ABILITY_EFFECTS 贡献的 abilityMult（用于 breakdown 分开显示）
+  const creatureAbilityMult = abilityCtx.abilityMult;
+  // 叠加 buff 贡献的技能威力倍率（ABILITY_BUFF_DEFS 中 abilityMultPct 字段）
+  if (atkFx.abilityMultPct) {
+    abilityCtx = { ...abilityCtx, abilityMult: creatureAbilityMult * (1 + atkFx.abilityMultPct) };
+  }
+
   const effectCtx = { basePower: move.power, atkStats, defStats };
 
   // 计算连击数
@@ -1207,7 +1229,7 @@ function computeDamage({ attacker, defCreature, defIvs, defNature, move, extraPo
   return {
     dmg, pct, defStats, atkStats, totalExtra,
     activeEffectDetails, buffedAtkStat, defPctBuff, defFlatBuff,
-    typeMult, stabMult, abilityMult, defAbilityMult, totalHits,
+    typeMult, stabMult, abilityMult, creatureAbilityMult, defAbilityMult, totalHits,
     atkBuffDetails: atkFx.details,
     defBuffDetails: defFx.details,
     buffPowerFlat,
@@ -1442,7 +1464,7 @@ function onAbilityStepper(btn) {
 function renderPowerBreakdown({
   move, activeEffectDetails,
   atkBuffDetails, defBuffDetails, buffPowerFlat,
-  stabMult, typeMult, abilityMult = 1, totalHits = 1,
+  stabMult, typeMult, abilityMult = 1, creatureAbilityMult = 1, totalHits = 1,
   abilityExtraPower = 0, defAbilityMult = 1,
   buffedAtkStat, defPctBuff = 0, defFlatBuff = 0,
 }) {
@@ -1479,11 +1501,16 @@ function renderPowerBreakdown({
   // 攻方 buff chips（每个 buff 单独一个 chip）
   for (const d of atkBuffDetails) {
     const fx = d.fx;
-    // 显示对应技能类别的百分比增益
+    // 属性攻击百分比增益
     const pct = (fx.atkPct || 0) || (fx.spatkPct || 0);
     if (pct !== 0) {
       const mult = 1 + pct;
       multItems.push(`<span class="pw-chip pw-chip--buff">${d.name} 攻击+${Math.round(pct * 100)}% <b>×${mult.toFixed(2)}</b></span>`);
+    }
+    // 技能威力倍率百分比增益（abilityMultPct）
+    if (fx.abilityMultPct) {
+      const mult = 1 + fx.abilityMultPct;
+      multItems.push(`<span class="pw-chip pw-chip--buff">${d.name} 威力+${Math.round(fx.abilityMultPct * 100)}% <b>×${mult.toFixed(2)}</b></span>`);
     }
   }
 
@@ -1493,8 +1520,8 @@ function renderPowerBreakdown({
     multItems.push(`<span class="pw-chip pw-chip--super">属性克制 <b>×${typeMult}</b></span>`);
   if (typeMult < 1)
     multItems.push(`<span class="pw-chip pw-chip--resist">属性抵抗 <b>×${typeMult}</b></span>`);
-  if (abilityMult !== 1)
-    multItems.push(`<span class="pw-chip pw-chip--stab">特性 <b>×${abilityMult}</b></span>`);
+  if (creatureAbilityMult !== 1)
+    multItems.push(`<span class="pw-chip pw-chip--stab">特性 <b>×${creatureAbilityMult}</b></span>`);
 
   // 防方 buff chips
   for (const d of defBuffDetails) {
@@ -1534,14 +1561,14 @@ function onCalculate() {
   const {
     dmg: currentDmg, pct: currentPct, totalExtra,
     activeEffectDetails, buffedAtkStat, defPctBuff, defFlatBuff,
-    typeMult, stabMult, abilityMult, defAbilityMult, totalHits,
+    typeMult, stabMult, abilityMult, creatureAbilityMult, defAbilityMult, totalHits,
     atkBuffDetails, defBuffDetails, buffPowerFlat, abilityExtraPower,
   } = computeDamage({ attacker, defCreature: enemy, defIvs: defenderIVs, defNature: defenderNature, move, extraPower: 0 });
 
   renderPowerBreakdown({
     move, activeEffectDetails,
     atkBuffDetails, defBuffDetails, buffPowerFlat,
-    stabMult, typeMult, abilityMult, totalHits,
+    stabMult, typeMult, abilityMult, creatureAbilityMult, totalHits,
     abilityExtraPower, defAbilityMult,
     buffedAtkStat, defPctBuff, defFlatBuff,
   });

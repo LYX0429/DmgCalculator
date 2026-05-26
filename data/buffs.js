@@ -139,4 +139,220 @@ const ABILITY_BUFF_DEFS = {
     defaultStacks: 10,
     perStack: { defPct: 0.1, spdefPct: 0.1 },
   }],
+
+  // ── 新增 Toggle 类 ───────────────────────────────────────────────────────
+  // 原文：队伍存在虫系精灵，自己获得双攻+50%
+  "巨噬针鼹": [{
+    name: "壮胆",
+    effectKey: "壮胆",
+    icon: "assets/icons/buffs/壮胆.png",
+    type: "toggle",
+    maxStacks: 1,
+    defaultStacks: 0,
+    perStack: { atkPct: 0.5, spatkPct: 0.5 },
+  }],
+
+  // 原文：天气为雨天或水系环境时，获得双攻+100%
+  "卷毛鸭": [{
+    name: "得寸进尺",
+    effectKey: "得寸进尺",
+    icon: "assets/icons/buffs/得寸进尺.png",
+    type: "toggle",
+    maxStacks: 1,
+    defaultStacks: 0,
+    perStack: { atkPct: 1.0, spatkPct: 1.0 },
+  }],
+
+  // 原文：周末双攻+40%，其他时间双防+40% → 拆成两个独立 toggle
+  "上岸蛙": [
+    {
+      name: "张弛有度（攻）",
+      effectKey: "张弛有度攻",
+      icon: "assets/icons/buffs/张弛有度.png",
+      type: "toggle",
+      maxStacks: 1,
+      defaultStacks: 0,
+      perStack: { atkPct: 0.4, spatkPct: 0.4 },
+    },
+    {
+      name: "张弛有度（防）",
+      effectKey: "张弛有度防",
+      icon: "assets/icons/buffs/张弛有度.png",
+      type: "toggle",
+      maxStacks: 1,
+      defaultStacks: 0,
+      perStack: { defPct: 0.4, spdefPct: 0.4 },
+    },
+  ],
+
+  // 原文：携带的攻击技能获得迸发：威力+40（被动全程生效，默认开启）
+  "星光狮（星光能量的样子）": [{
+    name: "电流刺激",
+    effectKey: "电流刺激",
+    icon: "assets/icons/buffs/电流刺激.png",
+    type: "toggle",
+    maxStacks: 1,
+    defaultStacks: 1,
+    perStack: { powerFlat: 40 },
+  }],
+  "星光狮（月光能量的样子）": [{
+    name: "电流刺激",
+    effectKey: "电流刺激",
+    icon: "assets/icons/buffs/电流刺激.png",
+    type: "toggle",
+    maxStacks: 1,
+    defaultStacks: 1,
+    perStack: { powerFlat: 40 },
+  }],
+
+  // ── 新增 Stepper 类 ──────────────────────────────────────────────────────
+  // 原文：造成克制伤害后，获得攻防速+20%（用户确认：双攻双防速度）
+  "迪莫": [{
+    name: "最好的伙伴",
+    effectKey: "克制次数",
+    icon: "assets/icons/buffs/最好的伙伴.png",
+    type: "stepper",
+    maxStacks: 10,
+    defaultStacks: 0,
+    perStack: { atkPct: 0.2, spatkPct: 0.2, defPct: 0.2, spdefPct: 0.2, spdPct: 0.2 },
+  }],
+
+  // 原文：使用火系技能后，获得双攻+20%
+  "火神": [{
+    name: "助燃",
+    effectKey: "火系技能次数",
+    icon: "assets/icons/buffs/助燃.png",
+    type: "stepper",
+    maxStacks: 10,
+    defaultStacks: 0,
+    perStack: { atkPct: 0.2, spatkPct: 0.2 },
+  }],
+
+  // 原文：使用火系技能后，获得双攻+30%
+  "烈火战神": [{
+    name: "爆燃",
+    effectKey: "火系技能次数",
+    icon: "assets/icons/buffs/爆燃.png",
+    type: "stepper",
+    maxStacks: 10,
+    defaultStacks: 0,
+    perStack: { atkPct: 0.3, spatkPct: 0.3 },
+  }],
+
+  // 原文：使用能耗为3的技能时，获得攻防+20%（用户确认：双攻双防）
+  "梦想三三": [{
+    name: "鼓气",
+    effectKey: "3耗能技能次数",
+    icon: "assets/icons/buffs/鼓气.png",
+    type: "stepper",
+    maxStacks: 10,
+    defaultStacks: 0,
+    perStack: { atkPct: 0.2, spatkPct: 0.2, defPct: 0.2, spdefPct: 0.2 },
+  }],
+
+  // 原文：使用能耗为3的技能时，获得攻防永久+20%（用户确认：双攻双防）
+  "奇梦咪": [{
+    name: "三鼓作气",
+    effectKey: "3耗能技能次数",
+    icon: "assets/icons/buffs/三鼓作气.png",
+    type: "stepper",
+    maxStacks: 10,
+    defaultStacks: 0,
+    perStack: { atkPct: 0.2, spatkPct: 0.2, defPct: 0.2, spdefPct: 0.2 },
+  }],
+
+  // 原文：每有1只其他虫系精灵，入场时获得攻防速+15%（用户确认：双攻双防速度）
+  "女王蜂": [{
+    name: "虫群鼓舞",
+    effectKey: "虫系精灵数",
+    icon: "assets/icons/buffs/虫群鼓舞.png",
+    type: "stepper",
+    maxStacks: 5,
+    defaultStacks: 0,
+    perStack: { atkPct: 0.15, spatkPct: 0.15, defPct: 0.15, spdefPct: 0.15, spdPct: 0.15 },
+  }],
+  "花魁蜂后": [{
+    name: "虫群突袭",
+    effectKey: "虫系精灵数",
+    icon: "assets/icons/buffs/虫群突袭.png",
+    type: "stepper",
+    maxStacks: 5,
+    defaultStacks: 0,
+    perStack: { atkPct: 0.15, spatkPct: 0.15, defPct: 0.15, spdefPct: 0.15, spdPct: 0.15 },
+  }],
+
+  // 原文：每应对1次，水系和武系技能威力+20%（威力% → abilityMultPct）
+  "海豹船长": [{
+    name: "身经百练",
+    effectKey: "应对次数",
+    icon: "assets/icons/buffs/身经百练.png",
+    type: "stepper",
+    maxStacks: 10,
+    defaultStacks: 0,
+    perStack: { abilityMultPct: 0.2 },
+  }],
+
+  // 原文：每使用1次状态技能，毒系和萌系技能威力+10
+  "寒音蛇（本来的样子）": [{
+    name: "拨浪鼓",
+    effectKey: "状态技能次数",
+    icon: "assets/icons/buffs/拨浪鼓.png",
+    type: "stepper",
+    maxStacks: 20,
+    defaultStacks: 0,
+    perStack: { powerFlat: 10 },
+  }],
+  "寒音蛇（本命年的样子）": [{
+    name: "拨浪鼓",
+    effectKey: "状态技能次数",
+    icon: "assets/icons/buffs/拨浪鼓.png",
+    type: "stepper",
+    maxStacks: 20,
+    defaultStacks: 0,
+    perStack: { powerFlat: 10 },
+  }],
+
+  // 原文：每使用1次火系技能，全技能威力+10
+  "烈火守护": [{
+    name: "蒸汽膨胀",
+    effectKey: "火系技能次数",
+    icon: "assets/icons/buffs/蒸汽膨胀.png",
+    type: "stepper",
+    maxStacks: 20,
+    defaultStacks: 0,
+    perStack: { powerFlat: 10 },
+  }],
+
+  // 原文：每使用1次防御技能，机械系和地面系技能威力+10%（威力% → abilityMultPct）
+  "波多西": [{
+    name: "定向精炼",
+    effectKey: "防御技能次数",
+    icon: "assets/icons/buffs/定向精炼.png",
+    type: "stepper",
+    maxStacks: 20,
+    defaultStacks: 0,
+    perStack: { abilityMultPct: 0.1 },
+  }],
+
+  // 原文：每次敌方聚能或换人，获得魔攻+20%
+  "夜枭": [{
+    name: "搜刮",
+    effectKey: "触发次数",
+    icon: "assets/icons/buffs/搜刮.png",
+    type: "stepper",
+    maxStacks: 10,
+    defaultStacks: 0,
+    perStack: { spatkPct: 0.2 },
+  }],
+
+  // 原文：若技能在系别/类型/能耗上每有1项匹配，获得物攻和物防永久+20%
+  "巨鼓象": [{
+    name: "合拍",
+    effectKey: "匹配次数",
+    icon: "assets/icons/buffs/合拍.png",
+    type: "stepper",
+    maxStacks: 10,
+    defaultStacks: 0,
+    perStack: { atkPct: 0.2, defPct: 0.2 },
+  }],
 };
