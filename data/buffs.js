@@ -14,7 +14,7 @@ const ABILITY_BUFF_DEFS = {
     icon: "assets/icons/buffs/专注力.png",
     type: "toggle",
     maxStacks: 1,
-    defaultStacks: 0,
+    defaultStacks: 1,
     perStack: { atkPct: 1.0 },
   }],
   "古卷执政官": [{
@@ -136,7 +136,7 @@ const ABILITY_BUFF_DEFS = {
     icon: "assets/icons/buffs/囤积.png",
     type: "stepper",
     maxStacks: 10,
-    defaultStacks: 5,
+    defaultStacks: 10,
     perStack: { defPct: 0.1, spdefPct: 0.1 },
   }],
 };

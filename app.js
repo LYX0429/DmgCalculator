@@ -239,6 +239,11 @@ function initAbilityState(side, creature) {
     });
   }
   initBuffStacks(side, creature.name);
+  // 默认开启的 buff toggle 同步写入 activeMap
+  const activeMap = side === 'attacker' ? attackerAbilityActive : defenderAbilityActive;
+  for (const def of getCreatureBuffDefs(side, creature.name)) {
+    if (def.type === 'toggle' && def.defaultStacks > 0) activeMap[def.name] = true;
+  }
 }
 
 // 各技能的特效定义
