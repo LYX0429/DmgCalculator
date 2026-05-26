@@ -1154,7 +1154,10 @@ function computeDamage({ attacker, defCreature, defIvs, defNature, move, extraPo
 
   const atkPct  = atkStatId === 'atk' ? atkFx.atkPct  : atkFx.spatkPct;
   const atkFlat = atkStatId === 'atk' ? atkFx.atkFlat : atkFx.spatkFlat;
-  const buffedAtkStat = Math.round(atkStats[atkStatId] * (1 + atkPct) + atkFlat);
+  const rawAtkStat    = atkStats[atkStatId];
+  const buffedAtkStat = Math.round(rawAtkStat * (1 + atkPct) + atkFlat);
+  // 攻击 buff 实际倍率（含 flat；用于 displayPower 保持显示自洽）
+  const atkBuffMult = rawAtkStat > 0 ? buffedAtkStat / rawAtkStat : 1;
 
   const defPctBuff  = defStatId === 'def' ? defFx.defPct  : defFx.spdefPct;
   const defFlatBuff = defStatId === 'def' ? defFx.defFlat : defFx.spdefFlat;
@@ -1245,7 +1248,7 @@ function computeDamage({ attacker, defCreature, defIvs, defNature, move, extraPo
     typeMult, stabMult, abilityMult, creatureAbilityMult, defAbilityMult, totalHits,
     atkBuffDetails: atkFx.details,
     defBuffDetails: defFx.details,
-    buffPowerFlat, buffMovePowerBonus,
+    buffPowerFlat, buffMovePowerBonus, atkBuffMult,
     abilityExtraPower: abilityCtx.abilityExtraPower,
   };
 }
@@ -1478,14 +1481,14 @@ function renderPowerBreakdown({
   move, activeEffectDetails,
   atkBuffDetails, defBuffDetails, buffPowerFlat, buffMovePowerBonus = 0,
   stabMult, typeMult, abilityMult = 1, creatureAbilityMult = 1, totalHits = 1,
-  abilityExtraPower = 0, defAbilityMult = 1,
+  abilityExtraPower = 0, defAbilityMult = 1, atkBuffMult = 1,
   buffedAtkStat, defPctBuff = 0, defFlatBuff = 0,
 }) {
   const effectBonus  = activeEffectDetails.reduce((s, e) => s + e.bonus, 0);
   const rawPower     = move.power + effectBonus + abilityExtraPower + buffMovePowerBonus + buffPowerFlat;
 
-  // 显示威力：仅含威力乘数（攻防 buff 的贡献体现在实际伤害数字中）
-  const displayPower = Math.round(rawPower * stabMult * typeMult * abilityMult * defAbilityMult
+  // 显示威力：含攻击 buff 倍率，使公式链自洽（chip 显示的 ×N 与结果一致）
+  const displayPower = Math.round(rawPower * atkBuffMult * stabMult * typeMult * abilityMult * defAbilityMult
                                   / (defPctBuff ? (1 + defPctBuff) : 1));
 
   const powerItems = [];
@@ -1576,12 +1579,12 @@ function onCalculate() {
     dmg: currentDmg, pct: currentPct, totalExtra,
     activeEffectDetails, buffedAtkStat, defPctBuff, defFlatBuff,
     typeMult, stabMult, abilityMult, creatureAbilityMult, defAbilityMult, totalHits,
-    atkBuffDetails, defBuffDetails, buffPowerFlat, buffMovePowerBonus, abilityExtraPower,
+    atkBuffDetails, defBuffDetails, buffPowerFlat, buffMovePowerBonus, atkBuffMult, abilityExtraPower,
   } = computeDamage({ attacker, defCreature: enemy, defIvs: defenderIVs, defNature: defenderNature, move, extraPower: 0 });
 
   renderPowerBreakdown({
     move, activeEffectDetails,
-    atkBuffDetails, defBuffDetails, buffPowerFlat, buffMovePowerBonus,
+    atkBuffDetails, defBuffDetails, buffPowerFlat, buffMovePowerBonus, atkBuffMult,
     stabMult, typeMult, abilityMult, creatureAbilityMult, totalHits,
     abilityExtraPower, defAbilityMult,
     buffedAtkStat, defPctBuff, defFlatBuff,
