@@ -1299,6 +1299,8 @@ function renderCommonEnemies() {
       defenderIVs    = { ...entry.ivs };
       defenderNature = { ...entry.nature };
       initBuffStacks('defender', CREATURES[creatureIdx].name);
+      const def = getCreatureDefault(CREATURES[creatureIdx].no);
+      defenderCommonMoves = [...((def ? def.commonMoves : CREATURES[creatureIdx].commonMoves) || [])];
       const creature = getActiveCreature('defender');
       renderStatGrid('defender', creature);
       renderPresetButtons('defender', creature);
