@@ -175,8 +175,12 @@ function getCreatureAbilityEffects(creatureName) {
 
 function scalePerStack(perStack, stacks) {
   const result = {};
+  for (const k of Object.keys(perStack)) result[k] = (perStack[k] || 0) * stacks;
+  return result;
+}
+
 function getCreatureBuffDefs(side, creatureName) {
-  return (ABILITY_BUFF_DEFS[creatureName] || []).filter(d => !d.side || d.side === side);
+  return ABILITY_BUFF_DEFS[creatureName] || [];
 }
 
 // 找到某精灵某侧的 buffDef（按 effectKey 或 name 匹配）

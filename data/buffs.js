@@ -4,14 +4,14 @@
 //                atkFlat/spatkFlat/defFlat/spdefFlat/spdFlat（数值加成）
 //                powerFlat（技能威力数值加成）
 // getTotalEffects(stacks) 用于非线性效果（取代 perStack）
+// 注：无 side 限制，精灵无论在攻方还是防方都会应用自身特性
 
 const ABILITY_BUFF_DEFS = {
-  // ── 攻方 Toggle ──────────────────────────────────────────────────────────
+  // ── Toggle 类 ────────────────────────────────────────────────────────────
   "音速犬": [{
     name: "专注力",
     effectKey: "专注力",
     icon: "assets/icons/buffs/专注力.png",
-    side: "attacker",
     type: "toggle",
     maxStacks: 1,
     defaultStacks: 0,
@@ -21,19 +21,26 @@ const ABILITY_BUFF_DEFS = {
     name: "图书守卫者",
     effectKey: "图书守卫者",
     icon: "assets/icons/buffs/图书守卫者.png",
-    side: "attacker",
     type: "toggle",
     maxStacks: 1,
     defaultStacks: 0,
     perStack: { atkPct: 0.5, spatkPct: 0.5 },
   }],
+  "卷胡巨獭": [{
+    name: "保守派",
+    effectKey: "保守派",
+    icon: "assets/icons/buffs/保守派.png",
+    type: "toggle",
+    maxStacks: 1,
+    defaultStacks: 0,
+    perStack: { defPct: 0.8, spdefPct: 0.8 },
+  }],
 
-  // ── 攻方 Stepper ─────────────────────────────────────────────────────────
+  // ── Stepper 类 ───────────────────────────────────────────────────────────
   "风暴战犬": [{
     name: "全神贯注",
     effectKey: "行动次数",
     icon: "assets/icons/buffs/全神贯注.png",
-    side: "attacker",
     type: "stepper",
     maxStacks: 5,
     defaultStacks: 0,
@@ -46,7 +53,6 @@ const ABILITY_BUFF_DEFS = {
     name: "悲悯",
     effectKey: "力竭精灵数",
     icon: "assets/icons/buffs/悲悯.png",
-    side: "attacker",
     type: "stepper",
     maxStacks: 5,
     defaultStacks: 0,
@@ -56,7 +62,6 @@ const ABILITY_BUFF_DEFS = {
     name: "悼亡",
     effectKey: "力竭精灵数",
     icon: "assets/icons/buffs/悼亡.png",
-    side: "attacker",
     type: "stepper",
     maxStacks: 10,
     defaultStacks: 0,
@@ -66,7 +71,6 @@ const ABILITY_BUFF_DEFS = {
     name: "恶魔的晚宴",
     effectKey: "已击败次数",
     icon: "assets/icons/buffs/恶魔的晚宴.png",
-    side: "attacker",
     type: "stepper",
     maxStacks: 5,
     defaultStacks: 0,
@@ -76,7 +80,6 @@ const ABILITY_BUFF_DEFS = {
     name: "恶魔的晚宴",
     effectKey: "已击败次数",
     icon: "assets/icons/buffs/恶魔的晚宴.png",
-    side: "attacker",
     type: "stepper",
     maxStacks: 5,
     defaultStacks: 0,
@@ -86,7 +89,6 @@ const ABILITY_BUFF_DEFS = {
     name: "蓄电池",
     effectKey: "入场次数",
     icon: "assets/icons/buffs/蓄电池.png",
-    side: "attacker",
     type: "stepper",
     maxStacks: 10,
     defaultStacks: 0,
@@ -96,7 +98,6 @@ const ABILITY_BUFF_DEFS = {
     name: "超级电池",
     effectKey: "入场次数",
     icon: "assets/icons/buffs/超级电池.png",
-    side: "attacker",
     type: "stepper",
     maxStacks: 10,
     defaultStacks: 0,
@@ -106,7 +107,6 @@ const ABILITY_BUFF_DEFS = {
     name: "指挥家",
     effectKey: "应对次数",
     icon: "assets/icons/buffs/指挥家.png",
-    side: "attacker",
     type: "stepper",
     maxStacks: 10,
     defaultStacks: 0,
@@ -116,7 +116,6 @@ const ABILITY_BUFF_DEFS = {
     name: "斗技",
     effectKey: "应对次数",
     icon: "assets/icons/buffs/斗技.png",
-    side: "attacker",
     type: "stepper",
     maxStacks: 10,
     defaultStacks: 0,
@@ -126,31 +125,15 @@ const ABILITY_BUFF_DEFS = {
     name: "血型吸引",
     effectKey: "敌方系别数",
     icon: "assets/icons/buffs/血型吸引.png",
-    side: "attacker",
     type: "stepper",
     maxStacks: 18,
     defaultStacks: 0,
     perStack: { powerFlat: 10 },
   }],
-
-  // ── 防方 Toggle ──────────────────────────────────────────────────────────
-  "卷胡巨獭": [{
-    name: "保守派",
-    effectKey: "保守派",
-    icon: "assets/icons/buffs/保守派.png",
-    side: "defender",
-    type: "toggle",
-    maxStacks: 1,
-    defaultStacks: 0,
-    perStack: { defPct: 0.8, spdefPct: 0.8 },
-  }],
-
-  // ── 防方 Stepper ─────────────────────────────────────────────────────────
   "蹦床松鼠": [{
     name: "囤积",
     effectKey: "当前能量",
     icon: "assets/icons/buffs/囤积.png",
-    side: "defender",
     type: "stepper",
     maxStacks: 10,
     defaultStacks: 5,
