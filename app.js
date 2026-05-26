@@ -161,7 +161,7 @@ const CREATURE_ABILITY_EFFECTS = {
   // ── C. Stepper（攻方）───────────────────────────────────────────────────
   // 水翼飞升：每使用1次水系技能，全技能能耗-1，能耗为0的技能威力+30%
   // val = 累积减费层数；val >= move.cost 时该技能已被减至0费
-  "神谕鲨": [{ type: "stepper", name: "水系技能使用数", min: 0, max: 6, defaultValue: 0,
+  "神谕鲨": [{ type: "stepper", name: "水系技能使用数", min: 0, max: 10, defaultValue: 0,
     apply: (ctx, val) => val >= ctx.move.cost ? { abilityMult: ctx.abilityMult * 1.3 } : {} }],
   // 冻土：每携带1个冰系技能，地系技能威力+10%
   "獠牙猪": [{ type: "stepper", name: "携带冰系技能数", min: 0, max: 6, defaultValue: 0,
@@ -1202,14 +1202,10 @@ function computeDamage({ attacker, defCreature, defIvs, defNature, move, extraPo
       }
     });
 
-  // CREATURE_ABILITY_EFFECTS 贡献的 abilityMult——均为"技能威力+X%"，作用于基础威力
-  // 转为平值增量加入 totalExtra（在 buffPowerFlat 之前），不再作为最终乘数
+  // CREATURE_ABILITY_EFFECTS 贡献的 abilityMult（用于 breakdown 单独显示）
   const creatureAbilityMult = abilityCtx.abilityMult;
-  const abilityPowerBonus = creatureAbilityMult !== 1
-    ? Math.round(move.power * creatureAbilityMult) - move.power
-    : 0;
 
-  // abilityMultPct（来自 ABILITY_BUFF_DEFS）：同样作用于基础威力，在数值加成之前计算
+  // abilityMultPct（来自 ABILITY_BUFF_DEFS）：作用于基础威力，在数值加成之前计算
   const buffPowerPct = atkFx.abilityMultPct || 0;
   const buffMovePowerBonus = buffPowerPct
     ? Math.round(move.power * (1 + buffPowerPct)) - move.power
@@ -1237,20 +1233,19 @@ function computeDamage({ attacker, defCreature, defIvs, defNature, move, extraPo
       return { name: e.name, bonus: Math.round(e.apply(effectCtx)) };
     });
   const effectBonus = activeEffectDetails.reduce((s, e) => s + e.bonus, 0);
-  const totalExtra  = extraPower + effectBonus + abilityCtx.abilityExtraPower + abilityPowerBonus + buffMovePowerBonus + buffPowerFlat;
+  const totalExtra  = extraPower + effectBonus + abilityCtx.abilityExtraPower + buffMovePowerBonus + buffPowerFlat;
 
-  const { typeMult, stabMult, defAbilityMult } = abilityCtx;
-  // abilityPowerBonus 已折入 totalExtra，abilityMult 在此处不再单独乘
-  const dmg = calcDamage(buffedAtkStat, buffedDefStat, move.power, totalExtra, typeMult, stabMult, 1) * totalHits * defAbilityMult;
+  const { typeMult, stabMult, abilityMult, defAbilityMult } = abilityCtx;
+  const dmg = calcDamage(buffedAtkStat, buffedDefStat, move.power, totalExtra, typeMult, stabMult, abilityMult) * totalHits * defAbilityMult;
   const pct = defStats.hp > 0 ? (dmg / defStats.hp * 100).toFixed(1) : '∞';
 
   return {
     dmg, pct, defStats, atkStats, totalExtra,
     activeEffectDetails, buffedAtkStat, defPctBuff, defFlatBuff,
-    typeMult, stabMult, abilityMult: 1, creatureAbilityMult, defAbilityMult, totalHits,
+    typeMult, stabMult, abilityMult, creatureAbilityMult, defAbilityMult, totalHits,
     atkBuffDetails: atkFx.details,
     defBuffDetails: defFx.details,
-    buffPowerFlat, buffMovePowerBonus, abilityPowerBonus,
+    buffPowerFlat, buffMovePowerBonus,
     abilityExtraPower: abilityCtx.abilityExtraPower,
   };
 }
@@ -1481,13 +1476,13 @@ function onAbilityStepper(btn) {
 
 function renderPowerBreakdown({
   move, activeEffectDetails,
-  atkBuffDetails, defBuffDetails, buffPowerFlat, buffMovePowerBonus = 0, abilityPowerBonus = 0,
+  atkBuffDetails, defBuffDetails, buffPowerFlat, buffMovePowerBonus = 0,
   stabMult, typeMult, abilityMult = 1, creatureAbilityMult = 1, totalHits = 1,
   abilityExtraPower = 0, defAbilityMult = 1,
   buffedAtkStat, defPctBuff = 0, defFlatBuff = 0,
 }) {
   const effectBonus  = activeEffectDetails.reduce((s, e) => s + e.bonus, 0);
-  const rawPower     = move.power + effectBonus + abilityExtraPower + abilityPowerBonus + buffMovePowerBonus + buffPowerFlat;
+  const rawPower     = move.power + effectBonus + abilityExtraPower + buffMovePowerBonus + buffPowerFlat;
 
   // 显示威力：仅含威力乘数（攻防 buff 的贡献体现在实际伤害数字中）
   const displayPower = Math.round(rawPower * stabMult * typeMult * abilityMult * defAbilityMult
@@ -1513,8 +1508,6 @@ function renderPowerBreakdown({
 
   if (abilityExtraPower !== 0)
     powerItems.push(`<span class="pw-chip pw-chip--stab">特性威力 <b>+${abilityExtraPower}</b></span>`);
-  if (abilityPowerBonus !== 0)
-    powerItems.push(`<span class="pw-chip pw-chip--stab">特性 ×${creatureAbilityMult.toFixed(2)} <b>+${abilityPowerBonus}</b></span>`);
   if (buffPowerFlat !== 0)
     powerItems.push(`<span class="pw-chip pw-chip--buff">特性威力 <b>+${buffPowerFlat}</b></span>`);
 
@@ -1541,6 +1534,9 @@ function renderPowerBreakdown({
     multItems.push(`<span class="pw-chip pw-chip--super">属性克制 <b>×${typeMult}</b></span>`);
   if (typeMult < 1)
     multItems.push(`<span class="pw-chip pw-chip--resist">属性抵抗 <b>×${typeMult}</b></span>`);
+  if (creatureAbilityMult !== 1)
+    multItems.push(`<span class="pw-chip pw-chip--stab">特性 <b>×${creatureAbilityMult}</b></span>`);
+
   // 防方 buff chips
   for (const d of defBuffDetails) {
     const fx = d.fx;
@@ -1580,12 +1576,12 @@ function onCalculate() {
     dmg: currentDmg, pct: currentPct, totalExtra,
     activeEffectDetails, buffedAtkStat, defPctBuff, defFlatBuff,
     typeMult, stabMult, abilityMult, creatureAbilityMult, defAbilityMult, totalHits,
-    atkBuffDetails, defBuffDetails, buffPowerFlat, buffMovePowerBonus, abilityPowerBonus, abilityExtraPower,
+    atkBuffDetails, defBuffDetails, buffPowerFlat, buffMovePowerBonus, abilityExtraPower,
   } = computeDamage({ attacker, defCreature: enemy, defIvs: defenderIVs, defNature: defenderNature, move, extraPower: 0 });
 
   renderPowerBreakdown({
     move, activeEffectDetails,
-    atkBuffDetails, defBuffDetails, buffPowerFlat, buffMovePowerBonus, abilityPowerBonus,
+    atkBuffDetails, defBuffDetails, buffPowerFlat, buffMovePowerBonus,
     stabMult, typeMult, abilityMult, creatureAbilityMult, totalHits,
     abilityExtraPower, defAbilityMult,
     buffedAtkStat, defPctBuff, defFlatBuff,
