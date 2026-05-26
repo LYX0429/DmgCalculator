@@ -196,7 +196,7 @@ function getCreatureBuffEffects(side, creatureName) {
                 atkFlat: 0, spatkFlat: 0, defFlat: 0, spdefFlat: 0, spdFlat: 0, powerFlat: 0 };
   const details = [];
   for (const def of defs) {
-    const s = stacks[def.effectKey] !== undefined ? stacks[def.effectKey] : def.defaultStacks;
+    const s = stacks[def.effectKey] ?? 0;
     if (s === 0) continue;
     const fx = def.getTotalEffects ? def.getTotalEffects(s) : scalePerStack(def.perStack, s);
     for (const k of Object.keys(acc)) acc[k] += (fx[k] || 0);
@@ -450,12 +450,12 @@ function describeBuffEffects(def, stacks) {
 
 function renderBuffBar(side, creature) {
   const defs   = getCreatureBuffDefs(side, creature.name);
-  if (!defs.length) return '<div class="buff-bar buff-bar--empty"></div>';
   const stacks = side === 'attacker' ? attackerBuffStacks : defenderBuffStacks;
-  return `<div class="buff-bar">${defs.map(def => {
-    const s = stacks[def.effectKey] !== undefined ? stacks[def.effectKey] : def.defaultStacks;
-    const active = s > 0;
-    return `<div class="buff-slot${active ? ' active' : ''}">
+  const slotsHtml = defs.filter(def => {
+    return (stacks[def.effectKey] ?? 0) > 0;
+  }).map(def => {
+    const s = stacks[def.effectKey];
+    return `<div class="buff-slot active">
       <div class="buff-icon-wrap">
         <img class="buff-icon" src="${def.icon}" alt="${def.name}">
         <span class="buff-stacks">${s}</span>
@@ -465,7 +465,8 @@ function renderBuffBar(side, creature) {
         <span class="buff-tooltip-effects">${describeBuffEffects(def, s)}</span>
       </div>
     </div>`;
-  }).join('')}</div>`;
+  }).join('');
+  return `<div class="buff-bar"><div class="buff-slot buff-slot--label"><div class="buff-icon-wrap buff-label-wrap">增益</div></div>${slotsHtml}</div>`;
 }
 
 function renderStatGrid(side, creature) {
@@ -529,14 +530,14 @@ function renderStatGrid(side, creature) {
 
     // Buff 类 toggle 按钮（使用 data-ability-effect 触发 onAbilityToggle）
     const buffToggleHtml = buffToggles.map(d => {
-      const s = buffStacksMap[d.effectKey] !== undefined ? buffStacksMap[d.effectKey] : d.defaultStacks;
+      const s = buffStacksMap[d.effectKey] ?? 0;
       const active = s > 0;
       return `<button class="effect-toggle effect-toggle--ability${active ? ' active' : ''}" data-side="${side}" data-ability-effect="${d.name}">${d.name}</button>`;
     }).join('');
 
     // Buff 类 stepper（使用 data-ability-stepper = effectKey 触发 onAbilityStepper）
     const buffStepperHtml = buffSteppers.map(d => {
-      const s = buffStacksMap[d.effectKey] !== undefined ? buffStacksMap[d.effectKey] : d.defaultStacks;
+      const s = buffStacksMap[d.effectKey] ?? 0;
       return `<div class="energy-stepper">
         <span class="stepper-label">${d.effectKey}</span>
         <button class="stepper-btn ability-stepper-btn" data-side="${side}" data-ability-stepper="${d.effectKey}" data-dir="-1">−</button>
@@ -1388,7 +1389,8 @@ function onAbilityToggle(btn) {
   const creature = getActiveCreature(side);
   const buffDef = findBuffDef(side, creature.name, name);
   if (buffDef) {
-    buffStacks[buffDef.effectKey] = activeMap[name] ? 1 : 0;
+    if (activeMap[name]) buffStacks[buffDef.effectKey] = 1;
+    else delete buffStacks[buffDef.effectKey];
     // 刷新 buff 栏显示
     const container = document.getElementById(side === 'attacker' ? 'attacker-stats' : 'defender-stats');
     const barEl = container.querySelector('.buff-bar');
@@ -1407,10 +1409,12 @@ function onAbilityStepper(btn) {
   const buffDef = findBuffDef(side, creature.name, name);
   if (buffDef) {
     const buffStacks = side === 'attacker' ? attackerBuffStacks : defenderBuffStacks;
-    const current = buffStacks[buffDef.effectKey] !== undefined ? buffStacks[buffDef.effectKey] : buffDef.defaultStacks;
-    buffStacks[buffDef.effectKey] = Math.max(0, Math.min(buffDef.maxStacks, current + +btn.dataset.dir));
+    const current = buffStacks[buffDef.effectKey] ?? 0;
+    const next = Math.max(0, Math.min(buffDef.maxStacks, current + +btn.dataset.dir));
+    if (next === 0) delete buffStacks[buffDef.effectKey];
+    else buffStacks[buffDef.effectKey] = next;
     const valEl = document.getElementById(`ability-stepper-val-${side}-${name}`);
-    if (valEl) valEl.textContent = buffStacks[buffDef.effectKey];
+    if (valEl) valEl.textContent = next;
     // 刷新 buff 栏
     const container = document.getElementById(side === 'attacker' ? 'attacker-stats' : 'defender-stats');
     const barEl = container.querySelector('.buff-bar');

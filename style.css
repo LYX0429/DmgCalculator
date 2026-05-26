@@ -777,6 +777,17 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
   width: 40px;
   height: 40px;
 }
+.buff-label-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.08);
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #4ade80;
+  cursor: default;
+}
 
 .buff-icon {
   width: 40px;
