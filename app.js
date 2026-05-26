@@ -65,6 +65,10 @@ let attackerAbilitySteppers = {};  // { effectName: number }
 let defenderAbilityActive   = {};  // { effectName: boolean }
 let defenderAbilitySteppers = {};  // { effectName: number }
 
+// Buff 层数状态（仅 ABILITY_BUFF_DEFS 中的条目）
+let attackerBuffStacks = {};  // { effectKey: stacks }
+let defenderBuffStacks = {};  // { effectKey: stacks }
+
 // 当前显示的形态索引（CREATURES 数组下标，可被箭头切换）
 let attackerFormIdx = 0;
 let defenderFormIdx = 0;
@@ -106,7 +110,7 @@ function getFormGroup(creature) {
 
 // 各精灵特性效果定义
 // apply(ctx, val?) → 返回覆盖计算参数的对象
-// ctx 字段：atkBuff, defBuff, typeMult, stabMult, atkStat, defStat, abilityMult,
+// ctx 字段：typeMult, stabMult, atkStat, defStat（均为 buffed 值）, abilityMult,
 //           abilityExtraPower, defAbilityMult, atkStats, defStats, move
 // side: "defender" → 由防方特性逻辑处理；默认为攻方
 // type: "stepper"  → 步进器输入，val 为当前值
@@ -143,32 +147,12 @@ const CREATURE_ABILITY_EFFECTS = {
     apply: (ctx) => ctx.move.cost > 3 ? { abilityMult: ctx.abilityMult * 1.4 } : {} }],
 
   // ── B. Toggle（手动激活）────────────────────────────────────────────────
-  "音速犬":     [{ name: "专注力",    apply: (ctx) => ({ atkBuff: ctx.atkBuff + 1.0 }) }],
   "炽心勇狮":   [{ name: "圣火骑士",  apply: (ctx) => ({ abilityMult: ctx.abilityMult * 2 }) }],
-  "古卷执政官": [{ name: "图书守卫者",apply: (ctx) => ({ atkBuff: ctx.atkBuff + 0.5 }) }],
   "绒仙子":     [{ name: "绒粉星光",  apply: (ctx) => ({ abilityMult: ctx.abilityMult * 2 }) }],  // 非同系血脉
   "疾光千兽":   [{ name: "月光审判",  apply: (ctx) => ({ abilityMult: ctx.abilityMult * 2 }) }],  // 敌为首领血脉
   "雅丹鬃":     [{ name: "天通地明",  apply: (ctx) => ({ abilityMult: ctx.abilityMult * 2 }) }],  // 敌为污染血脉
 
   // ── C. Stepper（攻方）───────────────────────────────────────────────────
-  "风暴战犬":   [{ type: "stepper", name: "行动次数",    min: 0, max: 5,  defaultValue: 0,
-    apply: (ctx, val) => ({ atkBuff: ctx.atkBuff + Math.max(0, 1.0 - 0.2 * val) }) }],
-  "恶魔狼":     [{ type: "stepper", name: "力竭精灵数",  min: 0, max: 5,  defaultValue: 0,
-    apply: (ctx, val) => ({ atkBuff: ctx.atkBuff + 0.3 * val }) }],
-  "恶魔狼王":   [{ type: "stepper", name: "力竭精灵数",  min: 0, max: 10, defaultValue: 0,
-    apply: (ctx, val) => ({ atkBuff: ctx.atkBuff + 0.3 * val }) }],
-  "乌拉塔（极昼的样子）": [{ type: "stepper", name: "已击败次数", min: 0, max: 5, defaultValue: 0,
-    apply: (ctx, val) => ({ atkBuff: ctx.atkBuff + 0.5 * val }) }],
-  "乌拉塔（极夜的样子）": [{ type: "stepper", name: "已击败次数", min: 0, max: 5, defaultValue: 0,
-    apply: (ctx, val) => ({ atkBuff: ctx.atkBuff + 0.5 * val }) }],
-  "爵士鹿":     [{ type: "stepper", name: "入场次数",    min: 0, max: 10, defaultValue: 0,
-    apply: (ctx, val) => ({ atkBuff: ctx.atkBuff + 0.3 * val }) }],
-  "波普鹿":     [{ type: "stepper", name: "入场次数",    min: 0, max: 10, defaultValue: 0,
-    apply: (ctx, val) => ({ atkBuff: ctx.atkBuff + 0.4 * val }) }],
-  "绅士鸡":     [{ type: "stepper", name: "应对次数",    min: 0, max: 10, defaultValue: 0,
-    apply: (ctx, val) => ({ atkBuff: ctx.atkBuff + 0.3 * val }) }],
-  "武者鸡":     [{ type: "stepper", name: "应对次数",    min: 0, max: 10, defaultValue: 0,
-    apply: (ctx, val) => ({ abilityExtraPower: (ctx.abilityExtraPower || 0) + 30 * val }) }],
   "仪式巨像":   [{ type: "stepper", name: "星陨印记数",  min: 0, max: 20, defaultValue: 0,
     apply: (ctx, val) => ctx.move.type === '地' ? { abilityMult: ctx.abilityMult * (1 + 0.2 * val) } : {} }],
   "祭礼巨像":   [{ type: "stepper", name: "星陨印记数",  min: 0, max: 20, defaultValue: 0,
@@ -177,20 +161,61 @@ const CREATURE_ABILITY_EFFECTS = {
     apply: (ctx, val) => ({ abilityMult: ctx.abilityMult * (1 + 0.1 * val) }) }],
   "冰钻布鲁斯": [{ type: "stepper", name: "敌方总能耗",  min: 0, max: 40, defaultValue: 0,
     apply: (ctx, val) => ({ abilityMult: ctx.abilityMult * (1 + 0.1 * val) }) }],
-  "窃光蚊":     [{ type: "stepper", name: "敌方系别数",  min: 0, max: 18, defaultValue: 0,
-    apply: (ctx, val) => ({ abilityExtraPower: (ctx.abilityExtraPower || 0) + 10 * val }) }],
 
   // ── D. 防方特性（side: "defender"）──────────────────────────────────────
-  "卷胡巨獭":   [{ side: "defender", name: "保守派",
-    apply: (ctx) => ({ defBuff: ctx.defBuff + 0.8 }) }],
   "秩序鱿墨":   [{ side: "defender", name: "绝对秩序",
     apply: (ctx) => ({ defAbilityMult: (ctx.defAbilityMult || 1) * 0.5 }) }],
-  "蹦床松鼠":   [{ side: "defender", type: "stepper", name: "当前能量", min: 0, max: 10, defaultValue: 5,
-    apply: (ctx, val) => ({ defBuff: ctx.defBuff + 0.1 * val }) }],
 };
 
 function getCreatureAbilityEffects(creatureName) {
   return CREATURE_ABILITY_EFFECTS[creatureName] || [];
+}
+
+// ── Buff 辅助函数 ────────────────────────────────────────────────────────
+
+function scalePerStack(perStack, stacks) {
+  const result = {};
+function getCreatureBuffDefs(side, creatureName) {
+  return (ABILITY_BUFF_DEFS[creatureName] || []).filter(d => !d.side || d.side === side);
+}
+
+// 找到某精灵某侧的 buffDef（按 effectKey 或 name 匹配）
+function findBuffDef(side, creatureName, key) {
+  return getCreatureBuffDefs(side, creatureName).find(d => d.effectKey === key || d.name === key) || null;
+}
+
+// 计算某侧精灵的全部 buff 效果，返回累积值和 details
+function getCreatureBuffEffects(side, creatureName) {
+  const defs   = getCreatureBuffDefs(side, creatureName);
+  const stacks = side === 'attacker' ? attackerBuffStacks : defenderBuffStacks;
+  const acc = { atkPct: 0, spatkPct: 0, defPct: 0, spdefPct: 0, spdPct: 0,
+                atkFlat: 0, spatkFlat: 0, defFlat: 0, spdefFlat: 0, spdFlat: 0, powerFlat: 0 };
+  const details = [];
+  for (const def of defs) {
+    const s = stacks[def.effectKey] !== undefined ? stacks[def.effectKey] : def.defaultStacks;
+    if (s === 0) continue;
+    const fx = def.getTotalEffects ? def.getTotalEffects(s) : scalePerStack(def.perStack, s);
+    for (const k of Object.keys(acc)) acc[k] += (fx[k] || 0);
+    details.push({ name: def.name, effectKey: def.effectKey, stacks: s, fx });
+  }
+  return { ...acc, details };
+}
+
+function resetBuffStacks(side) {
+  if (side === 'attacker') attackerBuffStacks = {};
+  else                     defenderBuffStacks = {};
+}
+
+// 初始化 buff 层数为 defaultStacks（切换精灵时调用）
+function initBuffStacks(side, creatureName) {
+  const target = side === 'attacker' ? attackerBuffStacks : defenderBuffStacks;
+  // 清空后按 defaultStacks 设置
+  if (side === 'attacker') attackerBuffStacks = {};
+  else defenderBuffStacks = {};
+  const newTarget = side === 'attacker' ? attackerBuffStacks : defenderBuffStacks;
+  for (const def of getCreatureBuffDefs(side, creatureName)) {
+    if (def.defaultStacks > 0) newTarget[def.effectKey] = def.defaultStacks;
+  }
 }
 
 // 切换精灵时初始化对应侧特性状态
@@ -209,6 +234,7 @@ function initAbilityState(side, creature) {
       if (e.type === 'stepper') defenderAbilitySteppers[e.name] = e.defaultValue;
     });
   }
+  initBuffStacks(side, creature.name);
 }
 
 // 各技能的特效定义
@@ -399,6 +425,45 @@ function loadCreatureDefaults(side, creature) {
   else                     { defenderNature = nature; defenderIVs = ivs; }
 }
 
+function describeBuffEffects(def, stacks) {
+  if (stacks === 0) return '未激活';
+  const fx = def.getTotalEffects ? def.getTotalEffects(stacks) : scalePerStack(def.perStack, stacks);
+  const parts = [];
+  const fmtPct = (v, label) => { if (v) parts.push(`${label}${v > 0 ? '+' : ''}${Math.round(v * 100)}%`); };
+  const fmtFlat = (v, label) => { if (v) parts.push(`${label}${v > 0 ? '+' : ''}${v}`); };
+  fmtPct(fx.atkPct,   '物攻');
+  fmtPct(fx.spatkPct, '魔攻');
+  fmtPct(fx.defPct,   '物防');
+  fmtPct(fx.spdefPct, '魔防');
+  fmtPct(fx.spdPct,   '速度');
+  fmtFlat(fx.atkFlat,   '物攻');
+  fmtFlat(fx.spatkFlat, '魔攻');
+  fmtFlat(fx.defFlat,   '物防');
+  fmtFlat(fx.spdefFlat, '魔防');
+  fmtFlat(fx.powerFlat, '技能威力');
+  return parts.join(' ') + `（当前${stacks}层）`;
+}
+
+function renderBuffBar(side, creature) {
+  const defs   = getCreatureBuffDefs(side, creature.name);
+  if (!defs.length) return '<div class="buff-bar buff-bar--empty"></div>';
+  const stacks = side === 'attacker' ? attackerBuffStacks : defenderBuffStacks;
+  return `<div class="buff-bar">${defs.map(def => {
+    const s = stacks[def.effectKey] !== undefined ? stacks[def.effectKey] : def.defaultStacks;
+    const active = s > 0;
+    return `<div class="buff-slot${active ? ' active' : ''}">
+      <div class="buff-icon-wrap">
+        <img class="buff-icon" src="${def.icon}" alt="${def.name}">
+        <span class="buff-stacks">${s}</span>
+      </div>
+      <div class="buff-tooltip">
+        <span class="buff-tooltip-name">${def.name}</span>
+        <span class="buff-tooltip-effects">${describeBuffEffects(def, s)}</span>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
 function renderStatGrid(side, creature) {
   const nature = side === 'attacker' ? attackerNature : defenderNature;
   const ivs    = side === 'attacker' ? attackerIVs    : defenderIVs;
@@ -429,15 +494,25 @@ function renderStatGrid(side, creature) {
   const manualAbilityEffects  = sideEffects.filter(e => !e.auto && e.type !== 'stepper');
   const stepperAbilityEffects = sideEffects.filter(e => e.type === 'stepper');
 
-  let abilityControlsHtml = '';
-  if (manualAbilityEffects.length || stepperAbilityEffects.length) {
-    const activeMap  = side === 'attacker' ? attackerAbilityActive   : defenderAbilityActive;
-    const stepperMap = side === 'attacker' ? attackerAbilitySteppers : defenderAbilitySteppers;
+  // Buff 类控件（来自 ABILITY_BUFF_DEFS）
+  const buffDefs = getCreatureBuffDefs(side, creature.name);
+  const buffToggles  = buffDefs.filter(d => d.type === 'toggle');
+  const buffSteppers = buffDefs.filter(d => d.type === 'stepper');
 
+  let abilityControlsHtml = '';
+  const hasControls = manualAbilityEffects.length || stepperAbilityEffects.length
+                   || buffToggles.length || buffSteppers.length;
+  if (hasControls) {
+    const activeMap    = side === 'attacker' ? attackerAbilityActive   : defenderAbilityActive;
+    const stepperMap   = side === 'attacker' ? attackerAbilitySteppers : defenderAbilitySteppers;
+    const buffStacksMap = side === 'attacker' ? attackerBuffStacks      : defenderBuffStacks;
+
+    // abilityMult 类 toggle 按钮
     const togglesHtml = manualAbilityEffects.map(e =>
       `<button class="effect-toggle effect-toggle--ability${activeMap[e.name] ? ' active' : ''}" data-side="${side}" data-ability-effect="${e.name}">${e.name}</button>`
     ).join('');
 
+    // abilityMult 类 stepper
     const steppersHtml = stepperAbilityEffects.map(e => {
       const val = stepperMap[e.name] ?? e.defaultValue;
       return `<div class="energy-stepper">
@@ -448,7 +523,25 @@ function renderStatGrid(side, creature) {
       </div>`;
     }).join('');
 
-    abilityControlsHtml = `<div class="move-effect-toggles ability-controls">${steppersHtml}${togglesHtml}</div>`;
+    // Buff 类 toggle 按钮（使用 data-ability-effect 触发 onAbilityToggle）
+    const buffToggleHtml = buffToggles.map(d => {
+      const s = buffStacksMap[d.effectKey] !== undefined ? buffStacksMap[d.effectKey] : d.defaultStacks;
+      const active = s > 0;
+      return `<button class="effect-toggle effect-toggle--ability${active ? ' active' : ''}" data-side="${side}" data-ability-effect="${d.name}">${d.name}</button>`;
+    }).join('');
+
+    // Buff 类 stepper（使用 data-ability-stepper = effectKey 触发 onAbilityStepper）
+    const buffStepperHtml = buffSteppers.map(d => {
+      const s = buffStacksMap[d.effectKey] !== undefined ? buffStacksMap[d.effectKey] : d.defaultStacks;
+      return `<div class="energy-stepper">
+        <span class="stepper-label">${d.effectKey}</span>
+        <button class="stepper-btn ability-stepper-btn" data-side="${side}" data-ability-stepper="${d.effectKey}" data-dir="-1">−</button>
+        <span class="stepper-val" id="ability-stepper-val-${side}-${d.effectKey}">${s}</span>
+        <button class="stepper-btn ability-stepper-btn" data-side="${side}" data-ability-stepper="${d.effectKey}" data-dir="1">+</button>
+      </div>`;
+    }).join('');
+
+    abilityControlsHtml = `<div class="move-effect-toggles ability-controls">${steppersHtml}${buffStepperHtml}${togglesHtml}${buffToggleHtml}</div>`;
   }
 
   const ab = creature.ability;
@@ -467,6 +560,7 @@ function renderStatGrid(side, creature) {
     `<div class="stat-label"><span class="stat-label-types">${typeTagsHtml}</span><span class="stat-label-name">${creature.name}</span>${bossBtnHtml}</div>` +
     imgHtml +
     abilityHtml +
+    renderBuffBar(side, creature) +
     natureHtml +
     STAT_IDS.map(id => {
       const isBoost  = nature.boost  === id;
@@ -1001,36 +1095,56 @@ function renderSavedCreatures() {
 
 /**
  * 核心伤害计算，所有场景共用。
- * @param {object} attacker  - 含 ivs/nature 的攻方精灵对象
+ * @param {object} attacker    - 含 ivs/nature 的攻方精灵对象
  * @param {object} defCreature - 守方精灵数据（来自 CREATURES）
- * @param {object} defIvs    - 守方个体值
- * @param {object} defNature - 守方性格
- * @param {object} move      - 技能对象
- * @param {number} extraPower
- * @param {number} atkBuff   - 已除以10的小数（0.1 = 10%）
- * @param {number} defBuff
+ * @param {object} defIvs      - 守方个体值
+ * @param {object} defNature   - 守方性格
+ * @param {object} move        - 技能对象
+ * @param {number} extraPower  - 额外威力（技能特效等）
  * @returns {{ dmg, pct, defStats, atkStats, totalExtra,
- *             activeEffectDetails, calcAtkBuff, calcDefBuff,
- *             typeMult, stabMult, atkStat, abilityMult }}
+ *             activeEffectDetails, buffedAtkStat, defPctBuff, defFlatBuff,
+ *             typeMult, stabMult, abilityMult, defAbilityMult, totalHits,
+ *             atkBuffDetails, defBuffDetails, buffPowerFlat }}
  */
-function computeDamage({ attacker, defCreature, defIvs, defNature, move, extraPower, atkBuff, defBuff }) {
+function computeDamage({ attacker, defCreature, defIvs, defNature, move, extraPower }) {
   const atkStats  = calcAllStats(attacker);
   const defStats  = calcAllStats({ ...defCreature, ivs: defIvs || {}, nature: defNature || { boost: null, reduce: null } });
-  const defStatId = move.category === 'physical' ? 'def' : 'spdef';
+  const atkStatId = move.category === 'physical' ? 'atk'  : 'spatk';
+  const defStatId = move.category === 'physical' ? 'def'  : 'spdef';
+
+  // 从 buff 状态计算增益
+  const atkFx = getCreatureBuffEffects('attacker', attacker.name);
+  const defFx = getCreatureBuffEffects('defender', defCreature.name);
+
+  const atkPct  = atkStatId === 'atk' ? atkFx.atkPct  : atkFx.spatkPct;
+  const atkFlat = atkStatId === 'atk' ? atkFx.atkFlat : atkFx.spatkFlat;
+  const buffedAtkStat = Math.round(atkStats[atkStatId] * (1 + atkPct) + atkFlat);
+
+  const defPctBuff  = defStatId === 'def' ? defFx.defPct  : defFx.spdefPct;
+  const defFlatBuff = defStatId === 'def' ? defFx.defFlat : defFx.spdefFlat;
+  const buffedDefStat = Math.round(defStats[defStatId] * (1 + defPctBuff) + defFlatBuff);
+
+  const buffPowerFlat = atkFx.powerFlat;
+
+  // 速度用于 auto 特性（顺风/破空）—— 含速度 buff
+  const buffedAtkSpd = Math.round(atkStats.spd * (1 + atkFx.spdPct) + atkFx.spdFlat);
+  const buffedDefSpd = Math.round(defStats.spd * (1 + defFx.spdPct) + defFx.spdFlat);
 
   let abilityCtx = {
-    atkBuff, defBuff,
-    typeMult:         calcTypeMultiplier(move.type, defCreature.types),
-    stabMult:         calcStabMultiplier(move.type, attacker.types),
-    atkStat:          move.category === 'physical' ? atkStats.atk : atkStats.spatk,
-    defStat:          defStats[defStatId],
-    abilityMult:      1,
+    typeMult:          calcTypeMultiplier(move.type, defCreature.types),
+    stabMult:          calcStabMultiplier(move.type, attacker.types),
+    atkStat:           buffedAtkStat,
+    defStat:           buffedDefStat,
+    abilityMult:       1,
     abilityExtraPower: 0,
-    defAbilityMult:   1,
-    atkStats, defStats, move,
+    defAbilityMult:    1,
+    // abilityCtx 仍然暴露原始 stats 供 auto 条件使用（鸣沙陷阱等）
+    atkStats: { ...atkStats, spd: buffedAtkSpd },
+    defStats: { ...defStats, spd: buffedDefSpd },
+    move,
   };
 
-  // 攻方特性
+  // 攻方特性（abilityMult 类）
   getCreatureAbilityEffects(attacker.name)
     .filter(e => !e.side || e.side === 'attacker')
     .forEach(e => {
@@ -1041,7 +1155,7 @@ function computeDamage({ attacker, defCreature, defIvs, defNature, move, extraPo
       }
     });
 
-  // 防方特性
+  // 防方特性（defAbilityMult 类）
   getCreatureAbilityEffects(defCreature.name)
     .filter(e => e.side === 'defender')
     .forEach(e => {
@@ -1074,13 +1188,21 @@ function computeDamage({ attacker, defCreature, defIvs, defNature, move, extraPo
       return { name: e.name, bonus: Math.round(e.apply(effectCtx)) };
     });
   const effectBonus = activeEffectDetails.reduce((s, e) => s + e.bonus, 0);
-  const totalExtra  = extraPower + effectBonus + abilityCtx.abilityExtraPower;
+  const totalExtra  = extraPower + effectBonus + abilityCtx.abilityExtraPower + buffPowerFlat;
 
-  const { atkBuff: calcAtkBuff, defBuff: calcDefBuff, typeMult, stabMult, atkStat, abilityMult, defAbilityMult } = abilityCtx;
-  const dmg = calcDamage(atkStat, defStats[defStatId], move.power, totalExtra, calcAtkBuff, calcDefBuff, typeMult, stabMult, abilityMult) * totalHits * defAbilityMult;
+  const { typeMult, stabMult, abilityMult, defAbilityMult } = abilityCtx;
+  const dmg = calcDamage(buffedAtkStat, buffedDefStat, move.power, totalExtra, typeMult, stabMult, abilityMult) * totalHits * defAbilityMult;
   const pct = defStats.hp > 0 ? (dmg / defStats.hp * 100).toFixed(1) : '∞';
 
-  return { dmg, pct, defStats, atkStats, totalExtra, activeEffectDetails, calcAtkBuff, calcDefBuff, typeMult, stabMult, atkStat, abilityMult, defAbilityMult, totalHits };
+  return {
+    dmg, pct, defStats, atkStats, totalExtra,
+    activeEffectDetails, buffedAtkStat, defPctBuff, defFlatBuff,
+    typeMult, stabMult, abilityMult, defAbilityMult, totalHits,
+    atkBuffDetails: atkFx.details,
+    defBuffDetails: defFx.details,
+    buffPowerFlat,
+    abilityExtraPower: abilityCtx.abilityExtraPower,
+  };
 }
 
 function calcEnemyDamage(enemyEntry) {
@@ -1088,11 +1210,8 @@ function calcEnemyDamage(enemyEntry) {
   if (!move) return null;
   const defCreature = CREATURES.find(c => c.id === enemyEntry.id);
   if (!defCreature) return null;
-  const attacker   = { ...getActiveCreature('attacker'), ivs: attackerIVs, nature: attackerNature };
-  const extraPower = parseFloat(document.getElementById('extra-power').value) || 0;
-  const atkBuff    = (parseFloat(document.getElementById('atk-buff').value) || 0) / 10;
-  const defBuff    = (parseFloat(document.getElementById('def-buff').value) || 0) / 10;
-  const { dmg, pct } = computeDamage({ attacker, defCreature, defIvs: enemyEntry.ivs, defNature: enemyEntry.nature, move, extraPower, atkBuff, defBuff });
+  const attacker = { ...getActiveCreature('attacker'), ivs: attackerIVs, nature: attackerNature };
+  const { dmg, pct } = computeDamage({ attacker, defCreature, defIvs: enemyEntry.ivs, defNature: enemyEntry.nature, move, extraPower: 0 });
   return { dmg, pct };
 }
 
@@ -1175,6 +1294,7 @@ function renderCommonEnemies() {
       loadCreatureDefaults('defender', CREATURES[creatureIdx]);
       defenderIVs    = { ...entry.ivs };
       defenderNature = { ...entry.nature };
+      initBuffStacks('defender', CREATURES[creatureIdx].name);
       const creature = getActiveCreature('defender');
       renderStatGrid('defender', creature);
       renderPresetButtons('defender', creature);
@@ -1223,6 +1343,7 @@ function applySavedCreature(entry, side) {
     defenderCommonMoves   = [...(entry.commonMoves   || [])];
     defenderCommonEnemies = [...(entry.commonEnemies || [])];
     const creature = getActiveCreature('defender');
+    initAbilityState('defender', creature);
     renderStatGrid('defender', creature);
     renderPresetButtons('defender', creature);
     searchCtrl.defender?.syncDisplay();
@@ -1252,9 +1373,22 @@ function onStepperClick(btn) {
 function onAbilityToggle(btn) {
   const side = btn.dataset.side;
   const name = btn.dataset.abilityEffect;
-  const activeMap = side === 'attacker' ? attackerAbilityActive : defenderAbilityActive;
+  const activeMap  = side === 'attacker' ? attackerAbilityActive : defenderAbilityActive;
+  const buffStacks = side === 'attacker' ? attackerBuffStacks    : defenderBuffStacks;
   activeMap[name] = !activeMap[name];
   btn.classList.toggle('active', activeMap[name]);
+
+  // 若对应 buff 定义，同步更新 buff 层数
+  const creature = getActiveCreature(side);
+  const buffDef = findBuffDef(side, creature.name, name);
+  if (buffDef) {
+    buffStacks[buffDef.effectKey] = activeMap[name] ? 1 : 0;
+    // 刷新 buff 栏显示
+    const container = document.getElementById(side === 'attacker' ? 'attacker-stats' : 'defender-stats');
+    const barEl = container.querySelector('.buff-bar');
+    if (barEl) barEl.outerHTML = renderBuffBar(side, creature);
+    else container.querySelector('.ability-block')?.insertAdjacentHTML('afterend', renderBuffBar(side, creature));
+  }
   onCalculate();
 }
 
@@ -1262,6 +1396,24 @@ function onAbilityStepper(btn) {
   const side = btn.dataset.side;
   const name = btn.dataset.abilityStepper;
   const creature = getActiveCreature(side);
+
+  // 先检查是否是 buff 类 stepper（按 effectKey 匹配）
+  const buffDef = findBuffDef(side, creature.name, name);
+  if (buffDef) {
+    const buffStacks = side === 'attacker' ? attackerBuffStacks : defenderBuffStacks;
+    const current = buffStacks[buffDef.effectKey] !== undefined ? buffStacks[buffDef.effectKey] : buffDef.defaultStacks;
+    buffStacks[buffDef.effectKey] = Math.max(0, Math.min(buffDef.maxStacks, current + +btn.dataset.dir));
+    const valEl = document.getElementById(`ability-stepper-val-${side}-${name}`);
+    if (valEl) valEl.textContent = buffStacks[buffDef.effectKey];
+    // 刷新 buff 栏
+    const container = document.getElementById(side === 'attacker' ? 'attacker-stats' : 'defender-stats');
+    const barEl = container.querySelector('.buff-bar');
+    if (barEl) barEl.outerHTML = renderBuffBar(side, creature);
+    onCalculate();
+    return;
+  }
+
+  // abilityMult 类 stepper（原有逻辑）
   const effect = getCreatureAbilityEffects(creature.name).find(e => e.name === name);
   if (!effect) return;
   const stepperMap = side === 'attacker' ? attackerAbilitySteppers : defenderAbilitySteppers;
@@ -1272,10 +1424,19 @@ function onAbilityStepper(btn) {
   onCalculate();
 }
 
-function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, defBuff, stabMult, typeMult, abilityMult = 1, totalHits = 1, abilityExtraPower = 0, defAbilityMult = 1) {
+function renderPowerBreakdown({
+  move, activeEffectDetails,
+  atkBuffDetails, defBuffDetails, buffPowerFlat,
+  stabMult, typeMult, abilityMult = 1, totalHits = 1,
+  abilityExtraPower = 0, defAbilityMult = 1,
+  buffedAtkStat, defPctBuff = 0, defFlatBuff = 0,
+}) {
   const effectBonus  = activeEffectDetails.reduce((s, e) => s + e.bonus, 0);
-  const rawPower     = move.power + extraPower + effectBonus + abilityExtraPower;
-  const displayPower = Math.round(rawPower * (1 + atkBuff) / (1 + defBuff) * stabMult * typeMult * abilityMult * defAbilityMult);
+  const rawPower     = move.power + effectBonus + abilityExtraPower + buffPowerFlat;
+
+  // 显示威力：仅含威力乘数（攻防 buff 的贡献体现在实际伤害数字中）
+  const displayPower = Math.round(rawPower * stabMult * typeMult * abilityMult * defAbilityMult
+                                  / (defPctBuff ? (1 + defPctBuff) : 1));
 
   const powerItems = [];
   const multItems  = [];
@@ -1295,19 +1456,22 @@ function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, de
     powerItems.push(`<span class="pw-chip pw-chip--bonus">${e.name} <b>${sign}${e.bonus}</b></span>`);
   });
 
-  if (extraPower !== 0)
-    powerItems.push(`<span class="pw-chip pw-chip--bonus">额外加成 <b>+${extraPower}</b></span>`);
   if (abilityExtraPower !== 0)
     powerItems.push(`<span class="pw-chip pw-chip--stab">特性威力 <b>+${abilityExtraPower}</b></span>`);
+  if (buffPowerFlat !== 0)
+    powerItems.push(`<span class="pw-chip pw-chip--buff">特性威力 <b>+${buffPowerFlat}</b></span>`);
 
-  if (atkBuff !== 0) {
-    const sign = atkBuff > 0 ? '+' : '';
-    multItems.push(`<span class="pw-chip pw-chip--buff">攻击${sign}${Math.round(atkBuff * 100)}% <b>×${(1 + atkBuff).toFixed(2)}</b></span>`);
+  // 攻方 buff chips（每个 buff 单独一个 chip）
+  for (const d of atkBuffDetails) {
+    const fx = d.fx;
+    // 显示对应技能类别的百分比增益
+    const pct = (fx.atkPct || 0) || (fx.spatkPct || 0);
+    if (pct !== 0) {
+      const mult = 1 + pct;
+      multItems.push(`<span class="pw-chip pw-chip--buff">${d.name} 攻击+${Math.round(pct * 100)}% <b>×${mult.toFixed(2)}</b></span>`);
+    }
   }
-  if (defBuff !== 0) {
-    const sign = defBuff > 0 ? '+' : '';
-    multItems.push(`<span class="pw-chip pw-chip--resist">防御${sign}${Math.round(defBuff * 100)}% <b>÷${(1 + defBuff).toFixed(2)}</b></span>`);
-  }
+
   if (stabMult > 1)
     multItems.push(`<span class="pw-chip pw-chip--stab">本系加成 <b>×${stabMult}</b></span>`);
   if (typeMult > 1)
@@ -1316,6 +1480,17 @@ function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, de
     multItems.push(`<span class="pw-chip pw-chip--resist">属性抵抗 <b>×${typeMult}</b></span>`);
   if (abilityMult !== 1)
     multItems.push(`<span class="pw-chip pw-chip--stab">特性 <b>×${abilityMult}</b></span>`);
+
+  // 防方 buff chips
+  for (const d of defBuffDetails) {
+    const fx = d.fx;
+    const pct = (fx.defPct || 0) || (fx.spdefPct || 0);
+    if (pct !== 0) {
+      const div = 1 + pct;
+      multItems.push(`<span class="pw-chip pw-chip--resist">${d.name} 防御+${Math.round(pct * 100)}% <b>÷${div.toFixed(2)}</b></span>`);
+    }
+  }
+
   if (defAbilityMult !== 1)
     multItems.push(`<span class="pw-chip pw-chip--resist">敌方特性 <b>×${defAbilityMult}</b></span>`);
   if (totalHits > 1)
@@ -1336,22 +1511,30 @@ function renderPowerBreakdown(move, extraPower, activeEffectDetails, atkBuff, de
 }
 
 function onCalculate() {
-  const attacker   = { ...getActiveCreature('attacker'), ivs: attackerIVs, nature: attackerNature };
-  const enemy      = getActiveCreature('defender');
-  const move       = MOVES.find(m => m.id === document.getElementById('move-select').value);
-  const extraPower = parseFloat(document.getElementById('extra-power').value) || 0;
-  const atkBuff    = (parseFloat(document.getElementById('atk-buff').value) || 0) / 10;
-  const defBuff    = (parseFloat(document.getElementById('def-buff').value) || 0) / 10;
+  const attacker = { ...getActiveCreature('attacker'), ivs: attackerIVs, nature: attackerNature };
+  const enemy    = getActiveCreature('defender');
+  const move     = MOVES.find(m => m.id === document.getElementById('move-select').value);
   if (!move) return;
 
-  const { dmg: currentDmg, pct: currentPct, defStats, totalExtra,
-          activeEffectDetails, calcAtkBuff, calcDefBuff, typeMult, stabMult, abilityMult, defAbilityMult, totalHits }
-    = computeDamage({ attacker, defCreature: enemy, defIvs: defenderIVs, defNature: defenderNature, move, extraPower, atkBuff, defBuff });
+  const {
+    dmg: currentDmg, pct: currentPct, totalExtra,
+    activeEffectDetails, buffedAtkStat, defPctBuff, defFlatBuff,
+    typeMult, stabMult, abilityMult, defAbilityMult, totalHits,
+    atkBuffDetails, defBuffDetails, buffPowerFlat, abilityExtraPower,
+  } = computeDamage({ attacker, defCreature: enemy, defIvs: defenderIVs, defNature: defenderNature, move, extraPower: 0 });
 
-  const abilityExtraPower = totalExtra - extraPower - activeEffectDetails.reduce((s, e) => s + e.bonus, 0);
-  renderPowerBreakdown(move, extraPower, activeEffectDetails, calcAtkBuff, calcDefBuff, stabMult, typeMult, abilityMult, totalHits, abilityExtraPower, defAbilityMult);
+  renderPowerBreakdown({
+    move, activeEffectDetails,
+    atkBuffDetails, defBuffDetails, buffPowerFlat,
+    stabMult, typeMult, abilityMult, totalHits,
+    abilityExtraPower, defAbilityMult,
+    buffedAtkStat, defPctBuff, defFlatBuff,
+  });
 
-  const scenarios = runCalculation({ attacker, enemy, move, extraPower: totalExtra, atkBuff: calcAtkBuff, defBuff: calcDefBuff, abilityMult, defAbilityMult, totalHits });
+  const scenarios = runCalculation({
+    atkStat: buffedAtkStat, defPctBuff, defFlatBuff, stabMult,
+    enemy, move, extraPower: totalExtra, abilityMult, defAbilityMult, totalHits,
+  });
 
   renderResultBars({ dmg: currentDmg, pct: currentPct }, scenarios);
   document.getElementById('result-panel').hidden = false;
@@ -1462,6 +1645,7 @@ function onSwap() {
   // swap ability states (travel with creature), reset move effects
   [attackerAbilityActive,   defenderAbilityActive  ] = [defenderAbilityActive,   attackerAbilityActive  ];
   [attackerAbilitySteppers, defenderAbilitySteppers] = [defenderAbilitySteppers, attackerAbilitySteppers];
+  [attackerBuffStacks,      defenderBuffStacks     ] = [defenderBuffStacks,      attackerBuffStacks     ];
   activeMoveEffects = {};
   moveStepperValues = {};
 
@@ -1520,8 +1704,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   document.getElementById('swap-btn').addEventListener('click', onSwap);
   document.getElementById('move-select').addEventListener('change', onMoveChange);
-  ['extra-power', 'atk-buff', 'def-buff'].forEach(id =>
-    document.getElementById(id).addEventListener('input', onCalculate));
 
   // 特效 toggle / stepper 事件委托（按钮由 onMoveChange 动态注入）
   document.getElementById('move-info-bar').addEventListener('click', e => {

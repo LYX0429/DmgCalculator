@@ -39,15 +39,13 @@ function calcStabMultiplier(moveType, attackerTypes) {
   return attackerTypes.includes(moveType) ? 1.25 : 1;
 }
 
-// 伤害 = 我方攻 / 敌方防 × 0.9 × (技能威力 + 额外威力)
-//        × (1 + 攻击buff) / (1 + 防守buff) × 属性克制 × 本系加成
-function calcDamage(atkStat, defStat, movePower, extraPower, atkBuff, defBuff, typeMult, stabMult, abilityMult = 1) {
+// 伤害 = 我方攻（含buff）/ 敌方防（含buff）× 0.9 × (技能威力 + 额外威力)
+//        × 属性克制 × 本系加成 × 特性乘数
+function calcDamage(atkStat, defStat, movePower, extraPower, typeMult, stabMult, abilityMult = 1) {
   return Math.round(
     (atkStat / defStat)
     * 0.9
     * (movePower + extraPower)
-    * (1 + atkBuff)
-    / (1 + defBuff)
     * typeMult
     * stabMult
     * abilityMult
@@ -73,16 +71,18 @@ function calcEnemyScenarios(enemy, defStatId) {
   ];
 }
 
-function runCalculation(params) {
-  const { attacker, enemy, move, extraPower, atkBuff, defBuff, abilityMult = 1, defAbilityMult = 1, totalHits = 1 } = params;
-  const atkStats  = calcAllStats(attacker);
-  const atkStat   = move.category === 'physical' ? atkStats.atk : atkStats.spatk;
+// atkStat: 已含攻方 buff 的攻击值（pre-buffed）
+// defPctBuff: 防方防御百分比增益总和（0.8 = +80%）
+// defFlatBuff: 防方防御数值增益总和
+// stabMult: 本系加成（由调用方预先计算并传入）
+function runCalculation({ atkStat, defPctBuff = 0, defFlatBuff = 0, stabMult,
+                          enemy, move, extraPower, abilityMult = 1, defAbilityMult = 1, totalHits = 1 }) {
   const defStatId = move.category === 'physical' ? 'def' : 'spdef';
   const typeMult  = calcTypeMultiplier(move.type, enemy.types);
-  const stabMult  = calcStabMultiplier(move.type, attacker.types);
 
   return calcEnemyScenarios(enemy, defStatId).map(s => {
-    const dmg = calcDamage(atkStat, s.def, move.power, extraPower, atkBuff, defBuff, typeMult, stabMult, abilityMult) * totalHits * defAbilityMult;
+    const buffedDef = Math.round(s.def * (1 + defPctBuff) + defFlatBuff);
+    const dmg = calcDamage(atkStat, buffedDef, move.power, extraPower, typeMult, stabMult, abilityMult) * totalHits * defAbilityMult;
     const pct = s.hp > 0 ? (dmg / s.hp * 100).toFixed(1) : '∞';
     return { ...s, dmg, pct };
   });
