@@ -204,7 +204,8 @@ function scalePerStack(perStack, stacks) {
 }
 
 function getCreatureBuffDefs(side, creatureName) {
-  return ABILITY_BUFF_DEFS[creatureName] || [];
+  const specific = ABILITY_BUFF_DEFS[creatureName] || [];
+  return [...specific, ...GENERIC_BUFF_DEFS];
 }
 
 // 找到某精灵某侧的 buffDef（按 effectKey 或 name 匹配）
@@ -483,10 +484,11 @@ function renderBuffBar(side, creature) {
   const defs   = getCreatureBuffDefs(side, creature.name);
   const stacks = side === 'attacker' ? attackerBuffStacks : defenderBuffStacks;
   const slotsHtml = defs.filter(def => {
-    return (stacks[def.effectKey] ?? 0) > 0;
+    return (stacks[def.effectKey] ?? 0) !== 0;
   }).map(def => {
     const s = stacks[def.effectKey];
-    return `<div class="buff-slot active">
+    const isDebuff = s < 0;
+    return `<div class="buff-slot active${isDebuff ? ' buff-slot--debuff' : ''}">
       <div class="buff-icon-wrap">
         <img class="buff-icon" src="${def.icon}" alt="${def.name}">
         <span class="buff-stacks">${s}</span>
@@ -498,6 +500,37 @@ function renderBuffBar(side, creature) {
     </div>`;
   }).join('');
   return `<div class="buff-bar"><div class="buff-slot buff-slot--label"><div class="buff-icon-wrap buff-label-wrap">增益</div></div>${slotsHtml}</div>`;
+}
+
+// 生成技能 selfBuffStacks 的文字描述（用于按钮标签）
+function describeSelfBuffStacks(selfBuffStacks) {
+  const labels = {
+    "物攻增强": "物攻", "魔攻增强": "魔攻",
+    "物防增强": "物防", "魔防增强": "魔防", "速度增强": "速度",
+  };
+  return Object.entries(selfBuffStacks).map(([key, val]) => {
+    const name = labels[key] || key;
+    if (key === "速度增强") return `${name}${val > 0 ? '+' : ''}${val * 10}`;
+    return `${name}${val > 0 ? '+' : ''}${val * 10}%`;
+  }).join(' ');
+}
+
+// 渲染攻方强化技能面板（在 .move-col 中）
+function renderMoveBuffPanel(creature) {
+  const panel = document.getElementById('move-buff-panel');
+  if (!panel) return;
+  const learnableSet = new Set(creature?.learnableMoves ?? []);
+  const buffMoves = MOVES.filter(m => m.selfBuffStacks && learnableSet.has(m.id));
+  if (!buffMoves.length) { panel.style.display = 'none'; return; }
+  panel.style.display = '';
+  panel.innerHTML = `<div class="move-buff-title">强化技能</div>`
+    + buffMoves.map(m => {
+        return `<button class="move-buff-apply-btn" data-side="attacker" data-move-id="${m.id}">
+          <img class="move-buff-icon" src="${m.icon}" alt="${m.name}">
+          <span class="move-buff-name">${m.name}</span>
+        </button>`;
+      }).join('')
+    + `<button class="move-buff-reset-btn" data-side="attacker">重置</button>`;
 }
 
 function renderStatGrid(side, creature) {
@@ -533,7 +566,8 @@ function renderStatGrid(side, creature) {
   // Buff 类控件（来自 ABILITY_BUFF_DEFS）
   const buffDefs = getCreatureBuffDefs(side, creature.name);
   const buffToggles  = buffDefs.filter(d => d.type === 'toggle');
-  const buffSteppers = buffDefs.filter(d => d.type === 'stepper');
+  // 通用 buff（GENERIC_BUFF_DEFS）不显示手动 stepper，只由强化技能按钮驱动
+  const buffSteppers = buffDefs.filter(d => d.type === 'stepper' && !GENERIC_BUFF_DEFS.includes(d));
 
   let abilityControlsHtml = '';
   const hasControls = manualAbilityEffects.length || stepperAbilityEffects.length
@@ -619,6 +653,9 @@ function renderStatGrid(side, creature) {
 
   container.querySelectorAll('.nature-btn').forEach(btn => btn.addEventListener('click', onNatureClick));
   container.querySelectorAll('.iv-btn').forEach(btn => btn.addEventListener('click', onIVToggle));
+
+  // 攻方面板同步更新强化技能面板
+  if (side === 'attacker') renderMoveBuffPanel(creature);
 }
 
 function onNatureClick(e) {
@@ -1453,7 +1490,8 @@ function onAbilityStepper(btn) {
   if (buffDef) {
     const buffStacks = side === 'attacker' ? attackerBuffStacks : defenderBuffStacks;
     const current = buffStacks[buffDef.effectKey] ?? 0;
-    const next = Math.max(0, Math.min(buffDef.maxStacks, current + +btn.dataset.dir));
+    const minS = buffDef.minStacks ?? 0;
+    const next = Math.max(minS, Math.min(buffDef.maxStacks, current + +btn.dataset.dir));
     if (next === 0) delete buffStacks[buffDef.effectKey];
     else buffStacks[buffDef.effectKey] = next;
     const valEl = document.getElementById(`ability-stepper-val-${side}-${name}`);
@@ -1772,6 +1810,38 @@ document.addEventListener('DOMContentLoaded', () => {
     if (toggleBtn) { onEffectToggle(toggleBtn); return; }
     const stepperBtn = e.target.closest('.stepper-btn');
     if (stepperBtn) onStepperClick(stepperBtn);
+  });
+
+  // 强化技能按钮：点击后给攻方叠加 buff 层数
+  document.getElementById('move-buff-panel').addEventListener('click', e => {
+    // 重置按钮
+    const resetBtn = e.target.closest('.move-buff-reset-btn');
+    if (resetBtn) {
+      const side = resetBtn.dataset.side;
+      const stacks = side === 'attacker' ? attackerBuffStacks : defenderBuffStacks;
+      for (const def of GENERIC_BUFF_DEFS) delete stacks[def.effectKey];
+      const creature = getActiveCreature(side);
+      renderStatGrid(side, creature);
+      onCalculate();
+      return;
+    }
+
+    const btn = e.target.closest('.move-buff-apply-btn');
+    if (!btn) return;
+    const side = btn.dataset.side;
+    const moveId = btn.dataset.moveId;
+    const move = MOVES.find(m => m.id === moveId);
+    if (!move?.selfBuffStacks) return;
+    const stacks = side === 'attacker' ? attackerBuffStacks : defenderBuffStacks;
+    for (const [key, delta] of Object.entries(move.selfBuffStacks)) {
+      const def = GENERIC_BUFF_DEFS.find(d => d.effectKey === key);
+      const min = def?.minStacks ?? -50;
+      const max = def?.maxStacks ?? 50;
+      stacks[key] = Math.max(min, Math.min(max, (stacks[key] ?? 0) + delta));
+    }
+    const creature = getActiveCreature(side);
+    renderStatGrid(side, creature);
+    onCalculate();
   });
 
   document.getElementById('save-creature-btn').addEventListener('click', saveCurrentCreature);

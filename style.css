@@ -837,3 +837,63 @@ select:focus, input:focus { outline: 2px solid #a8d8ff; }
 .buff-slot:hover .buff-tooltip { display: flex; }
 .buff-tooltip-name   { font-size: 0.82rem; font-weight: 600; color: #a8d8ff; }
 .buff-tooltip-effects { font-size: 0.75rem; color: #9ca3af; }
+
+/* 减益 buff 槽（负层数） */
+.buff-slot--debuff.active .buff-stacks { background: #7c3aed; }
+.buff-slot--debuff .buff-label-wrap { color: #f87171; }
+
+/* 强化技能面板 */
+.move-buff-panel {
+  background: #0d2137;
+  border: 1px solid #1e3a5f;
+  border-radius: 8px;
+  padding: 0.5rem 0.6rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+.move-buff-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #7da8cc;
+  width: 100%;
+  margin-bottom: 0;
+}
+/* 技能按钮和重置按钮共用基础样式 */
+.move-buff-apply-btn,
+.move-buff-reset-btn {
+  display: flex;
+  align-items: center;
+  height: 30px;        /* 24px图标 + 3px上下padding + 1px边框×2 */
+  border-radius: 6px;
+  padding: 0 8px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  transition: background 0.12s;
+  box-sizing: border-box;
+}
+.move-buff-apply-btn {
+  gap: 4px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid #1e3a5f;
+  color: #cce5ff;
+}
+.move-buff-apply-btn:hover { background: rgba(255,255,255,0.1); border-color: #3a7bd5; }
+.move-buff-reset-btn {
+  background: rgba(220,50,50,0.15);
+  border: 1px solid #7f2020;
+  color: #f87171;
+}
+.move-buff-reset-btn:hover { background: rgba(220,50,50,0.3); }
+.move-buff-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 3px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.move-buff-name {
+  color: #e2f0ff;
+}

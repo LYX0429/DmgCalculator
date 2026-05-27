@@ -314,3 +314,28 @@ const ABILITY_BUFF_DEFS = {
     perStack: { atkPct: 0.2, defPct: 0.2 },
   }],
 };
+
+// ── 通用 Buff 定义（所有精灵共享，用于技能强化面板）────────────────────────
+// minStacks 支持负值（减益方向），每层 10% 或 10点
+const GENERIC_BUFF_DEFS = [
+  { name: "物攻增强", effectKey: "物攻增强",
+    icon: "assets/icons/buffs/物攻增强.png",
+    type: "stepper", minStacks: -50, maxStacks: 50, defaultStacks: 0,
+    perStack: { atkPct: 0.1 } },
+  { name: "魔攻增强", effectKey: "魔攻增强",
+    icon: "assets/icons/buffs/魔攻增强.png",
+    type: "stepper", minStacks: -50, maxStacks: 50, defaultStacks: 0,
+    perStack: { spatkPct: 0.1 } },
+  { name: "物防增强", effectKey: "物防增强",
+    icon: "assets/icons/buffs/物防增强.png",
+    type: "stepper", minStacks: -50, maxStacks: 50, defaultStacks: 0,
+    perStack: { defPct: 0.1 } },
+  { name: "魔防增强", effectKey: "魔防增强",
+    icon: "assets/icons/buffs/魔防增强.png",
+    type: "stepper", minStacks: -50, maxStacks: 50, defaultStacks: 0,
+    perStack: { spdefPct: 0.1 } },
+  { name: "速度增强", effectKey: "速度增强",
+    icon: "assets/icons/buffs/速度增强.png",
+    type: "stepper", minStacks: -50, maxStacks: 50, defaultStacks: 0,
+    perStack: { spdFlat: 10 } },
+];
