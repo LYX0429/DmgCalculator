@@ -1202,9 +1202,21 @@ function computeDamage({ attacker, defCreature, defIvs, defNature, move, extraPo
 
   const buffPowerFlat = atkFx.powerFlat;
 
-  // 速度用于 auto 特性（顺风/破空）—— 含速度 buff
-  const buffedAtkSpd = Math.round(atkStats.spd * (1 + atkFx.spdPct) + atkFx.spdFlat);
-  const buffedDefSpd = Math.round(defStats.spd * (1 + defFx.spdPct) + defFx.spdFlat);
+  // 含所有 buff 后的 stats（供技能/特性 auto 条件使用：顺风/破空/鸣沙陷阱/闪击等）
+  const buffedAtkSpd  = Math.round(atkStats.spd   * (1 + atkFx.spdPct)   + atkFx.spdFlat);
+  const buffedDefSpd  = Math.round(defStats.spd    * (1 + defFx.spdPct)   + defFx.spdFlat);
+  const buffedAtkStats = {
+    ...atkStats,
+    def:   Math.round(atkStats.def   * (1 + atkFx.defPct)   + atkFx.defFlat),
+    spdef: Math.round(atkStats.spdef * (1 + atkFx.spdefPct) + atkFx.spdefFlat),
+    spd:   buffedAtkSpd,
+  };
+  const buffedDefStats = {
+    ...defStats,
+    def:   Math.round(defStats.def   * (1 + defFx.defPct)   + defFx.defFlat),
+    spdef: Math.round(defStats.spdef * (1 + defFx.spdefPct) + defFx.spdefFlat),
+    spd:   buffedDefSpd,
+  };
 
   let abilityCtx = {
     typeMult:          calcTypeMultiplier(move.type, defCreature.types),
@@ -1214,9 +1226,8 @@ function computeDamage({ attacker, defCreature, defIvs, defNature, move, extraPo
     abilityMult:       1,
     abilityExtraPower: 0,
     defAbilityMult:    1,
-    // abilityCtx 仍然暴露原始 stats 供 auto 条件使用（鸣沙陷阱等）
-    atkStats: { ...atkStats, spd: buffedAtkSpd },
-    defStats: { ...defStats, spd: buffedDefSpd },
+    atkStats: buffedAtkStats,
+    defStats: buffedDefStats,
     move,
   };
 
@@ -1251,7 +1262,7 @@ function computeDamage({ attacker, defCreature, defIvs, defNature, move, extraPo
     ? Math.round(move.power * (1 + buffPowerPct)) - move.power
     : 0;
 
-  const effectCtx = { basePower: move.power, atkStats, defStats };
+  const effectCtx = { basePower: move.power, atkStats: buffedAtkStats, defStats: buffedDefStats };
 
   // 计算连击数
   let totalHits = 1;
