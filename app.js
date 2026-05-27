@@ -1552,11 +1552,12 @@ function renderPowerBreakdown({
   if (buffPowerFlat !== 0)
     powerItems.push(`<span class="pw-chip pw-chip--buff">特性威力 <b>+${buffPowerFlat}</b></span>`);
 
-  // 攻方 buff chips（每个 buff 单独一个 chip）
+  // 攻方 buff chips（按技能类别只显示相关攻击 buff）
+  const isPhysical = move.category === 'physical';
   for (const d of atkBuffDetails) {
     const fx = d.fx;
-    // 属性攻击百分比增益
-    const pct = (fx.atkPct || 0) || (fx.spatkPct || 0);
+    // 只取与本技能类别相关的攻击增益
+    const pct = isPhysical ? (fx.atkPct || 0) : (fx.spatkPct || 0);
     if (pct !== 0) {
       const mult = 1 + pct;
       multItems.push(`<span class="pw-chip pw-chip--buff">${d.name} 攻击+${Math.round(pct * 100)}% <b>×${mult.toFixed(2)}</b></span>`);
@@ -1578,10 +1579,10 @@ function renderPowerBreakdown({
   if (creatureAbilityMult !== 1)
     multItems.push(`<span class="pw-chip pw-chip--stab">特性 <b>×${creatureAbilityMult}</b></span>`);
 
-  // 防方 buff chips
+  // 防方 buff chips（按技能类别只显示相关防御 buff）
   for (const d of defBuffDetails) {
     const fx = d.fx;
-    const pct = (fx.defPct || 0) || (fx.spdefPct || 0);
+    const pct = isPhysical ? (fx.defPct || 0) : (fx.spdefPct || 0);
     if (pct !== 0) {
       const div = 1 + pct;
       multItems.push(`<span class="pw-chip pw-chip--resist">${d.name} 防御+${Math.round(pct * 100)}% <b>÷${div.toFixed(2)}</b></span>`);
