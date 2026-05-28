@@ -1561,7 +1561,7 @@ function renderPowerBreakdown({
   if (abilityExtraPower !== 0)
     powerItems.push(`<span class="pw-chip pw-chip--stab">特性威力 <b>+${abilityExtraPower}</b></span>`);
   if (buffPowerFlat !== 0)
-    powerItems.push(`<span class="pw-chip pw-chip--buff">特性威力 <b>+${buffPowerFlat}</b></span>`);
+    powerItems.push(`<span class="pw-chip pw-chip--buff">威力加成 <b>+${buffPowerFlat}</b></span>`);
 
   // 攻方 buff chips（按技能类别只显示相关攻击 buff）
   const isPhysical = move.category === 'physical';

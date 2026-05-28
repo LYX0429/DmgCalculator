@@ -338,4 +338,8 @@ const GENERIC_BUFF_DEFS = [
     icon: "assets/icons/buffs/速度增强.png",
     type: "stepper", minStacks: -50, maxStacks: 50, defaultStacks: 0,
     perStack: { spdFlat: 10 } },
+  { name: "威力增强", effectKey: "威力增强",
+    icon: "assets/icons/buffs/威力增强.png",
+    type: "stepper", minStacks: -50, maxStacks: 50, defaultStacks: 0,
+    perStack: { powerFlat: 10 } },
 ];
