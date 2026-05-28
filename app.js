@@ -447,6 +447,11 @@ const MOVE_EFFECTS = {
     apply: val => 75 * (Math.pow(2, val) - 1) }],  // 每次击败后威力翻倍
 };
 
+// 为所有愿力技能注册"应对攻击：威力+80"toggle 效果
+MOVES.filter(m => m.universal).forEach(m => {
+  MOVE_EFFECTS[m.name] = [{ name: "应对攻击", apply: () => 80 }];
+});
+
 function getMoveEffects(moveName) {
   return MOVE_EFFECTS[moveName] || [];
 }
@@ -888,6 +893,21 @@ function populateMoves(creature) {
     const grp = document.createElement('optgroup');
     grp.label = type;
     group.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m.id;
+      opt.textContent = `${m.name}（${m.power} · ${m.category === 'physical' ? '物理' : '魔法'}）`;
+      grp.appendChild(opt);
+    });
+    sel.appendChild(grp);
+  }
+
+  // 愿力技能单独分组（universal: true，所有精灵可见）
+  const universalGroup = MOVES.filter(m => m.universal &&
+    (m.category === 'physical' || m.category === 'special'));
+  if (universalGroup.length) {
+    const grp = document.createElement('optgroup');
+    grp.label = '愿力';
+    universalGroup.forEach(m => {
       const opt = document.createElement('option');
       opt.value = m.id;
       opt.textContent = `${m.name}（${m.power} · ${m.category === 'physical' ? '物理' : '魔法'}）`;
